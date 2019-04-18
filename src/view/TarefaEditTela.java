@@ -188,9 +188,9 @@ public class TarefaEditTela extends JFrame {
 	private JComboBox processoComboBox;
 	private JLabel subetapaLabel;
 	private JLabel estapaLabel;
-	private JTextField etapaText;
-	private JTextField subEtapatext;
 	private JLabel labelProcesso;
+	private JComboBox etapaCombo;
+	private JComboBox subEtapaCombo;
 
 //metodo de referencia a classe pai, para poder usar os metodos da clalsse usuarioTela
 	public TarefaEditTela(JFrame formularioPai) {
@@ -321,7 +321,7 @@ public class TarefaEditTela extends JFrame {
 		internalFrame.setFrameIcon(new ImageIcon(TarefaEditTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
 		internalFrame.setBackground(Color.WHITE);
 		internalFrame.setVisible(false);
-		internalFrame.setBounds(113, 125, 370, 295);
+		internalFrame.setBounds(113, 127, 370, 295);
 		leftPanel.add(internalFrame);
 		
 		anexoButton = new JButton("Anexo");
@@ -732,17 +732,17 @@ public class TarefaEditTela extends JFrame {
 		estapaLabel.setBounds(310, 205, 135, 14);
 		leftPanel.add(estapaLabel);
 		
-		etapaText = new JTextField(5);
-		etapaText.setForeground(Color.WHITE);
-		etapaText.setBackground(new Color(41, 106, 158));
-		etapaText.setBounds(310, 221, 120, 25);
-		leftPanel.add(etapaText);
+		etapaCombo = new JComboBox(Selecione);
+		etapaCombo.setForeground(Color.WHITE);
+		etapaCombo.setBackground(new Color(41, 106, 158));
+		etapaCombo.setBounds(310, 221, 135, 25);
+		leftPanel.add(etapaCombo);
 		
-		subEtapatext = new JTextField(5);
-		subEtapatext.setForeground(Color.WHITE);
-		subEtapatext.setBackground(new Color(41, 106, 158));
-		subEtapatext.setBounds(310, 273, 120, 25);
-		leftPanel.add(subEtapatext);
+		subEtapaCombo = new JComboBox(Selecione);
+		subEtapaCombo.setForeground(Color.WHITE);
+		subEtapaCombo.setBackground(new Color(41, 106, 158));
+		subEtapaCombo.setBounds(310, 273, 135, 25);
+		leftPanel.add(subEtapaCombo);
 
 		rightPanel = new JPanel();
 		rightPanel.setBackground(Color.WHITE);
@@ -1478,9 +1478,15 @@ public class TarefaEditTela extends JFrame {
 		variavel.setDataReal(dataRealText.getText());
 		variavel.setDataFim(datafimText.getText());
 		variavel.setPorcentagem(Integer.parseInt(pecentText.getText().replaceAll("[^0-9]*", "")));
-		variavel.setEtapa(etapaText.getText());
-		variavel.setSubEtapa(subEtapatext.getText());
-
+		
+		if (etapaCombo.getSelectedIndex() != 0) {
+			variavel.setEtapa(etapaCombo.getSelectedItem().toString());
+		}
+		
+		if (subEtapaCombo.getSelectedIndex() != 0) {
+			variavel.setSubEtapa(subEtapaCombo.getSelectedItem().toString());
+		}
+		
 		if (pendComboBox.getSelectedIndex() != 0) {// Se o index for diferente de zero carregue a variavel
 			variavel.setPendentePor(pendComboBox.getSelectedItem().toString());
 		}
@@ -1597,14 +1603,24 @@ public class TarefaEditTela extends JFrame {
 		respComboBox.setSelectedItem(variavel.getResponsavel());
 		autoridadeComboBox.setSelectedItem(variavel.getAutoridade());
 		
-		if(variavel.getProcesso() == "" || variavel.getProcesso() == null) {
+		if (variavel.getEtapa() == "" || variavel.getEtapa() == null) {
+			etapaCombo.setSelectedIndex(0);
+		} else {
+			etapaCombo.setSelectedItem(variavel.getEtapa());
+		}
+		
+		if (variavel.getSubEtapa() == "" || variavel.getSubEtapa() == null) {
+			subEtapaCombo.setSelectedIndex(0);
+		} else {
+			subEtapaCombo.setSelectedItem(variavel.getSubEtapa());
+		}
+		
+		if (variavel.getProcesso() == "" || variavel.getProcesso() == null) {
 			processoComboBox.setSelectedIndex(0);
 		}else {
 			processoComboBox.setSelectedItem(variavel.getProcesso());
 		}
 		
-		etapaText.setText(variavel.getEtapa());
-		subEtapatext.setText(variavel.getSubEtapa());
 		statPendText.setText(variavel.getStatusPendencia());
 		historicoText.setText(variavel.getHistorico());
 		atualiazacaoLabel.setText(variavel.getAtuaizacao());
@@ -1878,7 +1894,7 @@ public class TarefaEditTela extends JFrame {
 		}
 		// FIM
 		
-		// Carregando combo box dpto
+		// Carregando combo box processo
 		String processo;
 		try {
 			sql = "SELECT * FROM processos ORDER BY processo ASC";
@@ -1892,6 +1908,40 @@ public class TarefaEditTela extends JFrame {
 			
 		} catch (SQLException erro) {
 					JOptionPane.showMessageDialog(null, erro.toString());
+		}
+		// FIM
+		
+		// Carregando combo box etapa
+		String etapa;
+		try {
+			sql = "SELECT * FROM etapas ORDER BY etapa ASC";
+			bd.st = bd.con.prepareStatement(sql);
+			bd.rs = bd.st.executeQuery();
+			while (bd.rs.next()) {
+				etapa = bd.rs.getString("etapa");
+				etapaCombo.addItem(etapa);
+
+			}
+
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
+		}
+		// FIM
+		
+		// Carregando combo box subetapa
+		String subetapa;
+		try {
+			sql = "SELECT * FROM sub_etapas ORDER BY sub_etapa ASC";
+			bd.st = bd.con.prepareStatement(sql);
+			bd.rs = bd.st.executeQuery();
+			while (bd.rs.next()) {
+				subetapa = bd.rs.getString("sub_etapa");
+				subEtapaCombo.addItem(subetapa);
+
+			}
+
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
 		}
 		// FIM
 	}

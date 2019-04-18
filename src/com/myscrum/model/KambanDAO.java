@@ -1142,7 +1142,9 @@ public class KambanDAO extends kamban {
 					+ "executor.executor5, executor.porcento5, executor.executor6, executor.porcento6, executor.executor7, executor.porcento7, executor.executor8, executor.porcento8,"
 					+ "executor.executor9, executor.porcento9, executor.executor10, executor.porcento10,"
 					+ "tarefa.pendente_por,tarefa.status_pendencia,tarefa.historico,departamento.departamento,"
-					+ "tarefa.responsavel,tarefa.autoridade,tarefa.dpto_correto,"
+					+ "tarefa.responsavel,tarefa.autoridade,"
+					+ "(SELECT etapas.etapa FROM etapas WHERE etapas.id_etapa = tarefa.etapa) AS etapa,"
+					+ "(SELECT sub_etapas.sub_etapa FROM sub_etapas WHERE sub_etapas.id_sub_etapas = tarefa.subetapa) AS subetapa,"
 					+ "(SELECT processo FROM processos WHERE processos.id_processo = tarefa.processo_relacionado), "
 					+ "tarefa.predecessor_1, tarefa.predecessor_2, tarefa.predecessor_3, tarefa.last_update, "
 					+ "(SELECT pessoa.nome FROM pessoa WHERE pessoa.id_pessoa = tarefa.id_update), "
@@ -1205,19 +1207,21 @@ public class KambanDAO extends kamban {
 			variaveis.setDepartamento(bd.rs.getString(35));
 			variaveis.setResponsavel(bd.rs.getString(36));
 			variaveis.setAutoridade(bd.rs.getString(37));
-			variaveis.setProcesso(bd.rs.getString(39));
-			variaveis.setPredecessor1(bd.rs.getInt(40));
-			variaveis.setPredecessor2(bd.rs.getInt(41));
-			variaveis.setPredecessor3(bd.rs.getInt(42));
+			variaveis.setEtapa(bd.rs.getString(38));
+			variaveis.setSubEtapa(bd.rs.getString(39));
+			variaveis.setProcesso(bd.rs.getString(40));
+			variaveis.setPredecessor1(bd.rs.getInt(41));
+			variaveis.setPredecessor2(bd.rs.getInt(42));
+			variaveis.setPredecessor3(bd.rs.getInt(43));
 			
-			if (bd.rs.getString(44) == null || bd.rs.getString(44) == "") {// Se não existir atualização coloca vazio na variavel de atualização				// tarefa
+			if (bd.rs.getString(45) == null || bd.rs.getString(45) == "") {// Se não existir atualização coloca vazio na variavel de atualização				// tarefa
 				variaveis.setAtualizacao("");
 			} else {
-				variaveis.setAtualizacao("Atualizado " + new SimpleDateFormat("dd/MM/yyyy").format(bd.rs.getDate(43))
-						+ " Por " + bd.rs.getString(44));
+				variaveis.setAtualizacao("Atualizado " + new SimpleDateFormat("dd/MM/yyyy").format(bd.rs.getDate(44))
+						+ " Por " + bd.rs.getString(45));
 			}
 			
-			variaveis.setChecado(bd.rs.getString(45));
+			variaveis.setChecado(bd.rs.getString(46));
 
 			// DPTO CORRETO
 			// PROCESSO RELACIONADO

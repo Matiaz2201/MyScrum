@@ -968,7 +968,10 @@ public class TarefaTela extends javax.swing.JFrame {
 				+ "executor.executor5, executor.porcento5, executor.executor6, executor.porcento6, executor.executor7, executor.porcento7, executor.executor8, executor.porcento8,"
 				+ "executor.executor9, executor.porcento9, executor.executor10, executor.porcento10,"
 				+ "tarefa.pendente_por,tarefa.status_pendencia,tarefa.historico,departamento.departamento,"
-				+ "tarefa.responsavel,tarefa.autoridade,tarefa.etapa,tarefa.subetapa,tarefa.dpto_correto,"
+				+ "tarefa.responsavel,tarefa.autoridade,"
+				+ "(SELECT etapas.etapa FROM etapas WHERE etapas.id_etapa = tarefa.etapa) AS etapa,"
+				+ "(SELECT sub_etapas.sub_etapa FROM sub_etapas WHERE sub_etapas.id_sub_etapas = tarefa.subetapa) AS subetapa,"
+				+ "dpto_correto,"
 				+ "(SELECT processos.processo FROM processos WHERE tarefa.processo_relacionado=processos.id_processo) AS processo_relacionado,"
 				+ "tarefa.predecessor_1, tarefa.predecessor_2, tarefa.predecessor_3, tarefa.last_update,  "
 				+ "(SELECT pessoa.nome FROM pessoa WHERE pessoa.id_pessoa = tarefa.id_update), "
@@ -1229,10 +1232,10 @@ public class TarefaTela extends javax.swing.JFrame {
 				cabecalhoPersonalizado.addElement("Departamento");// 34
 				cabecalhoPersonalizado.addElement("Responsavel");// 35
 				cabecalhoPersonalizado.addElement("Autoridade");// 36
-				cabecalhoPersonalizado.addElement("Etapa");// Obsoletos //37
-				cabecalhoPersonalizado.addElement("Sub Etapa");// Obsoletos //38
+				cabecalhoPersonalizado.addElement("Etapa");//37
+				cabecalhoPersonalizado.addElement("Sub Etapa");//38
 				cabecalhoPersonalizado.addElement("Departamento Correto");// Obsoletos //39
-				cabecalhoPersonalizado.addElement("Processo Relacionado");// Obsoletos //40
+				cabecalhoPersonalizado.addElement("Processo Relacionado");//40
 				cabecalhoPersonalizado.addElement("Predecessor 1");//41
 				cabecalhoPersonalizado.addElement("Predecessor 2");//42
 				cabecalhoPersonalizado.addElement("Predecessor 3");;//43
@@ -1435,7 +1438,6 @@ public class TarefaTela extends javax.swing.JFrame {
 							}else {
 								variavel.setEtapa(tabela.getValueAt(tabela.getSelectedRow(), 37).toString());
 							}
-							
 							
 							if(tabela.getValueAt(tabela.getSelectedRow(), 38) == null) {
 								variavel.setSubEtapa("");
