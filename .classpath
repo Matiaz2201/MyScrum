@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="libraries/AbsoluteLayout.jar"/>
+	<classpathentry kind="lib" path="libraries/Email4.0.jar"/>
+	<classpathentry kind="lib" path="libraries/jfreechart-1.0.19.jar"/>
+	<classpathentry kind="lib" path="libraries/joda-time-2.10.jar"/>
+	<classpathentry kind="lib" path="libraries/jortho.jar"/>
+	<classpathentry kind="lib" path="libraries/JPanelSlider.jar"/>
+	<classpathentry kind="lib" path="libraries/JPlaceHolder.jar"/>
+	<classpathentry kind="lib" path="libraries/JTattoo-1.6.11.jar"/>
+	<classpathentry kind="lib" path="libraries/mail.jar"/>
+	<classpathentry kind="lib" path="libraries/miglayout15-swing.jar"/>
+	<classpathentry kind="lib" path="libraries/mysql-connector-java-5.1.46-bin.jar"/>
+	<classpathentry kind="lib" path="libraries/NefAnimacion_V2.1_jdk18.jar"/>
+	<classpathentry kind="lib" path="libraries/swtgraphics2d.jar"/>
+	<classpathentry kind="lib" path="libraries/towel.jar"/>
+	<classpathentry kind="lib" path="jgoodies-forms-1.8.0.jar" sourcepath="jgoodies-forms-1.8.0-sources.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
