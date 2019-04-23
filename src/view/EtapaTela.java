@@ -16,6 +16,8 @@ import com.myscrum.model.CcCusto;
 import com.myscrum.model.CcCustoDAO;
 import com.myscrum.model.Etapa;
 import com.myscrum.model.EtapaDAO;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class EtapaTela extends JPanel {
 
@@ -25,11 +27,13 @@ public class EtapaTela extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JComboBox<String> etapaCombo;
+	private JComboBox<String> ccCombo;
 	private JTextField etapaText;
 	private JButton salvarButton;
 	private JButton atualizarButton;
-	private JLabel ccCustoLabel;
+	private JLabel etapaLabel;
 	private JLabel cadastradoLabel;
+	private JLabel ccLabel;
 	Redimensionar rsize = new Redimensionar();
 	JPanel panel = new JPanel();
 
@@ -43,11 +47,18 @@ public class EtapaTela extends JPanel {
 
 		// construct components
 		etapaCombo = new JComboBox(Items);
+		ccCombo = new JComboBox(Items);
+		ccCombo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				carregarComboBoxEtapa(ccCombo.getSelectedItem().toString());
+			}
+		});
 		etapaText = new JTextField(5);
 		salvarButton = new JButton("Salvar");
 		atualizarButton = new JButton("Atualizar");
 		atualizarButton.setEnabled(false);
-		ccCustoLabel = new JLabel("Etapa:");
+		etapaLabel = new JLabel("Etapa:");
+		ccLabel = new JLabel("Centro de custo:");
 		cadastradoLabel = new JLabel("Já cadastrado:");
 
 		setBackground(Color.WHITE);
@@ -57,25 +68,38 @@ public class EtapaTela extends JPanel {
 
 		// add components
 		add(etapaCombo);
+		add(ccCombo);
 		add(etapaText);
 		add(salvarButton);
 		add(atualizarButton);
-		add(ccCustoLabel);
+		add(etapaLabel);
+		add(ccLabel);
 		add(cadastradoLabel);
 
 		// set component bounds (only needed by Absolute Positioning)
-		etapaCombo.setBounds(110, 140, 210, 25);
+		etapaCombo.setBounds(110, 190, 210, 25);
 		etapaCombo.setBackground(new Color(41, 106, 158));
 		etapaCombo.setForeground(Color.WHITE);
-		etapaText.setBounds(110, 75, 210, 30);
+		
+		ccCombo.setBounds(110, 60, 210, 25);
+		ccCombo.setBackground(new Color(41, 106, 158));
+		ccCombo.setForeground(Color.WHITE);
+		
+		etapaText.setBounds(110, 125, 210, 30);
 		etapaText.setBackground(new Color(41, 106, 158));
 		etapaText.setForeground(Color.WHITE);
+		
 		salvarButton.setBounds(250, 265, 120, 35);
 		salvarButton.setBackground(new Color(163, 184, 204));
+		
 		atualizarButton.setBounds(50, 265, 120, 35);
 		atualizarButton.setBackground(new Color(163, 184, 204));
-		ccCustoLabel.setBounds(110, 50, 95, 25);
-		cadastradoLabel.setBounds(110, 115, 95, 25);
+		
+		etapaLabel.setBounds(110, 100, 95, 25);
+		
+		ccLabel.setBounds(110, 35, 95, 25);
+		
+		cadastradoLabel.setBounds(110, 165, 95, 25);
 
 		carregarComboBox();
 		
@@ -104,9 +128,9 @@ public class EtapaTela extends JPanel {
 							"Selecione uma opção", JOptionPane.YES_NO_OPTION);
 					if (escolha == JOptionPane.YES_OPTION) {
 
-						Etapa etapa = new Etapa(etapaText.getText());
+						Etapa etapa = new Etapa(etapaText.getText(), ccCombo.getSelectedItem().toString());
 						metodos.cadastar(etapa);
-						carregarComboBox();
+						carregarComboBoxEtapa(ccCombo.getSelectedItem().toString());
 						etapaText.setText("");
 					}
 				}
@@ -128,9 +152,9 @@ public class EtapaTela extends JPanel {
 									"Selecione uma opção", JOptionPane.YES_NO_OPTION);
 					if (escolha == JOptionPane.YES_OPTION) {
 						
-						Etapa etapa = new Etapa(etapaCombo.getSelectedItem().toString(), etapaText.getText());
+						Etapa etapa = new Etapa(etapaCombo.getSelectedItem().toString(), etapaText.getText(), ccCombo.getSelectedItem().toString());
 						metodos.atualizar(etapa);
-						carregarComboBox();
+						carregarComboBoxEtapa(ccCombo.getSelectedItem().toString());
 						etapaText.setText("");
 					}
 				}
@@ -149,7 +173,7 @@ public class EtapaTela extends JPanel {
 		atualizarButton.setEnabled(false);
 	}
 
-	public void carregarComboBox() {
+	public void carregarComboBoxEtapa(String cc) {
 		String etapa = null;
 		String a;
 		int b = 1;
@@ -161,7 +185,7 @@ public class EtapaTela extends JPanel {
 
 		// Preenchendo a combo box
 		try {
-			sql = "SELECT * FROM etapas";
+			sql = "SELECT * FROM etapas WHERE id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '"+cc+"')";
 			bd.getConnection();
 			bd.st = bd.con.prepareStatement(sql);
 			bd.rs = bd.st.executeQuery();
@@ -174,5 +198,30 @@ public class EtapaTela extends JPanel {
 			JOptionPane.showMessageDialog(null, erro.toString());
 		}
 	}
-	
+
+	 public void carregarComboBox() {
+		 String cc = null;
+		 String a;
+		 int b = 1;
+		//Esvaziando a combobox
+		 while(b < ccCombo.getItemCount()) {
+			 a = ccCombo.getItemAt(b).toString(); 
+			 ccCombo.removeItem(a);
+	}
+		 
+		//Preenchendo a combo box
+	 	try{
+			sql = "SELECT * FROM centro_custo";
+			bd.getConnection();
+			bd.st = bd.con.prepareStatement(sql);
+			bd.rs = bd.st.executeQuery();
+			while(bd.rs.next()){
+				cc = bd.rs.getString("centrocusto");
+				ccCombo.addItem(cc);
+			}
+	   bd.close();
+		}catch(SQLException erro){
+			JOptionPane.showMessageDialog(null,erro.toString());
+		}
+	  }
 }
