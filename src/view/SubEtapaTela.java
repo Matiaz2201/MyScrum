@@ -14,8 +14,7 @@ import com.myscrum.banco.BD;
 import com.myscrum.model.Redimensionar;
 import com.myscrum.model.SubEtapa;
 import com.myscrum.model.SubEtapaDAO;
-import com.myscrum.model.CcCusto;
-import com.myscrum.model.CcCustoDAO;
+
 
 public class SubEtapaTela extends JPanel {
 
@@ -44,7 +43,17 @@ public class SubEtapaTela extends JPanel {
 
 		// construct components
 		subEtapaCombo = new JComboBox<String>(subEtapaComboItems);
-		etapaCombo = new JComboBox(subEtapaComboItems);
+		etapaCombo = new JComboBox<String>(subEtapaComboItems);
+		etapaCombo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String[] etapa = {""};
+				
+				etapa = etapaCombo.getSelectedItem().toString().split("_");
+				
+				carregarComboBoxSubEtapa(etapa[0], etapa[1]);
+		
+			}
+		});
 		subEtapaText = new JTextField(5);
 		salvarButton = new JButton("Salvar");
 		atualizarButton = new JButton("Atualizar");
@@ -113,10 +122,13 @@ public class SubEtapaTela extends JPanel {
 							"Deseja realmente cadastrar " + subEtapaText.getText() + " como etapa ?",
 							"Selecione uma opção", JOptionPane.YES_NO_OPTION);
 					if (escolha == JOptionPane.YES_OPTION) {
-						SubEtapa subetapa = new SubEtapa(subEtapaText.getText());
+						String[] etapa = {""};
+						
+						etapa = etapaCombo.getSelectedItem().toString().split("_");
+						
+						SubEtapa subetapa = new SubEtapa(subEtapaText.getText(), etapa[0], etapa[1]);
 
 						metodos.cadastrar(subetapa);
-						carregarComboBoxSubEtapa();
 						subEtapaText.setText("");
 					}
 				}
@@ -141,7 +153,6 @@ public class SubEtapaTela extends JPanel {
 								subEtapaText.getText());
 
 						metodos.atualizar(subetapa);
-						carregarComboBoxSubEtapa();
 						subEtapaText.setText("");
 					}
 				}
@@ -161,8 +172,8 @@ public class SubEtapaTela extends JPanel {
 		atualizarButton.setEnabled(false);
 	}
 
-	public void carregarComboBoxSubEtapa() {
-		String etapa = null;
+	public void carregarComboBoxSubEtapa(String etapa, String cc) {
+		String subEtapa = null;
 		String a;
 		int b = 1;
 		// Esvaziando a combobox
@@ -173,13 +184,19 @@ public class SubEtapaTela extends JPanel {
 
 		// Preenchendo a combo box
 		try {
-			sql = "SELECT * FROM sub_etapas WHERE id_etapa = ?";
+			sql = "SELECT sub_etapas.sub_etapa FROM sub_etapas \r\n" +
+					"INNER JOIN etapas \r\n" +
+					"ON sub_etapas.id_etapa = etapas.id_etapa \r\n" +
+					"INNER JOIN centro_custo \r\n" +
+					"ON etapas.id_cc = centro_custo.id_centro_custo \r\n" +
+					"WHERE sub_etapas.id_etapa = (SELECT etapas.id_etapa FROM etapas WHERE etapa = '" + etapa + "'  AND \r\n" +
+					"id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + cc + "'))";
 			bd.getConnection();
 			bd.st = bd.con.prepareStatement(sql);
 			bd.rs = bd.st.executeQuery();
 			while (bd.rs.next()) {
-				etapa = bd.rs.getString("sub_etapa");
-				subEtapaCombo.addItem(etapa);
+				subEtapa = bd.rs.getString("sub_etapa");
+				subEtapaCombo.addItem(subEtapa);
 			}
 			bd.close();
 		} catch (SQLException erro) {
@@ -199,7 +216,7 @@ public class SubEtapaTela extends JPanel {
 
 		// Preenchendo a combo box
 		try {
-			sql = "SELECT CONCAT (etapa,' | ',(SELECT centrocusto FROM centro_custo WHERE id_centro_custo = etapas.id_cc)) AS etapa FROM etapas";
+			sql = "SELECT CONCAT (etapa,'_',(SELECT centrocusto FROM centro_custo WHERE id_centro_custo = etapas.id_cc)) AS etapa FROM etapas";
 	
 			bd.getConnection();
 			bd.st = bd.con.prepareStatement(sql);

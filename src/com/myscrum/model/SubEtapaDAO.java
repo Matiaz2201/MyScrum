@@ -13,8 +13,8 @@ public class SubEtapaDAO {
 	public void cadastrar(SubEtapa subetapa) {
 		int result;
 		bd = new BD();
-		String sql = "INSERT INTO sub_etapas(sub_etapa)" // trocar
-				+ "VALUES('" + subetapa.getSubetapa() + "')";
+		String sql = "INSERT INTO sub_etapas(sub_etapa, id_etapa)" // trocar
+				+ "VALUES('" + subetapa.getSubetapa() + "', '" + buscaidEtapa(subetapa) + "')";
 		if (verificar(subetapa.getSubetapa()) == false) {
 			if (bd.getConnection()) {// se conectar com o banco continua...
 				try {
@@ -132,4 +132,28 @@ public class SubEtapaDAO {
 	return ID;
     }
 
+	public int buscaidEtapa(SubEtapa subetapa) {
+		bd = new BD();
+		String sql = "SELECT id_etapa FROM etapas WHERE etapa = '" + subetapa.getEtapa() + "' AND id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + subetapa.getCc() + "')";
+		int ID = 0;
+		if (bd.getConnection()) {// se conectar com o banco continua...
+			try {
+
+				bd.st = bd.con.prepareStatement(sql);
+
+				bd.rs = bd.st.executeQuery();
+
+				if (bd.rs.next()) {
+					ID = bd.rs.getInt(1);
+				} else {
+					JOptionPane.showMessageDialog(null, "Etapa não encontrada");
+				}
+			} catch (SQLException erro) {
+				JOptionPane.showMessageDialog(null, erro.toString(), "ERRO BUSCA ID ETAPA", 0);
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "Falha ao conectar com o banco");
+		}
+		return ID;
+	}
 }
