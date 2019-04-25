@@ -30,6 +30,7 @@ public class SubEtapaTela extends JPanel {
 	private JButton atualizarButton;
 	private JLabel subEtapaLabel;
 	private JLabel cadastradoLabel;
+	private JLabel etapaECC;
 	Redimensionar rsize = new Redimensionar();
 	JPanel panel = new JPanel();
 
@@ -50,7 +51,7 @@ public class SubEtapaTela extends JPanel {
 				
 				etapa = etapaCombo.getSelectedItem().toString().split("_");
 				
-				carregarComboBoxSubEtapa(etapa[0], etapa[1]);
+				carregarComboBoxSubEtapa(etapa[1], etapa[0]);
 		
 			}
 		});
@@ -60,6 +61,7 @@ public class SubEtapaTela extends JPanel {
 		atualizarButton.setEnabled(false);
 		subEtapaLabel = new JLabel("Sub etapa:");
 		cadastradoLabel = new JLabel("Já cadastrado:");
+		etapaECC = new JLabel("Centro de custo e Etapa");
 
 		setBackground(Color.WHITE);
 
@@ -74,6 +76,7 @@ public class SubEtapaTela extends JPanel {
 		add(atualizarButton);
 		add(subEtapaLabel);
 		add(cadastradoLabel);
+		add(etapaECC);
 
 		// set component bounds (only needed by Absolute Positioning)
 		subEtapaCombo.setBounds(110, 190, 210, 25);
@@ -97,6 +100,8 @@ public class SubEtapaTela extends JPanel {
 		subEtapaLabel.setBounds(110, 100, 95, 25);
 
 		cadastradoLabel.setBounds(110, 165, 95, 25);
+		
+		etapaECC.setBounds(110, 35, 160, 25);
 
 		subEtapaCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -126,10 +131,14 @@ public class SubEtapaTela extends JPanel {
 						
 						etapa = etapaCombo.getSelectedItem().toString().split("_");
 						
-						SubEtapa subetapa = new SubEtapa(subEtapaText.getText(), etapa[0], etapa[1]);
+						SubEtapa subetapa = new SubEtapa(subEtapaText.getText(), etapa[1], etapa[0]);
 
 						metodos.cadastrar(subetapa);
 						subEtapaText.setText("");
+						
+						carregarComboBoxSubEtapa(etapa[1], etapa[0]);
+						
+						
 					}
 				}
 			}
@@ -149,11 +158,16 @@ public class SubEtapaTela extends JPanel {
 											+ subEtapaText.getText() + " ?",
 									"Selecione uma opção", JOptionPane.YES_NO_OPTION);
 					if (escolha == JOptionPane.YES_OPTION) {
-						SubEtapa subetapa = new SubEtapa(subEtapaCombo.getSelectedItem().toString(),
-								subEtapaText.getText());
+						String[] etapa = {""};
+						
+						etapa = etapaCombo.getSelectedItem().toString().split("_");
+						
+						SubEtapa subetapa = new SubEtapa(subEtapaCombo.getSelectedItem().toString(),subEtapaText.getText(), etapa[1], etapa[0]);
 
 						metodos.atualizar(subetapa);
 						subEtapaText.setText("");
+						
+						carregarComboBoxSubEtapa(etapa[1], etapa[0]);
 					}
 				}
 			}
@@ -181,6 +195,7 @@ public class SubEtapaTela extends JPanel {
 			a = subEtapaCombo.getItemAt(b).toString();
 			subEtapaCombo.removeItem(a);
 		}
+		
 
 		// Preenchendo a combo box
 		try {
@@ -190,7 +205,8 @@ public class SubEtapaTela extends JPanel {
 					"INNER JOIN centro_custo \r\n" +
 					"ON etapas.id_cc = centro_custo.id_centro_custo \r\n" +
 					"WHERE sub_etapas.id_etapa = (SELECT etapas.id_etapa FROM etapas WHERE etapa = '" + etapa + "'  AND \r\n" +
-					"id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + cc + "'))";
+					"id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + cc + "'))"
+							+ "ORDER BY sub_etapa ASC";
 			bd.getConnection();
 			bd.st = bd.con.prepareStatement(sql);
 			bd.rs = bd.st.executeQuery();
@@ -216,7 +232,8 @@ public class SubEtapaTela extends JPanel {
 
 		// Preenchendo a combo box
 		try {
-			sql = "SELECT CONCAT (etapa,'_',(SELECT centrocusto FROM centro_custo WHERE id_centro_custo = etapas.id_cc)) AS etapa FROM etapas";
+			sql = "SELECT CONCAT ((SELECT centrocusto FROM centro_custo WHERE id_centro_custo = etapas.id_cc),'_',etapa) AS etapa FROM etapas \r\n"
+					+ "ORDER BY etapa ASC";
 	
 			bd.getConnection();
 			bd.st = bd.con.prepareStatement(sql);

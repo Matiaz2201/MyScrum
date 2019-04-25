@@ -14,8 +14,8 @@ public class SubEtapaDAO {
 		int result;
 		bd = new BD();
 		String sql = "INSERT INTO sub_etapas(sub_etapa, id_etapa)" // trocar
-				+ "VALUES('" + subetapa.getSubetapa() + "', '" + buscaidEtapa(subetapa) + "')";
-		if (verificar(subetapa.getSubetapa()) == false) {
+				+ "VALUES('" + subetapa.getSubetapa() + "', '" + buscaidEtapa(subetapa.getEtapa(), subetapa.getCc()) + "')";
+		if (verificar(subetapa.getSubetapa(), subetapa.getEtapa(), subetapa.getCc()) == false) {
 			if (bd.getConnection()) {// se conectar com o banco continua...
 				try {
 
@@ -50,7 +50,7 @@ public class SubEtapaDAO {
 				+ "WHERE id_sub_etapas = '"+ buscaidSubEtapa(subetapa.getSubetapa()) + "'";
 		
 			
-		if (verificar(subetapa.getSubetapaAtualiza()) == false) {
+		if (verificar(subetapa.getSubetapaAtualiza(), subetapa.getEtapa(), subetapa.getCc()) == false) {
 			if (bd.getConnection()) {// se conectar com o banco continua...
 				try {
 
@@ -78,17 +78,15 @@ public class SubEtapaDAO {
 
 	}
 
-	public boolean verificar(String string) {
+	public boolean verificar(String subetapa, String etapa, String cc) {
 		boolean verificar = false;
 
 		bd = new BD();
-		String sql = "SELECT * FROM sub_etapas WHERE sub_etapa = ?";
+		String sql = "SELECT * FROM sub_etapas WHERE sub_etapa = '" + subetapa + "' AND id_etapa = " + buscaidEtapa(etapa, cc);
 		if (bd.getConnection()) {// se conectar com o banco continua...
 			try {
 
 				bd.st = bd.con.prepareStatement(sql);
-
-				bd.st.setString(1, string);
 
 				bd.rs = bd.st.executeQuery();
 
@@ -132,9 +130,8 @@ public class SubEtapaDAO {
 	return ID;
     }
 
-	public int buscaidEtapa(SubEtapa subetapa) {
-		bd = new BD();
-		String sql = "SELECT id_etapa FROM etapas WHERE etapa = '" + subetapa.getEtapa() + "' AND id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + subetapa.getCc() + "')";
+	public int buscaidEtapa(String etapa, String cc) {
+		String sql = "SELECT id_etapa FROM etapas WHERE etapa = '" + etapa + "' AND id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + cc + "')";
 		int ID = 0;
 		if (bd.getConnection()) {// se conectar com o banco continua...
 			try {

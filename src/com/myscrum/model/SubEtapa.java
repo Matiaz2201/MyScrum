@@ -14,9 +14,11 @@ public class SubEtapa {
 		this.cc = cc;
 	}
 	
-	public SubEtapa(String subetapa, String subetapaAtualiza) {
+	public SubEtapa(String subetapa, String subetapaAtualiza, String etapa, String cc) {
 		this.subetapa = subetapa;
 		this.subetapaAtualiza = subetapaAtualiza;
+		this.etapa = etapa;
+		this.cc = cc;
 	}
 	
 	public String getCc() {

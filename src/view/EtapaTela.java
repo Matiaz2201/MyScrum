@@ -185,7 +185,8 @@ public class EtapaTela extends JPanel {
 
 		// Preenchendo a combo box
 		try {
-			sql = "SELECT * FROM etapas WHERE id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '"+cc+"')";
+			sql = "SELECT * FROM etapas WHERE id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '"+cc+"') \r\n "
+					+ "ORDER BY etapa ASC";
 			bd.getConnection();
 			bd.st = bd.con.prepareStatement(sql);
 			bd.rs = bd.st.executeQuery();
@@ -199,7 +200,7 @@ public class EtapaTela extends JPanel {
 		}
 	}
 
-	 public void carregarComboBox() {
+	public void carregarComboBox() {
 		 String cc = null;
 		 String a;
 		 int b = 1;
@@ -211,7 +212,7 @@ public class EtapaTela extends JPanel {
 		 
 		//Preenchendo a combo box
 	 	try{
-			sql = "SELECT * FROM centro_custo";
+			sql = "SELECT * FROM centro_custo ORDER BY centrocusto ASC";
 			bd.getConnection();
 			bd.st = bd.con.prepareStatement(sql);
 			bd.rs = bd.st.executeQuery();

@@ -253,6 +253,11 @@ public class TarefaEditTela extends JFrame {
 		descLabel = new JLabel("* Descrição da tarefa:");
 		centroCLabel = new JLabel("* Centro de custo:");
 		centroCComboBox = new JComboBox(Selecione);
+		centroCComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				CarregarComboEtapa();
+			}
+		});
 		prioridadeComboBox = new JComboBox(prioridadeComboBoxItems);
 		prioridadeLabel = new JLabel("* Prioridade:");
 		statusLabel = new JLabel("* Status:");
@@ -321,7 +326,7 @@ public class TarefaEditTela extends JFrame {
 		internalFrame.setFrameIcon(new ImageIcon(TarefaEditTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
 		internalFrame.setBackground(Color.WHITE);
 		internalFrame.setVisible(false);
-		internalFrame.setBounds(113, 127, 370, 295);
+		internalFrame.setBounds(113, 125, 370, 295);
 		leftPanel.add(internalFrame);
 		
 		anexoButton = new JButton("Anexo");
@@ -733,6 +738,11 @@ public class TarefaEditTela extends JFrame {
 		leftPanel.add(estapaLabel);
 		
 		etapaCombo = new JComboBox(Selecione);
+		etapaCombo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CarregarComboSubEtapa();
+			}
+		});
 		etapaCombo.setForeground(Color.WHITE);
 		etapaCombo.setBackground(new Color(41, 106, 158));
 		etapaCombo.setBounds(310, 221, 135, 25);
@@ -1910,40 +1920,6 @@ public class TarefaEditTela extends JFrame {
 					JOptionPane.showMessageDialog(null, erro.toString());
 		}
 		// FIM
-		
-		// Carregando combo box etapa
-		String etapa;
-		try {
-			sql = "SELECT * FROM etapas ORDER BY etapa ASC";
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			while (bd.rs.next()) {
-				etapa = bd.rs.getString("etapa");
-				etapaCombo.addItem(etapa);
-
-			}
-
-		} catch (SQLException erro) {
-			JOptionPane.showMessageDialog(null, erro.toString());
-		}
-		// FIM
-		
-		// Carregando combo box subetapa
-		String subetapa;
-		try {
-			sql = "SELECT * FROM sub_etapas ORDER BY sub_etapa ASC";
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			while (bd.rs.next()) {
-				subetapa = bd.rs.getString("sub_etapa");
-				subEtapaCombo.addItem(subetapa);
-
-			}
-
-		} catch (SQLException erro) {
-			JOptionPane.showMessageDialog(null, erro.toString());
-		}
-		// FIM
 	}
 
 	public void CorretoOrtografico() {
@@ -1964,4 +1940,61 @@ public class TarefaEditTela extends JFrame {
 		SpellChecker.register(statPendText);
 		SpellChecker.register(historicoText);
 	}
+	
+	public void CarregarComboEtapa() {
+		String etapa = null;
+		String a;
+		int b = 1;
+		// Esvaziando a combobox
+		while (b < etapaCombo.getItemCount()) {
+			a = etapaCombo.getItemAt(b).toString();
+			etapaCombo.removeItem(a);
+		}
+		
+		// Carregando combo box etapa
+		try {
+			sql = "SELECT * FROM etapas WHERE id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + centroCComboBox.getSelectedItem() + "') ORDER BY etapa ASC";
+			bd.st = bd.con.prepareStatement(sql);
+			bd.rs = bd.st.executeQuery();
+			while (bd.rs.next()) {
+				etapa = bd.rs.getString("etapa");
+				etapaCombo.addItem(etapa);
+
+			}
+
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
+		}
+		// FIM
+	}
+
+	public void CarregarComboSubEtapa() {
+		String subetapa = null;
+		String a;
+		int b = 1;
+		// Esvaziando a combobox
+		while (b < subEtapaCombo.getItemCount()) {
+			a = subEtapaCombo.getItemAt(b).toString();
+			subEtapaCombo.removeItem(a);
+		}
+
+		// Carregando combo box subetapa
+		try {
+			sql = "SELECT sub_etapa FROM sub_etapas \r\n"
+					+ "WHERE id_etapa = (SELECT id_etapa FROM etapas WHERE etapa = '" + etapaCombo.getSelectedItem() + "' \r\n"
+							+ " AND id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + centroCComboBox.getSelectedItem() +"'))  ORDER BY sub_etapa ASC";
+			bd.st = bd.con.prepareStatement(sql);
+			bd.rs = bd.st.executeQuery();
+			while (bd.rs.next()) {
+				subetapa = bd.rs.getString("sub_etapa");
+				subEtapaCombo.addItem(subetapa);
+
+			}
+
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
+		}
+		// FIM
+	}
+
 }// Fim da classe
