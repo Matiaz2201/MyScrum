@@ -7,11 +7,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
 import com.myscrum.banco.BD;
 import com.myscrum.model.Redimensionar;
+import com.mysql.jdbc.ResultSetMetaData;
 import com.myscrum.model.CcCusto;
 import com.myscrum.model.CcCustoDAO;
 import com.myscrum.model.Etapa;
@@ -34,6 +36,10 @@ public class EtapaTela extends JPanel {
 	private JLabel etapaLabel;
 	private JLabel cadastradoLabel;
 	private JLabel ccLabel;
+
+	private ArrayList<ArrayList<String>> Etapas;
+	private ArrayList<ArrayList<String>> CC;
+
 	Redimensionar rsize = new Redimensionar();
 	JPanel panel = new JPanel();
 
@@ -42,6 +48,10 @@ public class EtapaTela extends JPanel {
 	String sql;
 
 	public EtapaTela() {
+		
+		criarListCC();
+		criarListEtapa();
+		
 		// construct preComponents
 		String[] Items = { "Selecione" };
 
@@ -80,29 +90,27 @@ public class EtapaTela extends JPanel {
 		etapaCombo.setBounds(110, 190, 210, 25);
 		etapaCombo.setBackground(new Color(41, 106, 158));
 		etapaCombo.setForeground(Color.WHITE);
-		
+
 		ccCombo.setBounds(110, 60, 210, 25);
 		ccCombo.setBackground(new Color(41, 106, 158));
 		ccCombo.setForeground(Color.WHITE);
-		
+
 		etapaText.setBounds(110, 125, 210, 30);
 		etapaText.setBackground(new Color(41, 106, 158));
 		etapaText.setForeground(Color.WHITE);
-		
+
 		salvarButton.setBounds(250, 265, 120, 35);
 		salvarButton.setBackground(new Color(163, 184, 204));
-		
+
 		atualizarButton.setBounds(50, 265, 120, 35);
 		atualizarButton.setBackground(new Color(163, 184, 204));
-		
+
 		etapaLabel.setBounds(110, 100, 95, 25);
-		
+
 		ccLabel.setBounds(110, 35, 95, 25);
-		
+
 		cadastradoLabel.setBounds(110, 165, 95, 25);
 
-		carregarComboBox();
-		
 		etapaCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (etapaCombo.getSelectedIndex() == 0) {
@@ -132,6 +140,8 @@ public class EtapaTela extends JPanel {
 						metodos.cadastar(etapa);
 						carregarComboBoxEtapa(ccCombo.getSelectedItem().toString());
 						etapaText.setText("");
+
+						MenuBar.card7.carregarComboBoxEtapa();
 					}
 				}
 			}
@@ -151,16 +161,20 @@ public class EtapaTela extends JPanel {
 											+ etapaText.getText() + " ?",
 									"Selecione uma opção", JOptionPane.YES_NO_OPTION);
 					if (escolha == JOptionPane.YES_OPTION) {
-						
-						Etapa etapa = new Etapa(etapaCombo.getSelectedItem().toString(), etapaText.getText(), ccCombo.getSelectedItem().toString());
+
+						Etapa etapa = new Etapa(etapaCombo.getSelectedItem().toString(), etapaText.getText(),
+								ccCombo.getSelectedItem().toString());
 						metodos.atualizar(etapa);
 						carregarComboBoxEtapa(ccCombo.getSelectedItem().toString());
 						etapaText.setText("");
+
+						MenuBar.card7.carregarComboBoxEtapa();
 					}
 				}
 			}
 		});
 
+		carregarComboBox();
 	}
 
 	public void atualizarButton() {
@@ -185,8 +199,8 @@ public class EtapaTela extends JPanel {
 
 		// Preenchendo a combo box
 		try {
-			sql = "SELECT * FROM etapas WHERE id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '"+cc+"') \r\n "
-					+ "ORDER BY etapa ASC";
+			sql = "SELECT * FROM etapas WHERE id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '"
+					+ cc + "') \r\n " + "ORDER BY etapa ASC";
 			bd.getConnection();
 			bd.st = bd.con.prepareStatement(sql);
 			bd.rs = bd.st.executeQuery();
@@ -201,28 +215,84 @@ public class EtapaTela extends JPanel {
 	}
 
 	public void carregarComboBox() {
-		 String cc = null;
-		 String a;
-		 int b = 1;
-		//Esvaziando a combobox
-		 while(b < ccCombo.getItemCount()) {
-			 a = ccCombo.getItemAt(b).toString(); 
-			 ccCombo.removeItem(a);
+		String cc = null;
+		String a;
+		int b = 1;
+		// Esvaziando a combobox
+		while (b < ccCombo.getItemCount()) {
+			a = ccCombo.getItemAt(b).toString();
+			ccCombo.removeItem(a);
+		}
+
+		
+		for(int x = 0; x < CC.get(1).size(); x++) {
+			ccCombo.addItem(CC.get(1).get(x).toString());
+		}
+		
+//		//Preenchendo a combo box
+//	 	try{
+//			sql = "SELECT * FROM centro_custo ORDER BY centrocusto ASC";
+//			bd.getConnection();
+//			bd.st = bd.con.prepareStatement(sql);
+//			bd.rs = bd.st.executeQuery();
+//			while(bd.rs.next()){
+//				cc = bd.rs.getString("centrocusto");
+//				ccCombo.addItem(cc);
+//			}
+//	   bd.close();
+//		}catch(SQLException erro){
+//			JOptionPane.showMessageDialog(null,erro.toString());
+//		}
 	}
-		 
-		//Preenchendo a combo box
-	 	try{
+
+	public void criarListEtapa() {
+
+		try {
+			sql = "SELECT * FROM etapas ORDER BY etapa ASC";
+			bd.getConnection();
+			bd.st = bd.con.prepareStatement(sql);
+			bd.rs = bd.st.executeQuery();
+
+			Etapas = new ArrayList<ArrayList<String>>();
+
+			ResultSetMetaData MD = (ResultSetMetaData) bd.rs.getMetaData();
+
+			for (int x = 0; x <= MD.getColumnCount(); x++) {
+				ArrayList<String> colunas = new ArrayList<String>();
+				while (bd.rs.next()) {
+					colunas.add(bd.rs.getString(x));
+				}
+				Etapas.add(colunas);
+			}
+
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
+		}
+	}
+
+	public void criarListCC() {
+		
+		try {
 			sql = "SELECT * FROM centro_custo ORDER BY centrocusto ASC";
 			bd.getConnection();
 			bd.st = bd.con.prepareStatement(sql);
 			bd.rs = bd.st.executeQuery();
-			while(bd.rs.next()){
-				cc = bd.rs.getString("centrocusto");
-				ccCombo.addItem(cc);
+
+			CC = new ArrayList<ArrayList<String>>();
+
+			ResultSetMetaData MD = (ResultSetMetaData) bd.rs.getMetaData();
+
+			for (int x = 0; x <= MD.getColumnCount(); x++) {
+				ArrayList<String> colunas = new ArrayList<String>();
+				while (bd.rs.next()) {
+					colunas.add(bd.rs.getString(x));
+					System.out.println(bd.rs.getString(x));
+				}
+				CC.add(colunas);
 			}
-	   bd.close();
-		}catch(SQLException erro){
-			JOptionPane.showMessageDialog(null,erro.toString());
+
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
 		}
-	  }
+	}
 }

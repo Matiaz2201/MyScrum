@@ -14,20 +14,20 @@ public class BD {
 	public ResultSet rs = null; //recebe resultado SQL
 	public boolean conexao = false;
 
-	
+	/*
 	//CONEX�O PARA O SERVIDOR AWS
 	private final String DRIVER = "com.mysql.jdbc.Driver";
     private final String URL = "jdbc:mysql://scrum-masotti.cymmnyt6gbz6.sa-east-1.rds.amazonaws.com/scrum";
 	private final String LOGIN = "masottiscrum";
 	private final String SENHA = "m4s0ttiscruM11";
+	*/
 	
-	
-	/*
+
 	private final String DRIVER = "com.mysql.jdbc.Driver";
 	private final String URL = "jdbc:mysql://192.168.1.251:3306/scrum";
 	private final String LOGIN = "root";
 	private final String SENHA = "pdv15wwl";
-	*/
+	
 	
 	 /*
 	 * Realiza a conex�o ao banco de dados

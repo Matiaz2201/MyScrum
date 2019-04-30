@@ -125,6 +125,9 @@ public class CcCustoTela extends JPanel {
 			metodos.cadastar();
 			carregarComboBox();
 			ccCustoText.setText("");
+			
+			MenuBar.card6.carregarComboBox();
+			MenuBar.card7.carregarComboBoxEtapa();
 	        }
 		  }
 		}
@@ -146,6 +149,9 @@ public class CcCustoTela extends JPanel {
     		    metodos.atualizar();
     		    carregarComboBox();
     		    ccCustoText.setText("");
+    		    
+    		    MenuBar.card6.carregarComboBox();
+    		    MenuBar.card7.carregarComboBoxEtapa();
     	        }
     		  }
     		}

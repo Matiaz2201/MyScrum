@@ -47,12 +47,14 @@ public class SubEtapaTela extends JPanel {
 		etapaCombo = new JComboBox<String>(subEtapaComboItems);
 		etapaCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String[] etapa = {""};
-				
-				etapa = etapaCombo.getSelectedItem().toString().split("_");
-				
-				carregarComboBoxSubEtapa(etapa[1], etapa[0]);
-		
+				if(etapaCombo.getSelectedIndex() != 0) {
+					String[] etapa = {""};
+					
+					etapa = etapaCombo.getSelectedItem().toString().split("_");
+					
+					carregarComboBoxSubEtapa(etapa[1], etapa[0]);
+				}
+			
 			}
 		});
 		subEtapaText = new JTextField(5);
