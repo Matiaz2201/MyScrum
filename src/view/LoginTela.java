@@ -13,9 +13,10 @@ import java.awt.Color;
 import javax.swing.JTextField;
 import javax.swing.border.MatteBorder;
 
-import com.myscrum.banco.BD;
+import com.myscrum.banco.Banco;
 import com.myscrum.controller.Controle;
 import com.myscrum.model.Sessao;
+import com.myscrum.model.TextPrompt;
 import com.myscrum.model.Salvar;
 
 import javax.swing.JLabel;
@@ -93,8 +94,9 @@ public class LoginTela extends JFrame {
 	 * Create the frame.
 	 */
 	public LoginTela() {
-		setTitle("MyScrum");		
-		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
+		setTitle("MyScrum");
+		setIconImage(
+				Toolkit.getDefaultToolkit().getImage(LoginTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setUndecorated(true);
 		setBounds(100, 100, 868, 476);
@@ -128,11 +130,15 @@ public class LoginTela extends JFrame {
 		leftJapnel.add(fundoLabel);
 
 		rightJpanel = new JPanel();
-		rightJpanel.setBackground(new Color(0,0,51));
+		rightJpanel.setBackground(new Color(0, 0, 51));
 		contentPane.add(rightJpanel);
 		rightJpanel.setLayout(null);
 
 		loginText = new JTextField();
+		TextPrompt tp = new TextPrompt("Usuário",loginText);
+		tp.setForeground(Color.WHITE);
+		tp.setFont(new Font("Century Gothic", Font.BOLD, 12));
+		tp.changeAlpha(0.5f);
 		loginText.setBounds(88, 161, 227, 23);
 		rightJpanel.add(loginText);
 		loginText.addMouseListener(new MouseAdapter() {
@@ -149,7 +155,6 @@ public class LoginTela extends JFrame {
 			}
 
 		});
-		loginText.setText("Digite seu login");
 		loginText.setForeground(Color.WHITE);
 		loginText.setFont(new Font("Century Gothic", Font.BOLD, 12));
 		loginText.setBorder(new MatteBorder(0, 0, 2, 0, (Color) Color.WHITE));
@@ -157,6 +162,10 @@ public class LoginTela extends JFrame {
 		loginText.setColumns(10);
 
 		senhaText = new JPasswordField();
+		TextPrompt tpsenha = new TextPrompt("Password",senhaText);
+		tpsenha.setForeground(Color.WHITE);
+		tpsenha.setFont(new Font("Century Gothic", Font.BOLD, 12));
+		tpsenha.changeAlpha(0.5f);
 		senhaText.setBounds(88, 240, 235, 23);
 		rightJpanel.add(senhaText);
 		senhaText.addMouseListener(new MouseAdapter() {
@@ -223,12 +232,12 @@ public class LoginTela extends JFrame {
 		});
 
 		imagem();
+		Banco.conexao();// Inicia conexão com banco pela clase Abstrata
 
 	}
-
+	
 	public void logar() {
-		
-		BD bd = new BD();
+
 		String puname = loginText.getText(); // Alocando variavel login
 		@SuppressWarnings("deprecation")
 		String ppaswd = senhaText.getText(); // Alocando variavel senha
@@ -248,56 +257,56 @@ public class LoginTela extends JFrame {
 
 		try {// consulta se o usuario existi
 			String sql = "SELECT login,senha FROM pessoa WHERE login='" + puname + "'and senha='" + retornasenha + "'";
-			bd.getConnection();
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			if (bd.rs.next()) {// consultar se ta ativo
-				try {
-					sql = "SELECT nome,id_pessoa,adm,email,"
-							+ "(SELECT departamento.departamento FROM departamento WHERE departamento.id_departamento=pessoa.id_departamento) AS DPTO, \n "
-							+ "(SELECT centro_custo.centrocusto FROM centro_custo WHERE centro_custo.id_centro_custo=pessoa.id_centrocusto) AS CC \n "
-							+ "FROM pessoa WHERE login='" + puname + "'and senha='"
-							+ retornasenha + "' and ativo=1";
-					bd.st = bd.con.prepareStatement(sql);
-					bd.rs = bd.st.executeQuery();
-					if (bd.rs.next()) {
-						JOptionPane.showMessageDialog(null, "Bem vindo(a) " + bd.rs.getString(1), "My Scrum", 1);
-						Sessao sessao = Sessao.getInstance();
-						sessao.setNome(bd.rs.getString(1));
-						sessao.setFuncao(bd.rs.getInt(3));// Armazena qual a função do usuario
-						sessao.setUsuario(puname);// Armazena usuario em Sess?o
-						sessao.setSenha(retornasenha);// Armazena senha em Sess?o
-						sessao.setId(bd.rs.getInt(2));
-						sessao.setEmail(bd.rs.getString(4));
-						sessao.setDpto(bd.rs.getString(5));
-						sessao.setCC(bd.rs.getString(6));
-						if (salvarLoginCheckBox.isSelected()) {
-							Salvar status = new Salvar();
-							status.write();
+
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+				if (Banco.rs.next()) {// consultar se ta ativo
+					try {
+						sql = "SELECT nome,id_pessoa,adm,email,"
+								+ "(SELECT departamento.departamento FROM departamento WHERE departamento.id_departamento=pessoa.id_departamento) AS DPTO, \n "
+								+ "(SELECT centro_custo.centrocusto FROM centro_custo WHERE centro_custo.id_centro_custo=pessoa.id_centrocusto) AS CC \n "
+								+ "FROM pessoa WHERE login='" + puname + "'and senha='" + retornasenha
+								+ "' and ativo=1";
+						Banco.st = Banco.con.prepareStatement(sql);
+						Banco.rs = Banco.st.executeQuery();
+						if (Banco.rs.next()) {
+							JOptionPane.showMessageDialog(null, "Bem vindo(a) " + Banco.rs.getString(1), "My Scrum", 1);
+							Sessao sessao = Sessao.getInstance();
+							sessao.setNome(Banco.rs.getString(1));
+							sessao.setFuncao(Banco.rs.getInt(3));// Armazena qual a função do usuario
+							sessao.setUsuario(puname);// Armazena usuario em Sess?o
+							sessao.setSenha(retornasenha);// Armazena senha em Sess?o
+							sessao.setId(Banco.rs.getInt(2));
+							sessao.setEmail(Banco.rs.getString(4));
+							sessao.setDpto(Banco.rs.getString(5));
+							sessao.setCC(Banco.rs.getString(6));
+							if (salvarLoginCheckBox.isSelected()) {
+								Salvar status = new Salvar();
+								status.write();
+							}
+
+							Controle.abrirframe("telaPrincipal");
+							dispose();// Fecha frame atual
+
+						} else {
+
+							JOptionPane.showMessageDialog(null, "Usuario Bloqueado");
+							loginText.setText("");
+							senhaText.setText("");
+							loginText.requestFocus();
+
 						}
-
-						bd.close();
-
-						Controle.abrirframe("telaPrincipal");
-						dispose();// Fecha frame atual
-
-					} else {
-
-						JOptionPane.showMessageDialog(null, "Usuario Bloqueado");
-						loginText.setText("");
-						senhaText.setText("");
-						loginText.requestFocus();
-						bd.close();
+					} catch (SQLException erro) {
+						JOptionPane.showMessageDialog(null, erro.toString());
 					}
-				} catch (SQLException erro) {
-					JOptionPane.showMessageDialog(null, erro.toString());
-				}
-			} else {
+				} else {
 
-				JOptionPane.showMessageDialog(null, "Usuario ou Senha incorreto !!!");
-				senhaText.setText("");
-				senhaText.requestFocus();
-				bd.close();
+					JOptionPane.showMessageDialog(null, "Usuario ou Senha incorreto !!!");
+					senhaText.setText("");
+					senhaText.requestFocus();
+
+				}
 			}
 		} catch (SQLException erro) {
 			JOptionPane.showMessageDialog(null, erro.toString());
@@ -309,7 +318,7 @@ public class LoginTela extends JFrame {
 
 		// Fundo
 		Random r = new Random();
-		fundoLabel.setIcon(new ImageIcon(LoginTela.class.getResource("/com/myscrum/images/"+r.nextInt(14) + ".jpg")));
+		fundoLabel.setIcon(new ImageIcon(LoginTela.class.getResource("/com/myscrum/images/" + r.nextInt(14) + ".jpg")));
 
 		// Data
 		Date hoje = new Date();

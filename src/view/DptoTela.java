@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 import javax.swing.*;
 
-import com.myscrum.banco.BD;
+import com.myscrum.banco.Banco;
 import com.myscrum.model.Dpto;
 import com.myscrum.model.DptoDAO;
 
@@ -19,158 +19,166 @@ public class DptoTela extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-private JComboBox<String> jaCadComboBox;
-  private JTextField dptoText;
-  private JButton salvarButton;
-  private JButton atualizarButton;
-  private JLabel ccCustoLabel;
-  private JLabel jaCadLabel;
-  
-  DptoDAO metodos = new DptoDAO();
-  Dpto variavel = new Dpto();
-  BD bd = new BD();
-  String sql;
+	private JComboBox<String> jaCadComboBox;
+	private JTextField dptoText;
+	private JButton salvarButton;
+	private JButton atualizarButton;
+	private JLabel ccCustoLabel;
+	private JLabel jaCadLabel;
 
-  public DptoTela() {
-      //construct preComponents
-	  String[] jaCadComboBoxItems = {"Selecione departamento"};
+	DptoDAO metodos = new DptoDAO();
+	Dpto variavel = new Dpto();
+	String sql;
 
-      //construct components
-      jaCadComboBox = new JComboBox<String> (jaCadComboBoxItems);
-      dptoText = new JTextField (5);
-      salvarButton = new JButton ("Salvar");
-      atualizarButton = new JButton ("Atualizar");
-      atualizarButton.setEnabled(false);
-      ccCustoLabel = new JLabel ("Departamento:");
-      jaCadLabel = new JLabel ("Já cadastrado:");
-      
-      setBackground(Color.WHITE);
+	public DptoTela() {
+		// construct preComponents
+		String[] jaCadComboBoxItems = { "Selecione departamento" };
 
-      //adjust size and set layout
-      setPreferredSize (new Dimension (422, 348));
-      setLayout (null);
+		// construct components
+		jaCadComboBox = new JComboBox<String>(jaCadComboBoxItems);
+		dptoText = new JTextField(5);
+		salvarButton = new JButton("Salvar");
+		atualizarButton = new JButton("Atualizar");
+		atualizarButton.setEnabled(false);
+		ccCustoLabel = new JLabel("Departamento:");
+		jaCadLabel = new JLabel("Já cadastrado:");
 
-      //add components
-      add (jaCadComboBox);
-      add (dptoText);
-      add (salvarButton);
-      add (atualizarButton);
-      add (ccCustoLabel);
-      add (jaCadLabel);
+		setBackground(Color.WHITE);
 
-      //set component bounds (only needed by Absolute Positioning)
-      jaCadComboBox.setBounds (110, 140, 210, 25);
-      jaCadComboBox.setBackground(new Color(41,106,158));
-      jaCadComboBox.setForeground(Color.WHITE);
-      dptoText.setBounds (110, 75, 210, 30);
-      dptoText.setBackground(new Color(41,106,158));
-      dptoText.setForeground(Color.WHITE);
-      salvarButton.setBounds (250, 265, 120, 35);
-      salvarButton.setBackground(new Color(163, 184,204));
-      atualizarButton.setBounds (50, 265, 120, 35);
-      atualizarButton.setBackground(new Color(163, 184,204));
-      ccCustoLabel.setBounds (110, 50, 95, 25);
-      jaCadLabel.setBounds (110, 115, 95, 25);
-   
-      //Preenchendo a combo box
-      try{
-  		sql = "SELECT * FROM departamento";
-  		bd.getConnection();
-  		bd.st = bd.con.prepareStatement(sql);
-  		bd.rs = bd.st.executeQuery();
-  		while(bd.rs.next()){
-  			String dpto = bd.rs.getString("departamento");
-  			jaCadComboBox.addItem(dpto);
-  		}
-     bd.close();
-  	}catch(SQLException erro){
-  		JOptionPane.showMessageDialog(null,erro.toString());
-  	  }
-       //FIM
-    
-      jaCadComboBox.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			if(jaCadComboBox.getSelectedIndex() == 0) {
-				salvarButton();
-				dptoText.setText("");
-			}else {
-				atualizarButton();
-				dptoText.setText(jaCadComboBox.getSelectedItem().toString());
+		// adjust size and set layout
+		setPreferredSize(new Dimension(422, 348));
+		setLayout(null);
+
+		// add components
+		add(jaCadComboBox);
+		add(dptoText);
+		add(salvarButton);
+		add(atualizarButton);
+		add(ccCustoLabel);
+		add(jaCadLabel);
+
+		// set component bounds (only needed by Absolute Positioning)
+		jaCadComboBox.setBounds(110, 140, 210, 25);
+		jaCadComboBox.setBackground(new Color(41, 106, 158));
+		jaCadComboBox.setForeground(Color.WHITE);
+		dptoText.setBounds(110, 75, 210, 30);
+		dptoText.setBackground(new Color(41, 106, 158));
+		dptoText.setForeground(Color.WHITE);
+		salvarButton.setBounds(250, 265, 120, 35);
+		salvarButton.setBackground(new Color(163, 184, 204));
+		atualizarButton.setBounds(50, 265, 120, 35);
+		atualizarButton.setBackground(new Color(163, 184, 204));
+		ccCustoLabel.setBounds(110, 50, 95, 25);
+		jaCadLabel.setBounds(110, 115, 95, 25);
+
+		// Preenchendo a combo box
+		try {
+			sql = "SELECT * FROM departamento";
+
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+				while (Banco.rs.next()) {
+					String dpto = Banco.rs.getString("departamento");
+					jaCadComboBox.addItem(dpto);
+				}
 			}
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
 		}
-	});	
-    
-      salvarButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			int escolha;
-			if(dptoText.getText().equals("")) {
-				JOptionPane.showMessageDialog(null, "Preencha o campos corretamente", "Campo Vazio", 0);
-			}else if(dptoText.getText().equals(jaCadComboBox.getSelectedItem().toString())) {
-				JOptionPane.showMessageDialog(null, "Altere o nome do departamento para atualizar", "Mensagem", 0);
-			}else{
-	            escolha = JOptionPane.showConfirmDialog(null, "Deseja realmente cadastrar "+dptoText.getText()+" como um departamento ?", "Selecione uma opção", JOptionPane.YES_NO_OPTION);
-	            if(escolha == JOptionPane.YES_OPTION) {
-			variavel.setDpto(dptoText.getText());
-			metodos.cadastar();
-		    carregarComboBox();
-			dptoText.setText("");
+		// FIM
+
+		jaCadComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (jaCadComboBox.getSelectedIndex() == 0) {
+					salvarButton();
+					dptoText.setText("");
+				} else {
+					atualizarButton();
+					dptoText.setText(jaCadComboBox.getSelectedItem().toString());
+				}
 			}
-		  }
-		}
-	});
-      
-      atualizarButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			int escolha;
-			if(dptoText.getText().equals("")) {
-				JOptionPane.showMessageDialog(null, "Preencha o campos corretamente", "Campo Vazio", 0);
-			}else if(dptoText.getText().equals(jaCadComboBox.getSelectedItem().toString())) {
-				JOptionPane.showMessageDialog(null, "Altera o nome do departamento para atualizar", "Mensagem", 0);
-			}else{
-				escolha = JOptionPane.showConfirmDialog(null, "Deseja realmente altera o departamento "+jaCadComboBox.getSelectedItem().toString()+" para "+dptoText.getText()+" ?", "Selecione uma opção", JOptionPane.YES_NO_OPTION);
-	            if(escolha == JOptionPane.YES_OPTION) {
-		    variavel.setDpto_atualiza(dptoText.getText());
-		    variavel.setDpto(jaCadComboBox.getSelectedItem().toString());
-		    metodos.atualizar();
-		    carregarComboBox();
-		    dptoText.setText("");
-	        }
-		  }
-		}
-	});
-  }
-  
- public void atualizarButton(){
-	  atualizarButton.setEnabled(true);
-	  salvarButton.setEnabled(false);
- }
- public void salvarButton() {
-	 salvarButton.setEnabled(true);
-	 atualizarButton.setEnabled(false);
- }
- public void carregarComboBox() {
-	 String dpto = null;
-	 String a;
-	 int b = 1;
-	//Esvaziando a combobox
-	 while(b < jaCadComboBox.getItemCount()) {
-		 a = jaCadComboBox.getItemAt(b).toString(); 
-		 jaCadComboBox.removeItem(a);
-}
-	 
-	//Preenchendo a combo box
- 	try{
-		sql = "SELECT * FROM departamento";
-		bd.getConnection();
-		bd.st = bd.con.prepareStatement(sql);
-		bd.rs = bd.st.executeQuery();
-		while(bd.rs.next()){
-			dpto = bd.rs.getString("departamento");
-			jaCadComboBox.addItem(dpto);
-		}
-   bd.close();
-	}catch(SQLException erro){
-		JOptionPane.showMessageDialog(null,erro.toString());
+		});
+
+		salvarButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int escolha;
+				if (dptoText.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "Preencha o campos corretamente", "Campo Vazio", 0);
+				} else if (dptoText.getText().equals(jaCadComboBox.getSelectedItem().toString())) {
+					JOptionPane.showMessageDialog(null, "Altere o nome do departamento para atualizar", "Mensagem", 0);
+				} else {
+					escolha = JOptionPane.showConfirmDialog(null,
+							"Deseja realmente cadastrar " + dptoText.getText() + " como um departamento ?",
+							"Selecione uma opção", JOptionPane.YES_NO_OPTION);
+					if (escolha == JOptionPane.YES_OPTION) {
+						variavel.setDpto(dptoText.getText());
+						metodos.cadastar();
+						carregarComboBox();
+						dptoText.setText("");
+					}
+				}
+			}
+		});
+
+		atualizarButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int escolha;
+				if (dptoText.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "Preencha o campos corretamente", "Campo Vazio", 0);
+				} else if (dptoText.getText().equals(jaCadComboBox.getSelectedItem().toString())) {
+					JOptionPane.showMessageDialog(null, "Altera o nome do departamento para atualizar", "Mensagem", 0);
+				} else {
+					escolha = JOptionPane.showConfirmDialog(null,
+							"Deseja realmente altera o departamento " + jaCadComboBox.getSelectedItem().toString()
+									+ " para " + dptoText.getText() + " ?",
+							"Selecione uma opção", JOptionPane.YES_NO_OPTION);
+					if (escolha == JOptionPane.YES_OPTION) {
+						variavel.setDpto_atualiza(dptoText.getText());
+						variavel.setDpto(jaCadComboBox.getSelectedItem().toString());
+						metodos.atualizar();
+						carregarComboBox();
+						dptoText.setText("");
+					}
+				}
+			}
+		});
 	}
-  }
+
+	public void atualizarButton() {
+		atualizarButton.setEnabled(true);
+		salvarButton.setEnabled(false);
+	}
+
+	public void salvarButton() {
+		salvarButton.setEnabled(true);
+		atualizarButton.setEnabled(false);
+	}
+
+	public void carregarComboBox() {
+		String dpto = null;
+		String a;
+		int b = 1;
+		// Esvaziando a combobox
+		while (b < jaCadComboBox.getItemCount()) {
+			a = jaCadComboBox.getItemAt(b).toString();
+			jaCadComboBox.removeItem(a);
+		}
+
+		// Preenchendo a combo box
+		try {
+			sql = "SELECT * FROM departamento";
+
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+				while (Banco.rs.next()) {
+					dpto = Banco.rs.getString("departamento");
+					jaCadComboBox.addItem(dpto);
+				}
+			}
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
+		}
+	}
 }

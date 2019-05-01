@@ -10,193 +10,195 @@ import java.sql.SQLException;
 
 import javax.swing.*;
 
-import com.myscrum.banco.BD;
+import com.myscrum.banco.Banco;
 import com.myscrum.model.Redimensionar;
 import com.myscrum.model.CcCusto;
 import com.myscrum.model.CcCustoDAO;
 
-
 public class CcCustoTela extends JPanel {
- 
+
 	/**
 	 * Desenvolvido por Abner Matias e Pedro Henrique
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JComboBox jaCadComboBox;
+	private JComboBox<String> jaCadComboBox;
 	private JTextField ccCustoText;
 	private JButton salvarButton;
 	private JButton atualizarButton;
 	private JLabel ccCustoLabel;
 	private JLabel jaCadLabel;
 	Redimensionar rsize = new Redimensionar();
-	 JPanel panel = new JPanel();
-	 
+	JPanel panel = new JPanel();
+
 	CcCusto variavel = new CcCusto();
 	CcCustoDAO metodos = new CcCustoDAO();
-	BD bd = new BD();
 	String sql;
 
-  public CcCustoTela() {
-      //construct preComponents
-      String[] jaCadComboBoxItems = {"Selecione o CC"};
+	public CcCustoTela() {
+		// construct preComponents
+		String[] jaCadComboBoxItems = { "Selecione o CC" };
 
-      //construct components
-      jaCadComboBox = new JComboBox<String> (jaCadComboBoxItems);
-      ccCustoText = new JTextField (5);
-      salvarButton = new JButton ("Salvar");
-      atualizarButton = new JButton ("Atualizar");
-      atualizarButton.setEnabled(false);
-      ccCustoLabel = new JLabel ("Centro de custo:");
-      jaCadLabel = new JLabel ("Já cadastrado:");
+		// construct components
+		jaCadComboBox = new JComboBox<String>(jaCadComboBoxItems);
+		ccCustoText = new JTextField(5);
+		salvarButton = new JButton("Salvar");
+		atualizarButton = new JButton("Atualizar");
+		atualizarButton.setEnabled(false);
+		ccCustoLabel = new JLabel("Centro de custo:");
+		jaCadLabel = new JLabel("Já cadastrado:");
 
-      setBackground(Color.WHITE);
-      
-      //adjust size and set layout
-      setPreferredSize (new Dimension (400, 400));
+		setBackground(Color.WHITE);
 
-      //add components
-      add (jaCadComboBox);
-      add (ccCustoText);
-      add (salvarButton);
-      add (atualizarButton);
-      add (ccCustoLabel);
-      add (jaCadLabel);
-      
-      //set component bounds (only needed by Absolute Positioning)
-      jaCadComboBox.setBounds (110, 140, 210, 25);
-      jaCadComboBox.setBackground(new Color(41,106,158));
-      jaCadComboBox.setForeground(Color.WHITE);
-      ccCustoText.setBounds (110, 75, 210, 30);
-      ccCustoText.setBackground(new Color(41,106,158));
-      ccCustoText.setForeground(Color.WHITE);
-      salvarButton.setBounds (250, 265, 120, 35);
-      salvarButton.setBackground(new Color(163, 184,204));
-      atualizarButton.setBounds (50, 265, 120, 35);
-      atualizarButton.setBackground(new Color(163, 184,204));
-      ccCustoLabel.setBounds (110, 50, 95, 25);
-      jaCadLabel.setBounds (110, 115, 95, 25);
-      
-      
-      
-     String ccCusto = null;
-    //Preenchendo a combo box
-   	try{
-  		sql = "SELECT * FROM centro_custo";
-  		bd.getConnection();
-  		bd.st = bd.con.prepareStatement(sql);
-  		bd.rs = bd.st.executeQuery();
-  		while(bd.rs.next()){
-  			ccCusto = bd.rs.getString("centrocusto");
-  			jaCadComboBox.addItem(ccCusto);
-  		}
-     bd.close();
-  	}catch(SQLException erro){
-  		JOptionPane.showMessageDialog(null,erro.toString());{
-  		}
-  	  }
-       //FIM
-      
-   	jaCadComboBox.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			if(jaCadComboBox.getSelectedIndex() == 0) {
-				salvarButton();
-				ccCustoText.setText("");
-			}else {
-				atualizarButton();
-				ccCustoText.setText(jaCadComboBox.getSelectedItem().toString());
-			}
-		}
-	});	
-   	
+		// adjust size and set layout
+		setPreferredSize(new Dimension(400, 400));
 
-      	
-      	salvarButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    int escolha;
-			if(ccCustoText.getText().equals("")) {
-				JOptionPane.showMessageDialog(null, "Preencha o campos corretamente", "Campo Vazio", 0);
-			}else if(ccCustoText.getText().equals(jaCadComboBox.getSelectedItem().toString())) {
-				JOptionPane.showMessageDialog(null, "Altere o nome do departamento para atualizar", "Mensagem", 0);
-			}else{
-				escolha = JOptionPane.showConfirmDialog(null, "Deseja realmente cadastrar "+ccCustoText.getText()+" como um centro de custo ?", "Selecione uma opção", JOptionPane.YES_NO_OPTION);
-	            if(escolha == JOptionPane.YES_OPTION) {
-			variavel.setccCusto(ccCustoText.getText());
-			metodos.cadastar();
-			carregarComboBox();
-			ccCustoText.setText("");
-			
-			MenuBar.card6.carregarComboBox();
-			MenuBar.card7.carregarComboBoxEtapa();
-	        }
-		  }
-		}
-	});
-  
-      	
-      	atualizarButton.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			int escolha;
-    			if(ccCustoText.getText().equals("")) {
-    				JOptionPane.showMessageDialog(null, "Preencha o campos corretamente", "Campo Vazio", 0);
-    			}else if(ccCustoText.getText().equals(jaCadComboBox.getSelectedItem().toString())) {
-    				JOptionPane.showMessageDialog(null, "Altera o nome do departamento para atualizar", "Mensagem", 0);
-    			}else{
-    				escolha = JOptionPane.showConfirmDialog(null, "Deseja realmente alterar "+jaCadComboBox.getSelectedItem().toString()+" para "+ccCustoText.getText()+" ?", "Selecione uma opção", JOptionPane.YES_NO_OPTION);
-    	            if(escolha == JOptionPane.YES_OPTION) {
-    		    variavel.setccCusto_atualiza(ccCustoText.getText());
-    		    variavel.setccCusto(jaCadComboBox.getSelectedItem().toString());
-    		    metodos.atualizar();
-    		    carregarComboBox();
-    		    ccCustoText.setText("");
-    		    
-    		    MenuBar.card6.carregarComboBox();
-    		    MenuBar.card7.carregarComboBoxEtapa();
-    	        }
-    		  }
-    		}
-    	});
-  
-  
-  
-  
-  
-  }
-  
-  public void atualizarButton(){
-	  atualizarButton.setEnabled(true);
-	  salvarButton.setEnabled(false);
-  }
- 
-  public void salvarButton() {
-	 salvarButton.setEnabled(true);
-	 atualizarButton.setEnabled(false);
-}
+		// add components
+		add(jaCadComboBox);
+		add(ccCustoText);
+		add(salvarButton);
+		add(atualizarButton);
+		add(ccCustoLabel);
+		add(jaCadLabel);
 
-  
-  public void carregarComboBox() {
-		 String cc = null;
-		 String a;
-		 int b = 1;
-		//Esvaziando a combobox
-		 while(b < jaCadComboBox.getItemCount()) {
-			 a = jaCadComboBox.getItemAt(b).toString(); 
-			 jaCadComboBox.removeItem(a);
-	}
-		 
-		//Preenchendo a combo box
-	 	try{
+		// set component bounds (only needed by Absolute Positioning)
+		jaCadComboBox.setBounds(110, 140, 210, 25);
+		jaCadComboBox.setBackground(new Color(41, 106, 158));
+		jaCadComboBox.setForeground(Color.WHITE);
+		ccCustoText.setBounds(110, 75, 210, 30);
+		ccCustoText.setBackground(new Color(41, 106, 158));
+		ccCustoText.setForeground(Color.WHITE);
+		salvarButton.setBounds(250, 265, 120, 35);
+		salvarButton.setBackground(new Color(163, 184, 204));
+		atualizarButton.setBounds(50, 265, 120, 35);
+		atualizarButton.setBackground(new Color(163, 184, 204));
+		ccCustoLabel.setBounds(110, 50, 95, 25);
+		jaCadLabel.setBounds(110, 115, 95, 25);
+
+		String ccCusto = null;
+		// Preenchendo a combo box
+		try {
 			sql = "SELECT * FROM centro_custo";
-			bd.getConnection();
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			while(bd.rs.next()){
-				cc = bd.rs.getString("centrocusto");
-				jaCadComboBox.addItem(cc);
+
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+				while (Banco.rs.next()) {
+					ccCusto = Banco.rs.getString("centrocusto");
+					jaCadComboBox.addItem(ccCusto);
+				}
 			}
-	   bd.close();
-		}catch(SQLException erro){
-			JOptionPane.showMessageDialog(null,erro.toString());
+
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
+			{
+			}
 		}
-	  }
+		// FIM
+
+		jaCadComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (jaCadComboBox.getSelectedIndex() == 0) {
+					salvarButton();
+					ccCustoText.setText("");
+				} else {
+					atualizarButton();
+					ccCustoText.setText(jaCadComboBox.getSelectedItem().toString());
+				}
+			}
+		});
+
+		salvarButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int escolha;
+				if (ccCustoText.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "Preencha o campos corretamente", "Campo Vazio", 0);
+				} else if (ccCustoText.getText().equals(jaCadComboBox.getSelectedItem().toString())) {
+					JOptionPane.showMessageDialog(null, "Altere o nome do departamento para atualizar", "Mensagem", 0);
+				} else {
+					escolha = JOptionPane.showConfirmDialog(null,
+							"Deseja realmente cadastrar " + ccCustoText.getText() + " como um centro de custo ?",
+							"Selecione uma opção", JOptionPane.YES_NO_OPTION);
+					if (escolha == JOptionPane.YES_OPTION) {
+						variavel.setccCusto(ccCustoText.getText());
+						metodos.cadastar();
+						carregarComboBox();
+						ccCustoText.setText("");
+
+						MenuBar.card6.criarListCC();
+						MenuBar.card6.carregarComboBoxCC();
+						MenuBar.card7.criarListEtapa();
+						MenuBar.card7.carregarComboBoxEtapa();
+					}
+				}
+			}
+		});
+
+		atualizarButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int escolha;
+				if (ccCustoText.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "Preencha o campos corretamente", "Campo Vazio", 0);
+				} else if (ccCustoText.getText().equals(jaCadComboBox.getSelectedItem().toString())) {
+					JOptionPane.showMessageDialog(null, "Altera o nome do departamento para atualizar", "Mensagem", 0);
+				} else {
+					escolha = JOptionPane
+							.showConfirmDialog(null,
+									"Deseja realmente alterar " + jaCadComboBox.getSelectedItem().toString() + " para "
+											+ ccCustoText.getText() + " ?",
+									"Selecione uma opção", JOptionPane.YES_NO_OPTION);
+					if (escolha == JOptionPane.YES_OPTION) {
+						variavel.setccCusto_atualiza(ccCustoText.getText());
+						variavel.setccCusto(jaCadComboBox.getSelectedItem().toString());
+						metodos.atualizar();
+						carregarComboBox();
+						ccCustoText.setText("");
+
+						MenuBar.card6.criarListCC();
+						MenuBar.card6.carregarComboBoxCC();
+						MenuBar.card7.criarListEtapa();
+						MenuBar.card7.carregarComboBoxEtapa();
+					}
+				}
+			}
+		});
+
 	}
+
+	public void atualizarButton() {
+		atualizarButton.setEnabled(true);
+		salvarButton.setEnabled(false);
+	}
+
+	public void salvarButton() {
+		salvarButton.setEnabled(true);
+		atualizarButton.setEnabled(false);
+	}
+
+	public void carregarComboBox() {
+		String cc = null;
+		String a;
+		int b = 1;
+		// Esvaziando a combobox
+		while (b < jaCadComboBox.getItemCount()) {
+			a = jaCadComboBox.getItemAt(b).toString();
+			jaCadComboBox.removeItem(a);
+		}
+
+		// Preenchendo a combo box
+		try {
+			sql = "SELECT * FROM centro_custo";
+
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+				while (Banco.rs.next()) {
+					cc = Banco.rs.getString("centrocusto");
+					jaCadComboBox.addItem(cc);
+				}
+			}
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
+		}
+	}
+}

@@ -11,176 +11,176 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
 
-import com.myscrum.banco.BD;
+import com.myscrum.banco.Banco;
 import com.myscrum.model.TableGrade;
 import com.myscrum.model.Tamanho;
 import com.myscrum.model.TamanhoDAO;
 
 public class TamanhoTela extends JPanel {
-  
+
 	/**
 	 * Desenvolvido por Abner Matias e Pedro Henrique
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-private JFormattedTextField pesoText;
-  private JLabel pesoLabel;
-  private JTextField descText;
-  private JLabel descLabel;
-  private JButton salvarButton;
-  private JButton atualizarButton;
-  private JTable tabela;
-  private JScrollPane sp;
-  private JButton limparButton;
-  
-  String sql = null;
-  BD bd = new BD();
-  Tamanho variavel = new Tamanho();
-  TamanhoDAO metodos = new TamanhoDAO();
-  
-  public TamanhoTela() {
-    
-      //construct components
-     
-      salvarButton = new JButton ("Salvar");
-      atualizarButton = new JButton ("Atualizar");
-      pesoLabel = new JLabel ("Peso:");
-      pesoText = new JFormattedTextField();
-      descLabel = new JLabel("Descrição");
-      descText = new JTextField();
-      limparButton = new JButton("Limpar");
-      
-      setBackground(Color.WHITE);
-      
-      //adjust size and set layout
-      setPreferredSize (new Dimension (422, 348));
-      setLayout (null);
+	private JFormattedTextField pesoText;
+	private JLabel pesoLabel;
+	private JTextField descText;
+	private JLabel descLabel;
+	private JButton salvarButton;
+	private JButton atualizarButton;
+	private JTable tabela;
+	private JScrollPane sp;
+	private JButton limparButton;
 
-      //add components
+	String sql = null;
+	Tamanho variavel = new Tamanho();
+	TamanhoDAO metodos = new TamanhoDAO();
 
-      add (salvarButton);
-      add (atualizarButton);
-      add (pesoLabel);
-      add (pesoText);
-      add(descLabel);
-      add(descText);
-      add(limparButton);
-      
-      //set component bounds (only needed by Absolute Positioning)
-         
-      salvarButton.setBounds (296, 265, 120, 35);
-      salvarButton.setBackground(new Color(163, 184,204));
-      atualizarButton.setBounds (5, 265, 120, 35);
-      atualizarButton.setBackground(new Color(163, 184,204));
-      pesoLabel.setBounds(50,20, 50, 50);
-      pesoText.setBounds(50,60,125,25);
-      pesoText.setBackground(new Color(41,106,158));
-      pesoText.setForeground(Color.WHITE);
-      descLabel.setBounds(250, 20, 100,50);
-      descText.setBounds(250, 60, 125, 25);
-      descText.setBackground(new Color(41,106,158));
-      descText.setForeground(Color.WHITE);
-      limparButton.setBounds (150,265,120,35);
-      limparButton.setBackground(new Color(163, 184,204));
-       
-      
-      salvarButton.setBounds (296, 265, 120, 35);
-      limparButton.setBounds (150,265,120,35);
-      atualizarButton.setBounds (5, 265, 120, 35);
-      salvarButton();
-      
-      //select tabela
-      sql="SELECT * FROM tamanho";
-    	listar(sql);
+	public TamanhoTela() {
 
-    		//metodo do botão salvar
-    	salvarButton.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			int escolha;
-    			if(pesoText.getText().equals("") || descText.getText().equals("")) {
-    				JOptionPane.showMessageDialog(null, "Preencha o campos corretamente", "Campo Vazio", 0);
-    		
-    			}else{
-    	            escolha = JOptionPane.showConfirmDialog(null, "Deseja realmente cadastrar "+pesoText.getText()+" como "+descText.getText()+" ?", "Selecione uma opção", JOptionPane.YES_NO_OPTION);
-    	            if(escolha == JOptionPane.YES_OPTION) {
-    			variavel.setpeso(Double.parseDouble((pesoText.getText()))); // trocando uma string para o tipo Double
-    			variavel.settamanho(descText.getText());
-    			metodos.cadastar();
-    			pesoText.setText("");
-    			descText.setText("");
-    			listar(sql);
-    	            }
-    		  }
-    		}
-    	});
-  
-    	
-    	limparButton.addActionListener(new ActionListener() {
-    		public void actionPerformed(ActionEvent e) {
-    			salvarButton();
-    			pesoText.setText("");
-    			descText.setText("");
-    			tabela.setCellSelectionEnabled(false);//limpa toda seleção da tabela
-    			
-    		}
-    	});
-    	
-    	
-    		//metodo do botão atualizar
-    	 atualizarButton.addActionListener(new ActionListener() {
-    			public void actionPerformed(ActionEvent e) {
-    				int escolha;
-    				if(pesoText.getText().equals("") || descText.getText().equals("")) {
-    					JOptionPane.showMessageDialog(null, "Preencha os campos corretamente", "Campo Vazio", 0);
-    				
-    				}else{
-    					escolha = JOptionPane.showConfirmDialog(null, "Deseja realmente cadastrar "+descText.getText()+" como "+pesoText.getText()+" ?", "Selecione uma opção", JOptionPane.YES_NO_OPTION);
-    		            if(escolha == JOptionPane.YES_OPTION) {
-    			    variavel.setpeso_atualiza(Double.parseDouble(pesoText.getText())); // trocando uma string para o tipo Double
-    			    variavel.setTamanho_atualiza(descText.getText());
-    			    metodos.atualizar();
-    			    pesoText.setText("");
-    			    descText.setText("");
-    			    salvarButton();
-    				listar(sql);
-    			  
-    		        }
-    			  }
-    			}
-    		});
-    	  }
-  
-  public void atualizarButton(){
-	  atualizarButton.setEnabled(true);
-	  salvarButton.setEnabled(false);
- }
- public void salvarButton() {
-	 salvarButton.setEnabled(true);
-	 atualizarButton.setEnabled(false);
- }
-  
-  	
-  public static void main (String[] args) {
-      JFrame frame = new JFrame ("tamanhoTela");
-      frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-      frame.getContentPane().add (new TamanhoTela());
-      frame.pack();
-      frame.setVisible (true);
-  }
+		// construct components
 
+		salvarButton = new JButton("Salvar");
+		atualizarButton = new JButton("Atualizar");
+		pesoLabel = new JLabel("Peso:");
+		pesoText = new JFormattedTextField();
+		descLabel = new JLabel("Descrição");
+		descText = new JTextField();
+		limparButton = new JButton("Limpar");
 
-  //metodo listar
-  public void listar(String sql){
-	    boolean conectou = false;
-		try{
-			bd.getConnection();
-			conectou = true;
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			if(bd.rs.next()){//se haver tarefas continue
-				if(conectou == true){
+		setBackground(Color.WHITE);
 
-					if(tabela != null){//se existir outra tabela montada apaga
+		// adjust size and set layout
+		setPreferredSize(new Dimension(422, 348));
+		setLayout(null);
+
+		// add components
+
+		add(salvarButton);
+		add(atualizarButton);
+		add(pesoLabel);
+		add(pesoText);
+		add(descLabel);
+		add(descText);
+		add(limparButton);
+
+		// set component bounds (only needed by Absolute Positioning)
+
+		salvarButton.setBounds(296, 265, 120, 35);
+		salvarButton.setBackground(new Color(163, 184, 204));
+		atualizarButton.setBounds(5, 265, 120, 35);
+		atualizarButton.setBackground(new Color(163, 184, 204));
+		pesoLabel.setBounds(50, 20, 50, 50);
+		pesoText.setBounds(50, 60, 125, 25);
+		pesoText.setBackground(new Color(41, 106, 158));
+		pesoText.setForeground(Color.WHITE);
+		descLabel.setBounds(250, 20, 100, 50);
+		descText.setBounds(250, 60, 125, 25);
+		descText.setBackground(new Color(41, 106, 158));
+		descText.setForeground(Color.WHITE);
+		limparButton.setBounds(150, 265, 120, 35);
+		limparButton.setBackground(new Color(163, 184, 204));
+
+		salvarButton.setBounds(296, 265, 120, 35);
+		limparButton.setBounds(150, 265, 120, 35);
+		atualizarButton.setBounds(5, 265, 120, 35);
+		salvarButton();
+
+		// select tabela
+		sql = "SELECT * FROM tamanho";
+		listar(sql);
+
+		// metodo do botão salvar
+		salvarButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int escolha;
+				if (pesoText.getText().equals("") || descText.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "Preencha o campos corretamente", "Campo Vazio", 0);
+
+				} else {
+					escolha = JOptionPane.showConfirmDialog(null,
+							"Deseja realmente cadastrar " + pesoText.getText() + " como " + descText.getText() + " ?",
+							"Selecione uma opção", JOptionPane.YES_NO_OPTION);
+					if (escolha == JOptionPane.YES_OPTION) {
+						variavel.setpeso(Double.parseDouble((pesoText.getText()))); // trocando uma string para o tipo
+																					// Double
+						variavel.settamanho(descText.getText());
+						metodos.cadastar();
+						pesoText.setText("");
+						descText.setText("");
+						listar(sql);
+					}
+				}
+			}
+		});
+
+		limparButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				salvarButton();
+				pesoText.setText("");
+				descText.setText("");
+				tabela.setCellSelectionEnabled(false);// limpa toda seleção da tabela
+
+			}
+		});
+
+		// metodo do botão atualizar
+		atualizarButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int escolha;
+				if (pesoText.getText().equals("") || descText.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "Preencha os campos corretamente", "Campo Vazio", 0);
+
+				} else {
+					escolha = JOptionPane.showConfirmDialog(null,
+							"Deseja realmente cadastrar " + descText.getText() + " como " + pesoText.getText() + " ?",
+							"Selecione uma opção", JOptionPane.YES_NO_OPTION);
+					if (escolha == JOptionPane.YES_OPTION) {
+						variavel.setpeso_atualiza(Double.parseDouble(pesoText.getText())); // trocando uma string para o
+																							// tipo Double
+						variavel.setTamanho_atualiza(descText.getText());
+						metodos.atualizar();
+						pesoText.setText("");
+						descText.setText("");
+						salvarButton();
+						listar(sql);
+
+					}
+				}
+			}
+		});
+	}
+
+	public void atualizarButton() {
+		atualizarButton.setEnabled(true);
+		salvarButton.setEnabled(false);
+	}
+
+	public void salvarButton() {
+		salvarButton.setEnabled(true);
+		atualizarButton.setEnabled(false);
+	}
+
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("tamanhoTela");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().add(new TamanhoTela());
+		frame.pack();
+		frame.setVisible(true);
+	}
+
+	// metodo listar
+	public void listar(String sql) {
+
+		try {
+			if (Banco.conexao()) {
+
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+				if (Banco.rs.next()) {// se haver tarefas continue
+
+					if (tabela != null) {// se existir outra tabela montada apaga
 						tabela.setVisible(false);
 						tabela = null;
 						sp.setVisible(false);
@@ -193,60 +193,63 @@ private JFormattedTextField pesoText;
 					cabecalhoPersonalizado.addElement("Peso");
 					cabecalhoPersonalizado.addElement("Descrição");
 
-					tabela = TableGrade.getTable(bd,sql, cabecalhoPersonalizado);
-			
+					tabela = TableGrade.getTable(sql, cabecalhoPersonalizado);
+
 					sp = new JScrollPane(tabela);
-					//adiciona Scroll ao frame
-					
-					sp.setBounds(50,135,321,100);
+					// adiciona Scroll ao frame
+
+					sp.setBounds(50, 135, 321, 100);
 					add(sp);
-					updateUI(); //atualiza tela
+					updateUI(); // atualiza tela
 
 					tabela.setEditingRow(1);
 					tabela.setEditingColumn(1);
 					tabela.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-					
-		
 
 					tabela.addMouseListener(new MouseAdapter() {
 						public void mouseReleased(java.awt.event.MouseEvent a) {
-			                  if(a.getClickCount() == 2) {
-			                	  pesoText.setText(tabela.getValueAt(tabela.getSelectedRow(), 1).toString());
-			                	  descText.setText(tabela.getValueAt(tabela.getSelectedRow(), 2).toString());
-			                	  variavel.setpeso(Double.parseDouble(tabela.getValueAt(tabela.getSelectedRow(), 1).toString())); // trocando uma string para o tipo Double
-			                	  variavel.settamanho(tabela.getValueAt(tabela.getSelectedRow(), 2).toString());
-			                	  atualizarButton();
-						      }
-			                  
-			            }
+							if (a.getClickCount() == 2) {
+								pesoText.setText(tabela.getValueAt(tabela.getSelectedRow(), 1).toString());
+								descText.setText(tabela.getValueAt(tabela.getSelectedRow(), 2).toString());
+								variavel.setpeso(
+										Double.parseDouble(tabela.getValueAt(tabela.getSelectedRow(), 1).toString())); // trocando
+																														// uma
+																														// string
+																														// para
+																														// o
+																														// tipo
+																														// Double
+								variavel.settamanho(tabela.getValueAt(tabela.getSelectedRow(), 2).toString());
+								atualizarButton();
+							}
+
+						}
 					});
+
+				} else {
+					if (tabela != null) {
+						tabela.setVisible(false);
+						sp.setVisible(false);
+					}
+					JOptionPane.showMessageDialog(null, "Sem registro");
 				}
-			}else{
-				if(tabela != null){
-					tabela.setVisible(false);
-					sp.setVisible(false);
-				}
-				JOptionPane.showMessageDialog(null,"Sem registro");
 			}
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, "Falha na conexão ao banco");
+			JOptionPane.showMessageDialog(null, erro.toString());
+		} finally {
 
-		}catch(SQLException erro){
-			JOptionPane.showMessageDialog(null,"Falha na conexão ao banco");
-			JOptionPane.showMessageDialog(null,erro.toString());
 		}
-		finally{
-			bd.close();
-		}
-  }
-  public MaskFormatter Mascara(String Mascara){
-      MaskFormatter F_Mascara = new MaskFormatter();
-      try{
-          F_Mascara.setMask(Mascara); //Atribui a mascara
-          F_Mascara.setPlaceholderCharacter(' '); //Caracter para preencimento Padrão
-      }
-      catch (Exception excecao) {
-      excecao.printStackTrace();
-      } 
-      return F_Mascara;
-}
-}
+	}
 
+	public MaskFormatter Mascara(String Mascara) {
+		MaskFormatter F_Mascara = new MaskFormatter();
+		try {
+			F_Mascara.setMask(Mascara); // Atribui a mascara
+			F_Mascara.setPlaceholderCharacter(' '); // Caracter para preencimento Padrão
+		} catch (Exception excecao) {
+			excecao.printStackTrace();
+		}
+		return F_Mascara;
+	}
+}

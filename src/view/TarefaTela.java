@@ -1243,7 +1243,7 @@ public class TarefaTela extends javax.swing.JFrame {
 				cabecalhoPersonalizado.addElement("Atualizado por");// 45
 				cabecalhoPersonalizado.addElement("Checado");//46
 
-				tabela = TableGrade.getTable(bd, sql, cabecalhoPersonalizado);
+				tabela = TableGrade.getTable(sql, cabecalhoPersonalizado);
 
 				tabela.getColumnModel().getColumn(0).setPreferredWidth(30);
 				tabela.getColumnModel().getColumn(1).setPreferredWidth(400);

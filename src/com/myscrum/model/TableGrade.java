@@ -16,7 +16,7 @@ import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 
-import com.myscrum.banco.BD;
+import com.myscrum.banco.Banco;
 import com.towel.swing.table.TableFilter;
 
 
@@ -26,7 +26,7 @@ public class TableGrade{
 	private static ResultSetMetaData rsmd;
 	
 
-	public static JTable getTable(BD bd, String sql, Vector<String> cabecalhoPersonalizado){
+	public static JTable getTable(String sql, Vector<String> cabecalhoPersonalizado){
 		JTable table;
 		try 
 		{	
@@ -34,12 +34,12 @@ public class TableGrade{
 
 			linhas = new Vector<Vector<String>>();
 			
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			bd.rs.next();
+			Banco.st = Banco.con.prepareStatement(sql);
+			Banco.rs = Banco.st.executeQuery();
+			Banco.rs.next();
 
 			// busca metadados 
-		    rsmd = bd.rs.getMetaData();
+		    rsmd = Banco.rs.getMetaData();
 
 			// busca dados das linhas
 			do 
@@ -54,35 +54,35 @@ public class TableGrade{
 					{
 
 					case Types.LONGVARCHAR:
-						linhaAtual.addElement(bd.rs.getString(i));break;
+						linhaAtual.addElement(Banco.rs.getString(i));break;
 					case Types.BIT:
-						linhaAtual.addElement(bd.rs.getString(i));break;
+						linhaAtual.addElement(Banco.rs.getString(i));break;
 					case Types.VARCHAR:
-						linhaAtual.addElement(bd.rs.getString(i));break;
+						linhaAtual.addElement(Banco.rs.getString(i));break;
 					case Types.CHAR:
-						linhaAtual.addElement(bd.rs.getString(i));break;
+						linhaAtual.addElement(Banco.rs.getString(i));break;
 					case Types.DOUBLE:
-						linhaAtual.addElement(""+bd.rs.getDouble(i));break;
+						linhaAtual.addElement(""+Banco.rs.getDouble(i));break;
 					case Types.INTEGER:
-						linhaAtual.addElement(""+bd.rs.getInt(i));break;
+						linhaAtual.addElement(""+Banco.rs.getInt(i));break;
 					case Types.NUMERIC:
-						linhaAtual.addElement(""+df.format(bd.rs.getDouble(i)));break;
+						linhaAtual.addElement(""+df.format(Banco.rs.getDouble(i)));break;
 					case Types.SMALLINT:
-						linhaAtual.addElement(""+bd.rs.getInt(i));break;
+						linhaAtual.addElement(""+Banco.rs.getInt(i));break;
 					case Types.DECIMAL:
-						linhaAtual.addElement(""+bd.rs.getDouble(i));break;
+						linhaAtual.addElement(""+Banco.rs.getDouble(i));break;
 					case Types.DATE:
-						if(bd.rs.getDate(i) == null) {
+						if(Banco.rs.getDate(i) == null) {
 							linhaAtual.addElement("Sem Data");break;
 						}else {
-						   String s = new SimpleDateFormat("dd/MM/yyyy").format(bd.rs.getDate(i));// Tranformando data para BR
+						   String s = new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(i));// Tranformando data para BR
 						   linhaAtual.addElement(s);break;
 						}
 					case Types.TIMESTAMP:
-						if(bd.rs.getDate(i) == null) {
+						if(Banco.rs.getDate(i) == null) {
 							linhaAtual.addElement("Sem Data");break;
 						}else {
-						   String s = new SimpleDateFormat("dd/MM/yyyy").format(bd.rs.getDate(i));// Tranformando data para BR
+						   String s = new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(i));// Tranformando data para BR
 						   linhaAtual.addElement(s);break;
 					    }
 						//					default:System.out.println(rsmd.getColumnType(i));   
@@ -90,7 +90,7 @@ public class TableGrade{
 				}
 				linhas.addElement(linhaAtual);     
 			} 
-			while (bd.rs.next());       
+			while (Banco.rs.next());       
 
 			table = new JTable(linhas,cabecalho){
 			

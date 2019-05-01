@@ -6,20 +6,15 @@ package view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.swing.*;
 
-import com.myscrum.banco.BD;
+import com.myscrum.banco.Banco;
 import com.myscrum.model.Redimensionar;
-import com.mysql.jdbc.ResultSetMetaData;
-import com.myscrum.model.CcCusto;
-import com.myscrum.model.CcCustoDAO;
 import com.myscrum.model.Etapa;
 import com.myscrum.model.EtapaDAO;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 
 public class EtapaTela extends JPanel {
 
@@ -37,27 +32,23 @@ public class EtapaTela extends JPanel {
 	private JLabel cadastradoLabel;
 	private JLabel ccLabel;
 
-	private ArrayList<ArrayList<String>> Etapas;
-	private ArrayList<ArrayList<String>> CC;
+	private ResultSet etapas;
+	private ResultSet cc;
 
 	Redimensionar rsize = new Redimensionar();
 	JPanel panel = new JPanel();
 
 	EtapaDAO metodos = new EtapaDAO();
-	BD bd = new BD();
 	String sql;
 
 	public EtapaTela() {
-		
-		criarListCC();
-		criarListEtapa();
-		
+
 		// construct preComponents
 		String[] Items = { "Selecione" };
 
 		// construct components
-		etapaCombo = new JComboBox(Items);
-		ccCombo = new JComboBox(Items);
+		etapaCombo = new JComboBox<String>(Items);
+		ccCombo = new JComboBox<String>(Items);
 		ccCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				carregarComboBoxEtapa(ccCombo.getSelectedItem().toString());
@@ -138,9 +129,11 @@ public class EtapaTela extends JPanel {
 
 						Etapa etapa = new Etapa(etapaText.getText(), ccCombo.getSelectedItem().toString());
 						metodos.cadastar(etapa);
+						criarListEtapa();
 						carregarComboBoxEtapa(ccCombo.getSelectedItem().toString());
 						etapaText.setText("");
 
+						MenuBar.card7.criarListEtapa();
 						MenuBar.card7.carregarComboBoxEtapa();
 					}
 				}
@@ -165,16 +158,21 @@ public class EtapaTela extends JPanel {
 						Etapa etapa = new Etapa(etapaCombo.getSelectedItem().toString(), etapaText.getText(),
 								ccCombo.getSelectedItem().toString());
 						metodos.atualizar(etapa);
+						criarListEtapa();
 						carregarComboBoxEtapa(ccCombo.getSelectedItem().toString());
 						etapaText.setText("");
 
+						MenuBar.card7.criarListEtapa();
 						MenuBar.card7.carregarComboBoxEtapa();
 					}
 				}
 			}
 		});
 
-		carregarComboBox();
+		criarListCC();
+		carregarComboBoxCC();
+		criarListEtapa();
+		carregarComboBoxEtapa("");
 	}
 
 	public void atualizarButton() {
@@ -187,9 +185,9 @@ public class EtapaTela extends JPanel {
 		atualizarButton.setEnabled(false);
 	}
 
-	public void carregarComboBoxEtapa(String cc) {
-		String etapa = null;
+	public void carregarComboBoxEtapa(String centrocusto) {
 		String a;
+		String idCC = null;
 		int b = 1;
 		// Esvaziando a combobox
 		while (b < etapaCombo.getItemCount()) {
@@ -197,25 +195,43 @@ public class EtapaTela extends JPanel {
 			etapaCombo.removeItem(a);
 		}
 
-		// Preenchendo a combo box
 		try {
-			sql = "SELECT * FROM etapas WHERE id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '"
-					+ cc + "') \r\n " + "ORDER BY etapa ASC";
-			bd.getConnection();
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			while (bd.rs.next()) {
-				etapa = bd.rs.getString("etapa");
-				etapaCombo.addItem(etapa);
+			cc.first();
+			while (cc.next()) {
+				if (cc.getString("centrocusto").equals(centrocusto)) {
+					idCC = cc.getString("id_centro_custo");
+				}
 			}
-			bd.close();
+
+			etapas.first();
+			while (etapas.next()) {
+				if (etapas.getString("id_cc").equals(idCC)) {
+					etapaCombo.addItem(etapas.getString("etapa"));
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void criarListEtapa() {
+
+		try {
+			sql = "SELECT * FROM etapas ORDER BY etapa ASC";
+
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+
+				etapas = Banco.rs;
+			}
 		} catch (SQLException erro) {
 			JOptionPane.showMessageDialog(null, erro.toString());
 		}
 	}
 
-	public void carregarComboBox() {
-		String cc = null;
+	public void carregarComboBoxCC() {
 		String a;
 		int b = 1;
 		// Esvaziando a combobox
@@ -224,73 +240,28 @@ public class EtapaTela extends JPanel {
 			ccCombo.removeItem(a);
 		}
 
-		
-		for(int x = 0; x < CC.get(1).size(); x++) {
-			ccCombo.addItem(CC.get(1).get(x).toString());
-		}
-		
-//		//Preenchendo a combo box
-//	 	try{
-//			sql = "SELECT * FROM centro_custo ORDER BY centrocusto ASC";
-//			bd.getConnection();
-//			bd.st = bd.con.prepareStatement(sql);
-//			bd.rs = bd.st.executeQuery();
-//			while(bd.rs.next()){
-//				cc = bd.rs.getString("centrocusto");
-//				ccCombo.addItem(cc);
-//			}
-//	   bd.close();
-//		}catch(SQLException erro){
-//			JOptionPane.showMessageDialog(null,erro.toString());
-//		}
-	}
-
-	public void criarListEtapa() {
-
 		try {
-			sql = "SELECT * FROM etapas ORDER BY etapa ASC";
-			bd.getConnection();
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-
-			Etapas = new ArrayList<ArrayList<String>>();
-
-			ResultSetMetaData MD = (ResultSetMetaData) bd.rs.getMetaData();
-
-			for (int x = 0; x <= MD.getColumnCount(); x++) {
-				ArrayList<String> colunas = new ArrayList<String>();
-				while (bd.rs.next()) {
-					colunas.add(bd.rs.getString(x));
-				}
-				Etapas.add(colunas);
+			cc.first();
+			while (cc.next()) {
+				ccCombo.addItem(cc.getString("centrocusto"));
 			}
-
-		} catch (SQLException erro) {
-			JOptionPane.showMessageDialog(null, erro.toString());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
 	public void criarListCC() {
-		
+
 		try {
 			sql = "SELECT * FROM centro_custo ORDER BY centrocusto ASC";
-			bd.getConnection();
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
 
-			CC = new ArrayList<ArrayList<String>>();
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
 
-			ResultSetMetaData MD = (ResultSetMetaData) bd.rs.getMetaData();
-
-			for (int x = 0; x <= MD.getColumnCount(); x++) {
-				ArrayList<String> colunas = new ArrayList<String>();
-				while (bd.rs.next()) {
-					colunas.add(bd.rs.getString(x));
-					System.out.println(bd.rs.getString(x));
-				}
-				CC.add(colunas);
+				cc = Banco.rs;
 			}
-
 		} catch (SQLException erro) {
 			JOptionPane.showMessageDialog(null, erro.toString());
 		}

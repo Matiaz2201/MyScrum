@@ -313,7 +313,7 @@ public void listar(String sql){
 				cabecalhoPersonalizado.addElement("Centro de Custo");//9
 				cabecalhoPersonalizado.addElement("OBS");//10
 				
-				tabela = TableGrade.getTable(bd,sql, cabecalhoPersonalizado);
+				tabela = TableGrade.getTable(sql, cabecalhoPersonalizado);
 		
 				//adiciona Scroll ao frame
 				sp = new JScrollPane(tabela);

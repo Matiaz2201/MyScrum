@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 import javax.swing.*;
 
-import com.myscrum.banco.BD;
+import com.myscrum.banco.Banco;
 import com.myscrum.model.Processos;
 import com.myscrum.model.ProcessosDAO;
 
@@ -28,7 +28,6 @@ public class ProcessosTela extends JPanel {
 
 	ProcessosDAO metodos = new ProcessosDAO();
 	Processos variavel = new Processos();
-	BD bd = new BD();
 	String sql;
 
 	public ProcessosTela() {
@@ -75,14 +74,15 @@ public class ProcessosTela extends JPanel {
 		// Preenchendo a combo box
 		try {
 			sql = "SELECT * FROM processos ORDER BY processo ASC";
-			bd.getConnection();
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			while (bd.rs.next()) {
-				String proc = bd.rs.getString("processo");
-				jaCadComboBox.addItem(proc);
+
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+				while (Banco.rs.next()) {
+					String proc = Banco.rs.getString("processo");
+					jaCadComboBox.addItem(proc);
+				}
 			}
-			bd.close();
 		} catch (SQLException erro) {
 			JOptionPane.showMessageDialog(null, erro.toString());
 		}
@@ -168,14 +168,15 @@ public class ProcessosTela extends JPanel {
 		// Preenchendo a combo box
 		try {
 			sql = "SELECT * FROM processos ORDER BY processo ASC";
-			bd.getConnection();
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			while (bd.rs.next()) {
-				proc = bd.rs.getString("processo");
-				jaCadComboBox.addItem(proc);
+
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+				while (Banco.rs.next()) {
+					proc = Banco.rs.getString("processo");
+					jaCadComboBox.addItem(proc);
+				}
 			}
-			bd.close();
 		} catch (SQLException erro) {
 			JOptionPane.showMessageDialog(null, erro.toString());
 		}
