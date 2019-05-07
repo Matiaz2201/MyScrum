@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -35,6 +36,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 
+import com.myscrum.banco.Banco;
 import com.myscrum.controller.Controle;
 import com.myscrum.model.Sessao;
 import com.myscrum.model.kamban;
@@ -144,8 +146,9 @@ public class KambanTela extends JFrame {
 	private JComboBox<String> subEtapaCombo;
 	private JLabel subEtapaLabel;
 	private JComboBox<String> processoCombo;
-	private JComboBox<String> etapaComboBox;
-	private JComboBox<String> comboBox;
+
+	private ResultSet subEtapas;
+	private ResultSet etapas;
 
 	/**
 	 * Launch the application.
@@ -171,9 +174,10 @@ public class KambanTela extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	
+
 	public KambanTela() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(KambanTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
+		setIconImage(
+				Toolkit.getDefaultToolkit().getImage(KambanTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
 		setTitle("Scrum");
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -187,6 +191,9 @@ public class KambanTela extends JFrame {
 			}
 
 		});
+
+		criarListEtapa();
+		criarListSubEtapa();
 
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Dimension d = tk.getScreenSize();
@@ -436,7 +443,8 @@ public class KambanTela extends JFrame {
 						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		PainelCentral.setLayout(gl_PainelCentral);
 
-		Icon icon = new ImageIcon(getClass().getResource("/com/myscrum/assets/calendar.png"));// Criando icone para os bot�es do
+		Icon icon = new ImageIcon(getClass().getResource("/com/myscrum/assets/calendar.png"));// Criando icone para os
+		// bot�es do
 
 		// superior
 
@@ -633,20 +641,20 @@ public class KambanTela extends JFrame {
 		Painel4.add(limparButton);
 		limparButton.setForeground(new Color(255, 255, 255));
 		limparButton.setBackground(new Color(41, 106, 158));
-		
-				pesquisarButton = new JButton("Atualizar");
-				pesquisarButton.setBounds(700, 41, 115, 23);
-				Painel4.add(pesquisarButton);
-				pesquisarButton.setForeground(new Color(255, 255, 255));
-				pesquisarButton.setBackground(new Color(41, 106, 158));
-				pesquisarButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						CarregarDadosKambans();
 
-						JOptionPane.showMessageDialog(null, "Kamban atualizado com sucesso", "Atualizado", 1);
-					}
-				});
-				pesquisarButton.setMnemonic(KeyEvent.VK_F5);
+		pesquisarButton = new JButton("Atualizar");
+		pesquisarButton.setBounds(700, 41, 115, 23);
+		Painel4.add(pesquisarButton);
+		pesquisarButton.setForeground(new Color(255, 255, 255));
+		pesquisarButton.setBackground(new Color(41, 106, 158));
+		pesquisarButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CarregarDadosKambans();
+
+				JOptionPane.showMessageDialog(null, "Kamban atualizado com sucesso", "Atualizado", 1);
+			}
+		});
+		pesquisarButton.setMnemonic(KeyEvent.VK_F5);
 
 		JLabel ExeRespAutLabel = new JLabel("Exe. / Resp. / Autoridade : ");
 		ExeRespAutLabel.setBounds(5, 65, 159, 14);
@@ -672,53 +680,67 @@ public class KambanTela extends JFrame {
 		ExeRespAutComboBox.setBackground(new Color(0, 102, 153));
 		ExeRespAutComboBox.setForeground(new Color(255, 255, 255));
 
-		ccComboBox = new JComboBox<String>();
-		ccComboBox.setBounds(170, 35, 150, 20);
-		Painel4.add(ccComboBox);
-		ccComboBox.setBackground(new Color(0, 102, 153));
-		ccComboBox.setForeground(new Color(255, 255, 255));
-
 		dptoComboBox = new JComboBox<String>();
 		dptoComboBox.setBounds(170, 5, 150, 20);
 		Painel4.add(dptoComboBox);
 		dptoComboBox.setBackground(new Color(0, 102, 153));
 		dptoComboBox.setForeground(new Color(255, 255, 255));
-		
-		JComboBox<String> processoCombo = new JComboBox<String>();
+
+		processoCombo = new JComboBox<String>();
 		processoCombo.setForeground(Color.WHITE);
 		processoCombo.setBackground(new Color(0, 102, 153));
 		processoCombo.setBounds(420, 5, 150, 20);
+		processoCombo.addItem("Todos");
 		Painel4.add(processoCombo);
-		
+
 		processoLabel = new JLabel("Processo:");
 		processoLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		processoLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
 		processoLabel.setBounds(340, 5, 68, 14);
 		Painel4.add(processoLabel);
-		
+
+		subEtapaCombo = new JComboBox<String>();
+		subEtapaCombo.setForeground(Color.WHITE);
+		subEtapaCombo.setBackground(new Color(0, 102, 153));
+		subEtapaCombo.setBounds(420, 65, 150, 20);
+		subEtapaCombo.addItem("Todos");
+		Painel4.add(subEtapaCombo);
+
 		etapaCombo = new JComboBox<String>();
+		etapaCombo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				carregarComboBoxSubEtapa(etapaCombo.getSelectedItem().toString());
+			}
+		});
 		etapaCombo.setForeground(Color.WHITE);
 		etapaCombo.setBackground(new Color(0, 102, 153));
 		etapaCombo.setBounds(420, 35, 150, 20);
+		etapaCombo.addItem("Todos");
 		Painel4.add(etapaCombo);
-		
+
+		ccComboBox = new JComboBox<String>();
+		ccComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				carregarComboBoxEtapa(ccComboBox.getSelectedItem().toString());
+			}
+		});
+		ccComboBox.setBounds(170, 35, 150, 20);
+		Painel4.add(ccComboBox);
+		ccComboBox.setBackground(new Color(0, 102, 153));
+		ccComboBox.setForeground(new Color(255, 255, 255));
+
 		etapaLabel = new JLabel("Etapa:");
 		etapaLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		etapaLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
 		etapaLabel.setBounds(340, 35, 68, 14);
 		Painel4.add(etapaLabel);
-		
-		subEtapaCombo = new JComboBox<String>();
-		subEtapaCombo.setForeground(Color.WHITE);
-		subEtapaCombo.setBackground(new Color(0, 102, 153));
-		subEtapaCombo.setBounds(420, 65, 150, 20);
-		Painel4.add(subEtapaCombo);
-		
+
 		subEtapaLabel = new JLabel("SubEtapa:");
 		subEtapaLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		subEtapaLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
 		subEtapaLabel.setBounds(340, 65, 68, 14);
 		Painel4.add(subEtapaLabel);
+
 		dptoComboBox.addItem("Todos");
 		ccComboBox.addItem("Todos");
 		ExeRespAutComboBox.addItem("Todos");
@@ -742,7 +764,9 @@ public class KambanTela extends JFrame {
 		proximoFeitoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				proximoFeito();
-				Jscroll.getVerticalScrollBar().setValue(Jscroll.getVerticalScrollBar().getMinimum());//Retornando o Scroll pra cima
+				Jscroll.getVerticalScrollBar().setValue(Jscroll.getVerticalScrollBar().getMinimum());// Retornando o
+																										// Scroll pra
+																										// cima
 			}
 		});
 		proximoFeitoButton.setFocusPainted(false);
@@ -756,7 +780,9 @@ public class KambanTela extends JFrame {
 		anteriorFeitoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				anteriorFeito();
-				Jscroll.getVerticalScrollBar().setValue(Jscroll.getVerticalScrollBar().getMinimum());//Retornando o Scroll pra cima
+				Jscroll.getVerticalScrollBar().setValue(Jscroll.getVerticalScrollBar().getMinimum());// Retornando o
+																										// Scroll pra
+																										// cima
 			}
 		});
 		anteriorFeitoButton.setFocusPainted(false);
@@ -794,7 +820,9 @@ public class KambanTela extends JFrame {
 		proximoFazendoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				proximoFazendo();
-				Jscroll.getVerticalScrollBar().setValue(Jscroll.getVerticalScrollBar().getMinimum());//Retornando o Scroll pra cima
+				Jscroll.getVerticalScrollBar().setValue(Jscroll.getVerticalScrollBar().getMinimum());// Retornando o
+																										// Scroll pra
+																										// cima
 			}
 		});
 		proximoFazendoButton.setFocusPainted(false);
@@ -814,7 +842,9 @@ public class KambanTela extends JFrame {
 		anteriorFazendoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				anteriorFazendo();
-				Jscroll.getVerticalScrollBar().setValue(Jscroll.getVerticalScrollBar().getMinimum());//Retornando o Scroll pra cima
+				Jscroll.getVerticalScrollBar().setValue(Jscroll.getVerticalScrollBar().getMinimum());// Retornando o
+																										// Scroll pra
+																										// cima
 			}
 		});
 		anteriorFazendoButton.setFocusPainted(false);
@@ -860,7 +890,9 @@ public class KambanTela extends JFrame {
 		anteriorAFazerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				anteriorAfazer();
-				Jscroll.getVerticalScrollBar().setValue(Jscroll.getVerticalScrollBar().getMinimum());//Retornando o Scroll pra cima
+				Jscroll.getVerticalScrollBar().setValue(Jscroll.getVerticalScrollBar().getMinimum());// Retornando o
+																										// Scroll pra
+																										// cima
 			}
 		});
 		anteriorAFazerButton.setFocusPainted(false);
@@ -877,7 +909,9 @@ public class KambanTela extends JFrame {
 		proximoAFazerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				proximoAfazer();
-				Jscroll.getVerticalScrollBar().setValue(Jscroll.getVerticalScrollBar().getMinimum());//Retornando o Scroll pra cima
+				Jscroll.getVerticalScrollBar().setValue(Jscroll.getVerticalScrollBar().getMinimum());// Retornando o
+																										// Scroll pra
+																										// cima
 			}
 		});
 		proximoAFazerButton.setFocusPainted(false);
@@ -922,14 +956,15 @@ public class KambanTela extends JFrame {
 		CarregarComboBoxDpto();// Carrega as combobox de filtros
 		CarregarComboBoxCC();// Carrega as combobox de filtros
 		CarregarComboBoxExe();// Carrega as combobox de filtros
+		carregarComboProcessos();
 		CarregaDatasDeVelocidade();// Carrega primeiro dia do mes e hoje
 
 		CarregarDadosKambans();
 
 		Controle.setLoading(true);
 	}
-	
-	public KambanTela(String FULHD) {
+
+	public KambanTela(String FullHD) {
 		setIconImage(
 				Toolkit.getDefaultToolkit().getImage(KambanTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
 		setTitle("Scrum");
@@ -945,6 +980,9 @@ public class KambanTela extends JFrame {
 			}
 
 		});
+
+		criarListEtapa();
+		criarListSubEtapa();
 
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Dimension d = tk.getScreenSize();
@@ -1195,7 +1233,7 @@ public class KambanTela extends JFrame {
 		PainelCentral.setLayout(gl_PainelCentral);
 
 		Icon icon = new ImageIcon(getClass().getResource("/com/myscrum/assets/calendar.png"));// Criando icone para os
-																								// bot�es do
+		// bot�es do
 
 		// superior
 
@@ -1431,35 +1469,67 @@ public class KambanTela extends JFrame {
 		ExeRespAutComboBox.setBackground(new Color(0, 102, 153));
 		ExeRespAutComboBox.setForeground(new Color(255, 255, 255));
 
-		ccComboBox = new JComboBox<String>();
-		ccComboBox.setBounds(194, 35, 150, 20);
-		Painel4.add(ccComboBox);
-		ccComboBox.setBackground(new Color(0, 102, 153));
-		ccComboBox.setForeground(new Color(255, 255, 255));
-
 		dptoComboBox = new JComboBox<String>();
 		dptoComboBox.setBounds(194, 5, 150, 20);
 		Painel4.add(dptoComboBox);
 		dptoComboBox.setBackground(new Color(0, 102, 153));
 		dptoComboBox.setForeground(new Color(255, 255, 255));
 
+		processoLabel = new JLabel("Processo:");
+		processoLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		processoLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		processoLabel.setBounds(377, 5, 68, 14);
+		Painel4.add(processoLabel);
+
 		processoCombo = new JComboBox<String>();
 		processoCombo.setForeground(Color.WHITE);
 		processoCombo.setBackground(new Color(0, 102, 153));
 		processoCombo.setBounds(455, 5, 150, 20);
+		processoCombo.addItem("Todos");
 		Painel4.add(processoCombo);
 
+		subEtapaLabel = new JLabel("SubEtapa:");
+		subEtapaLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		subEtapaLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		subEtapaLabel.setBounds(377, 65, 68, 14);
+		Painel4.add(subEtapaLabel);
+
+		subEtapaCombo = new JComboBox<String>();
+		subEtapaCombo.setForeground(Color.WHITE);
+		subEtapaCombo.setBackground(new Color(0, 102, 153));
+		subEtapaCombo.setBounds(455, 65, 150, 20);
+		subEtapaCombo.addItem("Todos");
+		Painel4.add(subEtapaCombo);
+
+		etapaLabel = new JLabel("Etapa:");
+		etapaLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		etapaLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		etapaLabel.setBounds(377, 35, 68, 14);
+		Painel4.add(etapaLabel);
+
 		etapaCombo = new JComboBox<String>();
+		etapaCombo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				carregarComboBoxSubEtapa(etapaCombo.getSelectedItem().toString());
+			}
+		});
 		etapaCombo.setForeground(Color.WHITE);
 		etapaCombo.setBackground(new Color(0, 102, 153));
 		etapaCombo.setBounds(455, 35, 150, 20);
+		etapaCombo.addItem("Todos");
 		Painel4.add(etapaCombo);
 
-		comboBox = new JComboBox<String>();
-		comboBox.setForeground(Color.WHITE);
-		comboBox.setBackground(new Color(0, 102, 153));
-		comboBox.setBounds(455, 65, 150, 20);
-		Painel4.add(comboBox);
+		ccComboBox = new JComboBox<String>();
+		ccComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				carregarComboBoxEtapa(ccComboBox.getSelectedItem().toString());
+			}
+		});
+		ccComboBox.setBounds(194, 35, 150, 20);
+		Painel4.add(ccComboBox);
+		ccComboBox.setBackground(new Color(0, 102, 153));
+		ccComboBox.setForeground(new Color(255, 255, 255));
+
 		dptoComboBox.addItem("Todos");
 		ccComboBox.addItem("Todos");
 		ExeRespAutComboBox.addItem("Todos");
@@ -1657,6 +1727,7 @@ public class KambanTela extends JFrame {
 		CarregarComboBoxDpto();// Carrega as combobox de filtros
 		CarregarComboBoxCC();// Carrega as combobox de filtros
 		CarregarComboBoxExe();// Carrega as combobox de filtros
+		carregarComboProcessos();
 		CarregaDatasDeVelocidade();// Carrega primeiro dia do mes e hoje
 
 		CarregarDadosKambans();
@@ -2456,5 +2527,109 @@ public class KambanTela extends JFrame {
 		String string2 = part[0] + "." + part[1];
 		double preco = Double.parseDouble(string2);
 		return preco;
+	}
+
+	public void criarListSubEtapa() {
+
+		try {
+			String sql = "SELECT * FROM sub_etapas ORDER BY sub_etapa ASC";
+
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+
+				subEtapas = Banco.rs;
+			}
+
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
+		}
+	}
+
+	public void carregarComboBoxSubEtapa(String etapa) {
+		String idEtapa = null;
+		String a;
+		int b = 1;
+		// Esvaziando a combobox
+		while (b < subEtapaCombo.getItemCount()) {
+			a = subEtapaCombo.getItemAt(b).toString();
+			subEtapaCombo.removeItem(a);
+		}
+
+		try {
+			etapas.first();
+			while (etapas.next()) {
+				if (etapas.getString("etapa").equals(etapa)) {
+					idEtapa = etapas.getString("id_etapa");
+				}
+			}
+
+			subEtapas.first();
+			while (subEtapas.next()) {
+				if (subEtapas.getString("id_etapa").equals(idEtapa)) {
+					subEtapaCombo.addItem(subEtapas.getString("sub_etapa"));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void criarListEtapa() {
+
+		try {
+			String sql = "SELECT etapas.id_etapa, etapas.etapa, centro_custo.centrocusto FROM etapas\r\n"
+					+ "INNER JOIN centro_custo\r\n" + "ON centro_custo.id_centro_custo = etapas.id_cc \r\n"
+					+ "ORDER BY etapa ASC";
+
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+
+				etapas = Banco.rs;
+			}
+
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
+		}
+	}
+
+	public void carregarComboBoxEtapa(String cc) {
+		String a;
+		int b = 1;
+		// Esvaziando a combobox
+		while (b < etapaCombo.getItemCount()) {
+			a = etapaCombo.getItemAt(b).toString();
+			etapaCombo.removeItem(a);
+		}
+
+		try {
+			etapas.first();
+			while (etapas.next()) {
+				if (etapas.getString("centrocusto").equals(cc)) {
+					etapaCombo.addItem(etapas.getString("etapa"));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void carregarComboProcessos() {
+		// Preenchendo a combo box
+		try {
+			String sql = "SELECT * FROM processos ORDER BY processo ASC";
+			String proc = "";
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+				while (Banco.rs.next()) {
+					proc = Banco.rs.getString("processo");
+					processoCombo.addItem(proc);
+				}
+			}
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
+		}
 	}
 }// Fim da Classe

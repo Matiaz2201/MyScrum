@@ -125,7 +125,7 @@ public class Controle extends Controlev {
 					public void run() {
 
 						if(size.getWidth() == 1920) {
-							telaKamban = new KambanTela("Full HD");
+							telaKamban = new KambanTela("FullHD");
 						}else {
 							telaKamban = new KambanTela();
 						}
