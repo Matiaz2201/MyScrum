@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,6 +47,7 @@ import javax.swing.event.DocumentListener;
 import com.inet.jortho.FileUserDictionary;
 import com.inet.jortho.SpellChecker;
 import com.myscrum.banco.BD;
+import com.myscrum.banco.Banco;
 import com.myscrum.controller.Controle;
 
 import com.myscrum.model.Redimensionar;
@@ -191,6 +193,9 @@ public class TarefaEditTela extends JFrame {
 	private JLabel labelProcesso;
 	private JComboBox etapaCombo;
 	private JComboBox subEtapaCombo;
+	
+	private ResultSet etapas;
+	private ResultSet subEtapas;
 
 //metodo de referencia a classe pai, para poder usar os metodos da clalsse usuarioTela
 	public TarefaEditTela(JFrame formularioPai) {
@@ -226,6 +231,9 @@ public class TarefaEditTela extends JFrame {
 				}
 			}
 		}
+		
+		criarListEtapa();
+		criarListSubEtapa();
 
 		// sets iniciais
 		setTitle("Nova tarefa");// titulo do frame
@@ -255,7 +263,7 @@ public class TarefaEditTela extends JFrame {
 		centroCComboBox = new JComboBox(Selecione);
 		centroCComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				CarregarComboEtapa();
+				carregarComboBoxEtapa(centroCComboBox.getSelectedItem().toString());
 			}
 		});
 		prioridadeComboBox = new JComboBox(prioridadeComboBoxItems);
@@ -326,7 +334,7 @@ public class TarefaEditTela extends JFrame {
 		internalFrame.setFrameIcon(new ImageIcon(TarefaEditTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
 		internalFrame.setBackground(Color.WHITE);
 		internalFrame.setVisible(false);
-		internalFrame.setBounds(113, 125, 370, 295);
+		internalFrame.setBounds(113, 124, 370, 295);
 		leftPanel.add(internalFrame);
 		
 		anexoButton = new JButton("Anexo");
@@ -740,7 +748,7 @@ public class TarefaEditTela extends JFrame {
 		etapaCombo = new JComboBox(Selecione);
 		etapaCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CarregarComboSubEtapa();
+				carregarComboBoxSubEtapa(etapaCombo.getSelectedItem().toString());
 			}
 		});
 		etapaCombo.setForeground(Color.WHITE);
@@ -1764,10 +1772,20 @@ public class TarefaEditTela extends JFrame {
 			exec1ComboBox.requestFocus();
 		} else if (porcento1ComboBox.getSelectedIndex() == 0) {
 			porcento1ComboBox.requestFocus();
+		//} else if (processoComboBox.getSelectedIndex() == 0){
+		//	processoComboBox.requestFocus();
 		} else {
 			ok = true;
 		}
 
+		if(dptoCombobox.getSelectedItem().toString().equals("Obra")) {
+			if(etapaCombo.getSelectedIndex() == 0 || subEtapaCombo.getSelectedIndex() == 0) {
+				JOptionPane.showMessageDialog(null, "Para o departamento obra, o campo etapa e subetapa é obrigatório");
+				etapaCombo.requestFocus();
+				ok = false;
+			}
+		}
+		
 		return ok;
 	}
 
@@ -1940,36 +1958,26 @@ public class TarefaEditTela extends JFrame {
 		SpellChecker.register(statPendText);
 		SpellChecker.register(historicoText);
 	}
-	
-	public void CarregarComboEtapa() {
-		String etapa = null;
-		String a;
-		int b = 1;
-		// Esvaziando a combobox
-		while (b < etapaCombo.getItemCount()) {
-			a = etapaCombo.getItemAt(b).toString();
-			etapaCombo.removeItem(a);
-		}
-		
-		// Carregando combo box etapa
-		try {
-			sql = "SELECT * FROM etapas WHERE id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + centroCComboBox.getSelectedItem() + "') ORDER BY etapa ASC";
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			while (bd.rs.next()) {
-				etapa = bd.rs.getString("etapa");
-				etapaCombo.addItem(etapa);
 
+	public void criarListSubEtapa() {
+
+		try {
+			String sql = "SELECT * FROM sub_etapas ORDER BY sub_etapa ASC";
+
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+
+				subEtapas = Banco.rs;
 			}
 
 		} catch (SQLException erro) {
 			JOptionPane.showMessageDialog(null, erro.toString());
 		}
-		// FIM
 	}
 
-	public void CarregarComboSubEtapa() {
-		String subetapa = null;
+	public void carregarComboBoxSubEtapa(String etapa) {
+		String idEtapa = null;
 		String a;
 		int b = 1;
 		// Esvaziando a combobox
@@ -1978,23 +1986,63 @@ public class TarefaEditTela extends JFrame {
 			subEtapaCombo.removeItem(a);
 		}
 
-		// Carregando combo box subetapa
 		try {
-			sql = "SELECT sub_etapa FROM sub_etapas \r\n"
-					+ "WHERE id_etapa = (SELECT id_etapa FROM etapas WHERE etapa = '" + etapaCombo.getSelectedItem() + "' \r\n"
-							+ " AND id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + centroCComboBox.getSelectedItem() +"'))  ORDER BY sub_etapa ASC";
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			while (bd.rs.next()) {
-				subetapa = bd.rs.getString("sub_etapa");
-				subEtapaCombo.addItem(subetapa);
+			etapas.beforeFirst();
+			while (etapas.next()) {
+				if (etapas.getString("etapa").equals(etapa)) {
+					idEtapa = etapas.getString("id_etapa");
+				}
+			}
 
+			subEtapas.beforeFirst();
+			while (subEtapas.next()) {
+				if (subEtapas.getString("id_etapa").equals(idEtapa)) {
+					subEtapaCombo.addItem(subEtapas.getString("sub_etapa"));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void criarListEtapa() {
+
+		try {
+			String sql = "SELECT etapas.id_etapa, etapas.etapa, centro_custo.centrocusto FROM etapas\r\n"
+					+ "INNER JOIN centro_custo\r\n" + "ON centro_custo.id_centro_custo = etapas.id_cc \r\n"
+					+ "ORDER BY etapa ASC";
+
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+
+				etapas = Banco.rs;
 			}
 
 		} catch (SQLException erro) {
 			JOptionPane.showMessageDialog(null, erro.toString());
 		}
-		// FIM
+	}
+
+	public void carregarComboBoxEtapa(String cc) {
+		String a;
+		int b = 1;
+		// Esvaziando a combobox
+		while (b < etapaCombo.getItemCount()) {
+			a = etapaCombo.getItemAt(b).toString();
+			etapaCombo.removeItem(a);
+		}
+
+		try {
+			etapas.beforeFirst();
+			while (etapas.next()) {
+				if (etapas.getString("centrocusto").equals(cc)) {
+					etapaCombo.addItem(etapas.getString("etapa"));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }// Fim da classe

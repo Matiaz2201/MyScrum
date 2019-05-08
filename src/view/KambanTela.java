@@ -2346,12 +2346,27 @@ public class KambanTela extends JFrame {
 		String CC = "'" + ccComboBox.getSelectedItem().toString() + "'";
 		if (ccComboBox.getSelectedIndex() != 0) {
 			filtro += "(SELECT centro_custo.centrocusto FROM centro_custo WHERE centro_custo.id_centro_custo=tarefa.id_centro_custo) = "
-					+ CC + " AND\r\n";
+					+ CC + " AND \r\n ";
 		}
 		String Pendente = "'" + dptoComboBox.getSelectedItem().toString() + "'";
 		if (dptoComboBox.getSelectedIndex() != 0) {
 			filtro += "((SELECT departamento.departamento FROM departamento WHERE departamento.id_departamento=tarefa.id_departamento) = "
-					+ Pendente + " OR  (tarefa.pendente_por = " + Pendente + ")) AND\r\n";
+					+ Pendente + " OR  (tarefa.pendente_por = " + Pendente + ")) AND\r\n ";
+		}
+		String processo = "'" + processoCombo.getSelectedItem().toString() + "'";
+		if (processoCombo.getSelectedIndex() != 0) {
+			filtro += "(SELECT processos.processo FROM processos WHERE processos.id_processo=tarefa.processo_relacionado) = "
+					+ processo + "AND \r\n ";
+		}
+		String etapa = "'" + etapaCombo.getSelectedItem().toString() + "'";
+		if (etapaCombo.getSelectedIndex() != 0) {
+			filtro += "(SELECT etapas.etapa FROM etapas WHERE etapas.id_etapa=tarefa.etapa) = "
+					+ etapa + "AND \r\n ";
+		}
+		String subetapa = "'" + subEtapaCombo.getSelectedItem().toString() + "'";
+		if (subEtapaCombo.getSelectedIndex() != 0) {
+			filtro += "(SELECT sub_etapas.sub_etapa FROM sub_etapas WHERE sub_etapas.id_sub_etapas=tarefa.subetapa) = "
+					+ subetapa + "AND \r\n ";
 		}
 
 		if (Status_Tarefa == "Feito") {// SE o statu for feito Selecte tem mais um o where, baseado nada data de hoje
@@ -2557,14 +2572,14 @@ public class KambanTela extends JFrame {
 		}
 
 		try {
-			etapas.first();
+			etapas.beforeFirst();
 			while (etapas.next()) {
 				if (etapas.getString("etapa").equals(etapa)) {
 					idEtapa = etapas.getString("id_etapa");
 				}
 			}
 
-			subEtapas.first();
+			subEtapas.beforeFirst();
 			while (subEtapas.next()) {
 				if (subEtapas.getString("id_etapa").equals(idEtapa)) {
 					subEtapaCombo.addItem(subEtapas.getString("sub_etapa"));
@@ -2604,7 +2619,7 @@ public class KambanTela extends JFrame {
 		}
 
 		try {
-			etapas.first();
+			etapas.beforeFirst();
 			while (etapas.next()) {
 				if (etapas.getString("centrocusto").equals(cc)) {
 					etapaCombo.addItem(etapas.getString("etapa"));
