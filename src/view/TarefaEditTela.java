@@ -333,8 +333,7 @@ public class TarefaEditTela extends JFrame {
 		internalFrame = new JInternalFrame("Tamanho");
 		internalFrame.setFrameIcon(new ImageIcon(TarefaEditTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
 		internalFrame.setBackground(Color.WHITE);
-		internalFrame.setVisible(false);
-		internalFrame.setBounds(113, 124, 370, 295);
+		internalFrame.setBounds(100, 125, 380, 298);
 		leftPanel.add(internalFrame);
 		
 		anexoButton = new JButton("Anexo");
@@ -373,7 +372,7 @@ public class TarefaEditTela extends JFrame {
 		label.setIcon(new ImageIcon(TarefaEditTela.class.getResource("/com/myscrum/assets/tabelaPontos.jpeg")));
 		internalFrame.getContentPane().add(label, BorderLayout.CENTER);
 		leftPanel.add(tamanhoLabel);
-		tamanhoLabel.setBounds(113, 105, 100, 25);
+		tamanhoLabel.setBounds(100, 110, 70, 14);
 		anexoButton.setBounds(515, 10, 90, 28);
 		anexoButton.setEnabled(false);
 		leftPanel.add(anexoButton);
@@ -383,7 +382,7 @@ public class TarefaEditTela extends JFrame {
 		JScrollPane scrollPaneHisto = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPaneHisto.setBorder(new LineBorder(Color.BLACK, 1, true));
-		scrollPaneHisto.setBounds(5, 565, 600, 55);
+		scrollPaneHisto.setBounds(5, 565, 598, 55);
 		leftPanel.add(scrollPaneHisto);
 
 		scrollPaneHisto.setViewportView(historicoText);
@@ -402,7 +401,7 @@ public class TarefaEditTela extends JFrame {
 		JScrollPane scrollPanePend = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPanePend.setBorder(new LineBorder(Color.BLACK, 1, true));
-		scrollPanePend.setBounds(5, 485, 600, 55);
+		scrollPanePend.setBounds(5, 485, 598, 55);
 		leftPanel.add(scrollPanePend);
 
 		scrollPanePend.setViewportView(statPendText);
@@ -527,34 +526,34 @@ public class TarefaEditTela extends JFrame {
 
 		// Set componentes do Panel
 		descLabel.setBounds(5, 30, 125, 25);
-		centroCLabel.setBounds(353, 105, 120, 25);
-		centroCComboBox.setBounds(353, 125, 135, 25);
+		centroCLabel.setBounds(300, 105, 120, 25);
+		centroCComboBox.setBounds(300, 125, 303, 25);
 		centroCComboBox.setBackground(new Color(41, 106, 158));// cor do fundo
 		centroCComboBox.setForeground(Color.WHITE);
 		prioridadeLabel.setBounds(5, 105, 70, 25);
-		prioridadeComboBox.setBounds(5, 125, 90, 25);
+		prioridadeComboBox.setBounds(5, 125, 85, 25);
 		prioridadeComboBox.setBackground(new Color(41, 106, 158));// cor do fundo
 		prioridadeComboBox.setForeground(Color.WHITE);
-		statusLabel.setBounds(233, 105, 55, 25);
-		statusComboBox.setBounds(233, 125, 100, 25);
+		statusLabel.setBounds(195, 105, 55, 25);
+		statusComboBox.setBounds(195, 125, 95, 25);
 		statusComboBox.setBackground(new Color(41, 106, 158));// cor do fundo
 		statusComboBox.setForeground(Color.WHITE);
-		tamanhoComboBox.setBounds(113, 125, 100, 25);
+		tamanhoComboBox.setBounds(100, 125, 85, 25);
 		tamanhoComboBox.setBackground(new Color(41, 106, 158));// cor do fundo
 		tamanhoComboBox.setForeground(Color.WHITE);
-		pecentText.setBounds(500, 175, 40, 25);
+		pecentText.setBounds(516, 175, 55, 25);
 		pecentText.setBackground(new Color(41, 106, 158));
 		pecentText.setForeground(Color.WHITE);
-		percentLabel.setBounds(500, 155, 150, 25);
-		prazoLabel.setBounds(506, 105, 100, 25);
-		prazDiaComboBox.setBounds(505, 125, 100, 25);// prazo combobox
+		percentLabel.setBounds(516, 160, 89, 14);
+		prazoLabel.setBounds(395, 160, 95, 14);
+		prazDiaComboBox.setBounds(395, 175, 85, 25);// prazo combobox
 		prazDiaComboBox.setBackground(new Color(41, 106, 158));// cor do fundo
 		prazDiaComboBox.setForeground(Color.WHITE);
 
 		Icon icon = new ImageIcon(getClass().getResource("/com/myscrum/assets/calendar.png"));// Criando icone para os botões do
 																					// calendar view
 
-		dataIniText.setBounds(5, 175, 135, 25); // DATA INI
+		dataIniText.setBounds(5, 175, 120, 25); // DATA INI
 		dataIniText.getEditor().setBackground(new Color(41, 106, 158)); 
 		dataIniText.getEditor().setForeground(new Color(255, 255, 255));
 		dataIniText.setIcon(icon);
@@ -562,18 +561,18 @@ public class TarefaEditTela extends JFrame {
 		dataIniText.setWeekDaysBackground(new Color(41, 106, 158));
 		
 
-		dataIniLabel.setBounds(5, 155, 160, 25);// LABEL DATA INI
+		dataIniLabel.setBounds(5, 160, 120, 14);// LABEL DATA INI
 
-		dataRealText.setBounds(165, 175, 135, 25); // DATA REAL
+		dataRealText.setBounds(135, 175, 120, 25); // DATA REAL
 		dataRealText.getEditor().setBackground(new Color(41, 106, 158)); 
 		dataRealText.getEditor().setForeground(new Color(255, 255, 255));
 		dataRealText.setIcon(icon);
 		dataRealText.setFeriados(feriadosString);
 		dataRealText.setWeekDaysBackground(new Color(41, 106, 158));
 
-		dataRealLabel.setBounds(165, 155, 160, 25);// LABEL DATA REAL
+		dataRealLabel.setBounds(135, 161, 120, 14);// LABEL DATA REAL
 
-		datafimText.setBounds(325, 175, 135, 25); // DATA FIM
+		datafimText.setBounds(265, 175, 120, 25); // DATA FIM
 		datafimText.getEditor().setBackground(new Color(41, 106, 158)); // AQUI
 																		// <------------------------------------------
 																		// AQUI
@@ -582,7 +581,7 @@ public class TarefaEditTela extends JFrame {
 		datafimText.setFeriados(feriadosString);
 		datafimText.setWeekDaysBackground(new Color(41, 106, 158));
 
-		datafimLabel.setBounds(325, 155, 160, 25); // LABEL DATA FIM
+		datafimLabel.setBounds(265, 161, 120, 14); // LABEL DATA FIM
 
 		pred1Text.setBounds(5, 221, 100, 25);
 		pred1Text.setBackground(new Color(41, 106, 158));
@@ -594,8 +593,8 @@ public class TarefaEditTela extends JFrame {
 		pred3Text.setBounds(5, 273, 100, 25);
 		pred3Text.setBackground(new Color(41, 106, 158));
 		pred3Text.setForeground(Color.WHITE);
-		pendlabel.setBounds(470, 304, 75, 25);
-		pendComboBox.setBounds(470, 328, 135, 25);
+		pendlabel.setBounds(401, 258, 75, 14);
+		pendComboBox.setBounds(401, 273, 200, 25);
 		pendComboBox.setBackground(new Color(41, 106, 158));// cor do fundo
 		pendComboBox.setForeground(Color.WHITE);
 		statPendLabel.setBounds(5, 462, 115, 25);
@@ -609,15 +608,15 @@ public class TarefaEditTela extends JFrame {
 		histLabel.setBounds(5, 540, 65, 25);
 		statPendText.setBounds(5, 535, 600, 55);
 		respLabel.setBounds(5, 304, 120, 25);
-		respComboBox.setBounds(5, 328, 120, 25);
+		respComboBox.setBounds(5, 328, 185, 25);
 		respComboBox.setBackground(new Color(41, 106, 158));// cor do fundo
 		respComboBox.setForeground(Color.WHITE);
-		autoridadeLabel.setBounds(150, 304, 120, 25);
-		autoridadeComboBox.setBounds(150, 328, 120, 25);
+		autoridadeLabel.setBounds(210, 304, 120, 25);
+		autoridadeComboBox.setBounds(210, 328, 185, 25);
 		autoridadeComboBox.setBackground(new Color(41, 106, 158));// cor do fundo
 		autoridadeComboBox.setForeground(Color.WHITE);
-		dptoLabel.setBounds(310, 304, 120, 25);
-		dptoCombobox.setBounds(310, 328, 120, 25);
+		dptoLabel.setBounds(416, 304, 120, 25);
+		dptoCombobox.setBounds(416, 328, 185, 25);
 		dptoCombobox.setBackground(new Color(41, 106, 158));// cor do fundo
 		dptoCombobox.setForeground(Color.WHITE);
 		ID.setBounds(5, 5, 30, 30);
@@ -687,13 +686,13 @@ public class TarefaEditTela extends JFrame {
 		this.setIconImage(iconeTitulo);
 
 		/// sets finais
-		sp.setBounds(5, 383, 600, 70);
+		sp.setBounds(5, 383, 596, 70);
 		leftPanel.setBackground(Color.WHITE);
 
 		JLabel lblNewLabel = new JLabel("%");
 		lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 16));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(547, 175, 30, 25);
+		lblNewLabel.setBounds(566, 175, 30, 25);
 		leftPanel.add(lblNewLabel);
 
 		atualiazacaoLabel = new JLabel("");
@@ -712,37 +711,37 @@ public class TarefaEditTela extends JFrame {
 				}
 			}
 		});
-		copiarStatusButton.setBounds(515, 455, 90, 28);
+		copiarStatusButton.setBounds(512, 455, 90, 28);
 		leftPanel.add(copiarStatusButton);
 		
 		checadoLabel = new JLabel("Checado");
-		checadoLabel.setBounds(470, 252, 75, 25);
+		checadoLabel.setBounds(255, 258, 75, 14);
 		leftPanel.add(checadoLabel);
 		
 		checadoComboBox = new JComboBox(Selecione);
 		checadoComboBox.setForeground(Color.WHITE);
 		checadoComboBox.setBackground(new Color(41, 106, 158));
-		checadoComboBox.setBounds(470, 273, 135, 25);
+		checadoComboBox.setBounds(255, 273, 140, 25);
 		leftPanel.add(checadoComboBox);
 		
 		processoComboBox = new JComboBox(Selecione);
 		processoComboBox.setForeground(Color.WHITE);
 		processoComboBox.setBackground(new Color(41, 106, 158));
-		processoComboBox.setBounds(470, 221, 135, 25);
+		processoComboBox.setBounds(255, 221, 346, 25);
 		leftPanel.add(processoComboBox);
 		
 		labelProcesso = new JLabel("Processo relacionado:");
 		labelProcesso.setHorizontalAlignment(SwingConstants.LEFT);
-		labelProcesso.setBounds(470, 205, 135, 14);
+		labelProcesso.setBounds(255, 205, 135, 14);
 		leftPanel.add(labelProcesso);
 		
 		subetapaLabel = new JLabel("Subetapa");
-		subetapaLabel.setBounds(310, 252, 75, 25);
+		subetapaLabel.setBounds(115, 253, 75, 25);
 		leftPanel.add(subetapaLabel);
 		
 		estapaLabel = new JLabel("Etapa");
 		estapaLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		estapaLabel.setBounds(310, 205, 135, 14);
+		estapaLabel.setBounds(115, 205, 135, 14);
 		leftPanel.add(estapaLabel);
 		
 		etapaCombo = new JComboBox(Selecione);
@@ -753,13 +752,13 @@ public class TarefaEditTela extends JFrame {
 		});
 		etapaCombo.setForeground(Color.WHITE);
 		etapaCombo.setBackground(new Color(41, 106, 158));
-		etapaCombo.setBounds(310, 221, 135, 25);
+		etapaCombo.setBounds(115, 221, 135, 25);
 		leftPanel.add(etapaCombo);
 		
 		subEtapaCombo = new JComboBox(Selecione);
 		subEtapaCombo.setForeground(Color.WHITE);
 		subEtapaCombo.setBackground(new Color(41, 106, 158));
-		subEtapaCombo.setBounds(310, 273, 135, 25);
+		subEtapaCombo.setBounds(115, 273, 135, 25);
 		leftPanel.add(subEtapaCombo);
 
 		rightPanel = new JPanel();
