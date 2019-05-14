@@ -160,7 +160,7 @@ public class TarefaEditTela extends JFrame {
 	JLabel fundo;
 	JPanel executores = new JPanel();
 	JScrollPane sp = new JScrollPane(executores, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-	JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	int cont = 1;
 	ArrayList<Date> feriados = new ArrayList<>();
 	ArrayList<String> feriadosString = new ArrayList<>();
@@ -183,7 +183,7 @@ public class TarefaEditTela extends JFrame {
 	private JButton deletarButton4;
 	private JFileChooser anexo = new JFileChooser();
 	private JInternalFrame internalFrame;
-	
+
 	private JLabel label;
 	private JLabel checadoLabel;
 	private JComboBox checadoComboBox;
@@ -193,7 +193,7 @@ public class TarefaEditTela extends JFrame {
 	private JLabel labelProcesso;
 	private JComboBox etapaCombo;
 	private JComboBox subEtapaCombo;
-	
+
 	private ResultSet etapas;
 	private ResultSet subEtapas;
 
@@ -231,7 +231,7 @@ public class TarefaEditTela extends JFrame {
 				}
 			}
 		}
-		
+
 		criarListEtapa();
 		criarListSubEtapa();
 
@@ -286,7 +286,7 @@ public class TarefaEditTela extends JFrame {
 					if (kamban) {
 						Controle.telaKamban.predecessora = pred1Text;
 						Controle.telaKamban.toFront();
-						
+
 					} else {
 						TarefaEditTela.this.formularioPai.toFront();
 						TarefaEditTela.this.formularioPai.predecessora = pred1Text;
@@ -300,11 +300,11 @@ public class TarefaEditTela extends JFrame {
 		pred2Text.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(e.getClickCount() == 2) {
+				if (e.getClickCount() == 2) {
 					if (kamban) {
 						Controle.telaKamban.predecessora = pred2Text;
 						Controle.telaKamban.toFront();
-					
+
 					} else {
 						TarefaEditTela.this.formularioPai.toFront();
 						TarefaEditTela.this.formularioPai.predecessora = pred2Text;
@@ -316,11 +316,11 @@ public class TarefaEditTela extends JFrame {
 		pred3Text.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(e.getClickCount() == 2) {
+				if (e.getClickCount() == 2) {
 					if (kamban) {
 						Controle.telaKamban.predecessora = pred3Text;
 						Controle.telaKamban.toFront();
-						
+
 					} else {
 						TarefaEditTela.this.formularioPai.toFront();
 						TarefaEditTela.this.formularioPai.predecessora = pred3Text;
@@ -335,7 +335,7 @@ public class TarefaEditTela extends JFrame {
 		internalFrame.setBackground(Color.WHITE);
 		internalFrame.setBounds(100, 125, 380, 298);
 		leftPanel.add(internalFrame);
-		
+
 		anexoButton = new JButton("Anexo");
 		anexoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -347,26 +347,25 @@ public class TarefaEditTela extends JFrame {
 
 			}
 		});
-		
+
 		tamanhoLabel = new JButton("* Tamanho:");
 		tamanhoLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		tamanhoLabel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(internalFrame.isVisible()) {
+				if (internalFrame.isVisible()) {
 					internalFrame.setVisible(false);
-					
-				}else {
+
+				} else {
 					internalFrame.setVisible(true);
-					
+
 				}
-			
+
 			}
 		});
 		tamanhoLabel.setContentAreaFilled(false);
 		tamanhoLabel.setBorder(null);
 		tamanhoLabel.setBackground(Color.WHITE);
-		
-		
+
 		label = new JLabel("");
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setIcon(new ImageIcon(TarefaEditTela.class.getResource("/com/myscrum/assets/tabelaPontos.jpeg")));
@@ -550,21 +549,21 @@ public class TarefaEditTela extends JFrame {
 		prazDiaComboBox.setBackground(new Color(41, 106, 158));// cor do fundo
 		prazDiaComboBox.setForeground(Color.WHITE);
 
-		Icon icon = new ImageIcon(getClass().getResource("/com/myscrum/assets/calendar.png"));// Criando icone para os botões do
-																					// calendar view
+		Icon icon = new ImageIcon(getClass().getResource("/com/myscrum/assets/calendar.png"));// Criando icone para os
+																								// botões do
+		// calendar view
 
 		dataIniText.setBounds(5, 175, 120, 25); // DATA INI
-		dataIniText.getEditor().setBackground(new Color(41, 106, 158)); 
+		dataIniText.getEditor().setBackground(new Color(41, 106, 158));
 		dataIniText.getEditor().setForeground(new Color(255, 255, 255));
 		dataIniText.setIcon(icon);
 		dataIniText.setFeriados(feriadosString);
 		dataIniText.setWeekDaysBackground(new Color(41, 106, 158));
-		
 
 		dataIniLabel.setBounds(5, 160, 120, 14);// LABEL DATA INI
 
 		dataRealText.setBounds(135, 175, 120, 25); // DATA REAL
-		dataRealText.getEditor().setBackground(new Color(41, 106, 158)); 
+		dataRealText.getEditor().setBackground(new Color(41, 106, 158));
 		dataRealText.getEditor().setForeground(new Color(255, 255, 255));
 		dataRealText.setIcon(icon);
 		dataRealText.setFeriados(feriadosString);
@@ -713,37 +712,37 @@ public class TarefaEditTela extends JFrame {
 		});
 		copiarStatusButton.setBounds(512, 455, 90, 28);
 		leftPanel.add(copiarStatusButton);
-		
+
 		checadoLabel = new JLabel("Checado");
 		checadoLabel.setBounds(255, 258, 75, 14);
 		leftPanel.add(checadoLabel);
-		
+
 		checadoComboBox = new JComboBox(Selecione);
 		checadoComboBox.setForeground(Color.WHITE);
 		checadoComboBox.setBackground(new Color(41, 106, 158));
 		checadoComboBox.setBounds(255, 273, 140, 25);
 		leftPanel.add(checadoComboBox);
-		
+
 		processoComboBox = new JComboBox(Selecione);
 		processoComboBox.setForeground(Color.WHITE);
 		processoComboBox.setBackground(new Color(41, 106, 158));
 		processoComboBox.setBounds(255, 221, 346, 25);
 		leftPanel.add(processoComboBox);
-		
+
 		labelProcesso = new JLabel("Processo relacionado:");
 		labelProcesso.setHorizontalAlignment(SwingConstants.LEFT);
 		labelProcesso.setBounds(255, 205, 135, 14);
 		leftPanel.add(labelProcesso);
-		
+
 		subetapaLabel = new JLabel("Subetapa");
 		subetapaLabel.setBounds(115, 253, 75, 25);
 		leftPanel.add(subetapaLabel);
-		
+
 		estapaLabel = new JLabel("Etapa");
 		estapaLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		estapaLabel.setBounds(115, 205, 135, 14);
 		leftPanel.add(estapaLabel);
-		
+
 		etapaCombo = new JComboBox(Selecione);
 		etapaCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -754,7 +753,7 @@ public class TarefaEditTela extends JFrame {
 		etapaCombo.setBackground(new Color(41, 106, 158));
 		etapaCombo.setBounds(115, 221, 135, 25);
 		leftPanel.add(etapaCombo);
-		
+
 		subEtapaCombo = new JComboBox(Selecione);
 		subEtapaCombo.setForeground(Color.WHITE);
 		subEtapaCombo.setBackground(new Color(41, 106, 158));
@@ -1039,6 +1038,7 @@ public class TarefaEditTela extends JFrame {
 					if (kamban == false) {
 						TarefaEditTela.this.formularioPai.listar();
 
+				
 						// Setando o titulo da tela atual com a descrição da tarefa
 						setTitle(descText.getText());
 
@@ -1048,15 +1048,27 @@ public class TarefaEditTela extends JFrame {
 
 					// Se a tela foi aberta pelo kamban atualiza o kamban
 					if (kamban == true) {
-						Controle.telaKamban.CarregarDadosKambans();// Acesso estatico
-
 						// Setando o titulo da tela atual com a descrição da tarefa
 						setTitle(descText.getText());
 
 						// Habilitando o botão atualizar
 						atualizarButton();
-					}
+						
+						// Se a tela foi aberta pelo kamban atualiza o kamban
+						Controle.telaKamban.CarregarDadosKambans();
 
+						for (int a = 1; a < Controle.telaKamban.voltarAfazer; a++) {// Volta para a pagina que
+																						// estava
+							Controle.telaKamban.proximoAFazerButton.doClick();
+						}
+						for (int a = 1; a < Controle.telaKamban.voltarFazendo; a++) {
+							Controle.telaKamban.proximoFazendoButton.doClick();
+						}
+						for (int a = 1; a < Controle.telaKamban.voltarFeito; a++) {
+							Controle.telaKamban.proximoFeitoButton.doClick();
+						}
+					}
+				
 				} else {
 					JOptionPane.showMessageDialog(null, "Preencha todas informações obrigatorias", "Aviso", 1);
 				}
@@ -1377,7 +1389,7 @@ public class TarefaEditTela extends JFrame {
 				}
 			}
 		});
-		
+
 		bd.getConnection();
 		listarFeriados();
 		carregarComboBox();
@@ -1440,9 +1452,9 @@ public class TarefaEditTela extends JFrame {
 			}
 			if (statusComboBox.getSelectedItem() == "Feito") {
 				datafimText.setEnabled(true);
-				datafimText.setText("");
 				pecentText.setText("100");
 				pecentText.setEditable(false);
+				datafimText.setText(data);
 			} else {
 				datafimText.setEnabled(false);
 				datafimText.setText(data);// adiciona a soma a text data fim
@@ -1475,19 +1487,19 @@ public class TarefaEditTela extends JFrame {
 		variavel.setStatus(statusComboBox.getSelectedItem().toString());
 		variavel.setCentroCusto(centroCComboBox.getSelectedItem().toString());
 		variavel.setPrazo(Integer.parseInt(prazDiaComboBox.getSelectedItem().toString()));
-		if(pred1Text.getText().equals("")) {
+		if (pred1Text.getText().equals("")) {
 			variavel.setPredecessor1(0);
-		}else {
+		} else {
 			variavel.setPredecessor1(Integer.parseInt(pred1Text.getText()));
 		}
-		if(pred2Text.getText().equals("")) {
+		if (pred2Text.getText().equals("")) {
 			variavel.setPredecessor2(0);
-		}else {
+		} else {
 			variavel.setPredecessor2(Integer.parseInt(pred2Text.getText()));
 		}
-		if(pred3Text.getText().equals("")) {
+		if (pred3Text.getText().equals("")) {
 			variavel.setPredecessor3(0);
-		}else {
+		} else {
 			variavel.setPredecessor3(Integer.parseInt(pred3Text.getText()));
 		}
 		variavel.setChecado(checadoComboBox.getSelectedItem().toString());
@@ -1495,19 +1507,19 @@ public class TarefaEditTela extends JFrame {
 		variavel.setDataReal(dataRealText.getText());
 		variavel.setDataFim(datafimText.getText());
 		variavel.setPorcentagem(Integer.parseInt(pecentText.getText().replaceAll("[^0-9]*", "")));
-		
+
 		if (etapaCombo.getSelectedIndex() != 0) {
 			variavel.setEtapa(etapaCombo.getSelectedItem().toString());
 		}
-		
+
 		if (subEtapaCombo.getSelectedIndex() != 0) {
 			variavel.setSubEtapa(subEtapaCombo.getSelectedItem().toString());
 		}
-		
+
 		if (pendComboBox.getSelectedIndex() != 0) {// Se o index for diferente de zero carregue a variavel
 			variavel.setPendentePor(pendComboBox.getSelectedItem().toString());
 		}
-		
+
 		if (processoComboBox.getSelectedIndex() != 0) {
 			variavel.setProcesso(processoComboBox.getSelectedItem().toString());
 		}
@@ -1592,7 +1604,7 @@ public class TarefaEditTela extends JFrame {
 
 	}
 
-	public void carregarDados() {		
+	public void carregarDados() {
 		ID_tarefa.setText(String.valueOf(variavel.getIDTarefa()));
 		descText.setText(variavel.getDescricao());
 		prioridadeComboBox.setSelectedItem(String.valueOf(variavel.getPrioridade()));
@@ -1604,13 +1616,13 @@ public class TarefaEditTela extends JFrame {
 		pred1Text.setText(String.valueOf(variavel.getPredecessor1()));
 		pred2Text.setText(String.valueOf(variavel.getPredecessor2()));
 		pred3Text.setText(String.valueOf(variavel.getPredecessor3()));
-		
-		if(variavel.getChecado() == "" || variavel.getChecado() == null) {
+
+		if (variavel.getChecado() == "" || variavel.getChecado() == null) {
 			checadoComboBox.setSelectedIndex(0);
-		}else {
+		} else {
 			checadoComboBox.setSelectedItem(variavel.getChecado());
 		}
-		
+
 		dataIniText.setText(variavel.getDataInicio());
 		dataRealText.setText(variavel.getDataReal());
 		datafimText.setText(variavel.getDataFim());
@@ -1619,25 +1631,25 @@ public class TarefaEditTela extends JFrame {
 		dptoCombobox.setSelectedItem(variavel.getDepartamento());
 		respComboBox.setSelectedItem(variavel.getResponsavel());
 		autoridadeComboBox.setSelectedItem(variavel.getAutoridade());
-		
+
 		if (variavel.getEtapa() == "" || variavel.getEtapa() == null) {
 			etapaCombo.setSelectedIndex(0);
 		} else {
 			etapaCombo.setSelectedItem(variavel.getEtapa());
 		}
-		
+
 		if (variavel.getSubEtapa() == "" || variavel.getSubEtapa() == null) {
 			subEtapaCombo.setSelectedIndex(0);
 		} else {
 			subEtapaCombo.setSelectedItem(variavel.getSubEtapa());
 		}
-		
+
 		if (variavel.getProcesso() == "" || variavel.getProcesso() == null) {
 			processoComboBox.setSelectedIndex(0);
-		}else {
+		} else {
 			processoComboBox.setSelectedItem(variavel.getProcesso());
 		}
-		
+
 		statPendText.setText(variavel.getStatusPendencia());
 		historicoText.setText(variavel.getHistorico());
 		atualiazacaoLabel.setText(variavel.getAtuaizacao());
@@ -1771,20 +1783,20 @@ public class TarefaEditTela extends JFrame {
 			exec1ComboBox.requestFocus();
 		} else if (porcento1ComboBox.getSelectedIndex() == 0) {
 			porcento1ComboBox.requestFocus();
-		//} else if (processoComboBox.getSelectedIndex() == 0){
-		//	processoComboBox.requestFocus();
+			// } else if (processoComboBox.getSelectedIndex() == 0){
+			// processoComboBox.requestFocus();
 		} else {
 			ok = true;
 		}
 
-		if(dptoCombobox.getSelectedItem().toString().equals("Obra")) {
-			if(etapaCombo.getSelectedIndex() == 0 || subEtapaCombo.getSelectedIndex() == 0) {
+		if (dptoCombobox.getSelectedItem().toString().equals("Obra")) {
+			if (etapaCombo.getSelectedIndex() == 0 || subEtapaCombo.getSelectedIndex() == 0) {
 				JOptionPane.showMessageDialog(null, "Para o departamento obra, o campo etapa e subetapa é obrigatório");
 				etapaCombo.requestFocus();
 				ok = false;
 			}
 		}
-		
+
 		return ok;
 	}
 
@@ -1914,13 +1926,13 @@ public class TarefaEditTela extends JFrame {
 				dptoCombobox.addItem(dpto);
 
 			}
-	
+
 		} catch (SQLException erro) {
 			JOptionPane.showMessageDialog(null, erro.toString());
-			
+
 		}
 		// FIM
-		
+
 		// Carregando combo box processo
 		String processo;
 		try {
@@ -1932,9 +1944,9 @@ public class TarefaEditTela extends JFrame {
 				processoComboBox.addItem(processo);
 
 			}
-			
+
 		} catch (SQLException erro) {
-					JOptionPane.showMessageDialog(null, erro.toString());
+			JOptionPane.showMessageDialog(null, erro.toString());
 		}
 		// FIM
 	}

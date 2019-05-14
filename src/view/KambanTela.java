@@ -2116,6 +2116,9 @@ public class KambanTela extends JFrame {
 		ccComboBox.setSelectedIndex(0);
 		dptoComboBox.setSelectedIndex(0);
 		ExeRespAutComboBox.setSelectedIndex(0);
+		processoCombo.setSelectedIndex(0);
+		etapaCombo.setSelectedIndex(0);
+		subEtapaCombo.setSelectedIndex(0);
 
 	}
 
