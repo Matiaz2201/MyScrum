@@ -1024,7 +1024,9 @@ public class TarefaTela extends javax.swing.JFrame {
 					+"OR (executor.executor1 = "+ eu +" OR executor.executor2 = "+ eu +" OR executor.executor3 = "+ eu +" \r\n" 
 					+"OR executor.executor4 = "+ eu +" OR executor.executor5 = "+ eu +" OR executor.executor6 = "+ eu +" \r\n" 
 					+"OR executor.executor7 = "+ eu +" OR executor.executor8 = "+ eu +" OR executor.executor9 = "+ eu +" \r\n" 
-					+"OR executor.executor10 = "+ eu +" OR tarefa.id_departamento = (SELECT id_departamento FROM departamento WHERE departamento = "+ dpto +")))\r\n";
+					+"OR executor.executor10 = "+ eu +" OR tarefa.id_departamento = (SELECT id_departamento FROM departamento WHERE departamento = "+ dpto +") OR \r\n"
+					+ "tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + ") OR \r\n"
+					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + ")))\r\n";
 		
 			sql += "AND tarefa.data_ini\r\n" + "BETWEEN IF(tarefa.stat = 'Feito' OR tarefa.stat = 'Cancelado'," + "'"
 					+ data1 + "'" + ",'2014-01-01') AND " + "'" + data2 + "'";	
@@ -1038,7 +1040,9 @@ public class TarefaTela extends javax.swing.JFrame {
 					+"OR (executor.executor1 = "+ eu +" OR executor.executor2 = "+ eu +" OR executor.executor3 = "+ eu +" \r\n" 
 					+"OR executor.executor4 = "+ eu +" OR executor.executor5 = "+ eu +" OR executor.executor6 = "+ eu +" \r\n" 
 					+"OR executor.executor7 = "+ eu +" OR executor.executor8 = "+ eu +" OR executor.executor9 = "+ eu +" \r\n" 
-					+"OR executor.executor10 = "+ eu +" OR tarefa.id_centro_custo = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = "+ cc +")))\r\n";
+					+"OR executor.executor10 = "+ eu +" OR tarefa.id_centro_custo = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = "+ cc +") OR \r\n"
+					+ "tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + ") OR \r\n"
+					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + ")))\r\n";
 		
 			sql += "AND tarefa.data_ini\r\n" + "BETWEEN IF(tarefa.stat = 'Feito' OR tarefa.stat = 'Cancelado'," + "'"
 					+ data1 + "'" + ",'2014-01-01') AND " + "'" + data2 + "'";	

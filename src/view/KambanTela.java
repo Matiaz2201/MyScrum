@@ -2303,7 +2303,9 @@ public class KambanTela extends JFrame {
 					+ eu + " \r\n" + "OR executor.executor7 = " + eu + " OR executor.executor8 = " + eu
 					+ " OR executor.executor9 = " + eu + " \r\n" + "OR executor.executor10 = " + eu
 					+ " OR tarefa.id_departamento = (SELECT id_departamento FROM departamento WHERE departamento = "
-					+ dpto + "))) AND\r\n";
+					+ dpto + ") OR \r\n"
+					+ "tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + ") OR \r\n"
+					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + "))) AND\r\n";
 		}
 
 		if (Sessao.getInstance().getFuncao() == 3) {// Se a função for lider limitamos as tarefas apenas para qual o
@@ -2317,8 +2319,10 @@ public class KambanTela extends JFrame {
 					+ "OR executor.executor4 = " + eu + " OR executor.executor5 = " + eu + " OR executor.executor6 = "
 					+ eu + " \r\n" + "OR executor.executor7 = " + eu + " OR executor.executor8 = " + eu
 					+ " OR executor.executor9 = " + eu + " \r\n" + "OR executor.executor10 = " + eu
-					+ " OR tarefa.id_centro_custo = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = " + cc
-					+ "))) AND\r\n";
+					+ " OR tarefa.id_centro_custo = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = " 
+					+ cc + ") OR \r\n"
+					+ "tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + ") OR \r\n"
+					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + "))) AND\r\n";
 		}
 
 		String Executor = "'" + ExeRespAutComboBox.getSelectedItem().toString() + "'";

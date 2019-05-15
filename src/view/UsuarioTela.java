@@ -10,6 +10,7 @@ import com.myscrum.controller.Controle;
 import com.myscrum.model.Redimensionar;
 import com.myscrum.model.Usuario;
 import com.myscrum.model.UsuarioDAO;
+import javax.swing.border.LineBorder;
 
 public class UsuarioTela extends JFrame {
 	
@@ -65,8 +66,8 @@ public class UsuarioTela extends JFrame {
   private JTextField nomeText;
   private JPasswordField senhaText;
   private JLabel senhaLabel;
-  private JComboBox<String> dptoComboBox;
-  private JComboBox<String> cc_comboBox;
+  private JComboBox dptoComboBox;
+  private JComboBox cc_comboBox;
   private JLabel dptoLabel;
   private JTextArea obsCampo;
   private JLabel obsLabel;
@@ -87,13 +88,15 @@ public class UsuarioTela extends JFrame {
   private JTextField cHorarioText;
   private JCheckBox liderCheckBox;
   private JCheckBox gestorCheckBox;
+  private JLabel label;
+  private JLabel lblEstado;
   
   
 public UsuarioTela() {
 	  
 	  //set iniciais
 	  super("Cadastro usuario");//titulo do frame	
-	  setSize(496, 699);//define o tamanho do frame
+	  setSize(700, 699);//define o tamanho do frame
 	  getContentPane().add(panel);//add panel ao frame
 	  setResizable(false);
       panel.setLayout(null);//organiza os botões conforme setado no panel
@@ -126,7 +129,7 @@ public UsuarioTela() {
       senhaLabel = new JLabel ("Senha:");
       salarioText = new JTextField(5);
       salarioLabel = new JLabel("Sal\u00E1rio:");
-      dptoComboBox = new JComboBox<String> (dptoComboBoxItems);
+      dptoComboBox = new JComboBox (dptoComboBoxItems);
       dptoLabel = new JLabel ("Departamento:");
       obsCampo = new JTextArea (5, 5);
       obsLabel = new JLabel ("Observação:");
@@ -167,53 +170,53 @@ public UsuarioTela() {
       //set component bounds (only needed by Absolute Positioning)
       idLabel1.setBounds(80,1,80,20);
       idLabel.setBounds(5,1,80,20);
-      cadastarButton.setBounds (117, 611, 120, 35);
+      cadastarButton.setBounds (442, 246, 120, 35);
       cadastarButton.setBackground(new Color(163, 184,204));//Fundo
-      atualizarButton.setBounds (117, 611, 120, 35);
+      atualizarButton.setBounds (442, 246, 120, 35);
       atualizarButton.setBackground(new Color(163, 184,204));//Fundo 
-      editarButton.setBounds (284, 611, 120, 35);
+      editarButton.setBounds (568, 246, 120, 35);
       editarButton.setBackground(new Color(163, 184,204));//Fundo
-      emailText.setBounds (130, 81, 275, 30);
+      emailText.setBounds (52, 70, 200, 30);
       emailText.setBackground(new Color(41,106,158));
       emailText.setForeground(Color.WHITE);
-      emailLabel.setBounds (80, 81, 45, 30);
-      nomeLabel.setBounds (80, 31, 45, 25);
-      nomeText.setBounds (130, 31, 275, 30);
+      emailLabel.setBounds (5, 70, 45, 30);
+      nomeLabel.setBounds (5, 34, 45, 25);
+      nomeText.setBounds (52, 28, 200, 30);
       nomeText.setBackground(new Color(41,106,158));
       nomeText.setForeground(Color.WHITE);
-      loginLabel.setBounds(80, 131, 45, 25);
-      loginText.setBounds(130, 131, 275, 30);
+      loginLabel.setBounds(5, 111, 45, 25);
+      loginText.setBounds(52, 112, 200, 30);
       loginText.setBackground(new Color(41,106,158));
       loginText.setForeground(Color.WHITE);
-      admCheckBox.setBounds (261, 409, 80, 25);
+      admCheckBox.setBounds (592, 110, 70, 25);
       admCheckBox.setBackground(Color.WHITE);//setando cor do check
-      usuarioCheckBox.setBounds (261, 434, 80, 25);
+      usuarioCheckBox.setBounds (592, 170, 70, 25);
       usuarioCheckBox.setBackground(Color.WHITE);//setando cor do check
-      ativoCheckBox.setBounds(261, 352, 55, 30);
+      ativoCheckBox.setBounds(592, 35, 55, 25);
       ativoCheckBox.setBackground(Color.WHITE);//setando cor do check
-      bloqueadoCheckBox.setBounds(343, 355, 90, 25);
+      bloqueadoCheckBox.setBounds(592, 55, 90, 25);
       bloqueadoCheckBox.setBackground(Color.WHITE);//setando cor do check
-      senhaText.setBounds (130, 181, 275, 30);
+      senhaText.setBounds (360, 31, 130, 30);
       senhaText.setBackground(new Color(41,106,158));
       senhaText.setForeground(Color.WHITE);
-      senhaLabel.setBounds (80, 186, 50, 25);
-      salarioText.setBounds(130, 283, 100, 30);
+      senhaLabel.setBounds (254, 34, 50, 25);
+      salarioText.setBounds(52, 148, 70, 30);
       salarioText.setBackground(new Color(41,106,158));
       salarioText.setForeground(Color.WHITE);
-      salarioLabel.setBounds(75, 291, 50, 14);
-      dptoComboBox.setBounds (80, 357, 175, 25);
+      salarioLabel.setBounds(5, 156, 50, 14);
+      dptoComboBox.setBounds (360, 110, 175, 25);
       dptoComboBox.setBackground(new Color(41,106,158));
       dptoComboBox.setForeground(Color.WHITE);
-      dptoLabel.setBounds (80, 333, 100, 30);
-      obsCampo.setBounds (81, 470, 370, 115);
+      dptoLabel.setBounds (254, 110, 100, 20);
+      obsCampo.setBounds (5, 205, 247, 76);
       obsCampo.setBackground(new Color(41,106,158));
       obsCampo.setForeground(Color.WHITE);
       obsCampo.setLineWrap(true);//quebra de linha
-      obsLabel.setBounds (81, 445, 80, 25);
-      password.setBounds(130, 231, 275, 30);
+      obsLabel.setBounds (5, 185, 80, 25);
+      password.setBounds(360, 70, 130, 30);
       password.setBackground(new Color(41,106,158));
       password.setForeground(Color.WHITE);
-      passwordLabel.setBounds(17, 234, 108, 25);
+      passwordLabel.setBounds(254, 73, 108, 25);
      
       
       //Setando Icone do Frame
@@ -241,35 +244,55 @@ public UsuarioTela() {
       cHorarioText.setColumns(10);
       cHorarioText.setForeground(Color.WHITE);
       cHorarioText.setBackground(new Color(41,106,158));
-      cHorarioText.setBounds(307, 283, 100, 30);
+      cHorarioText.setBounds(197, 148, 55, 30);
       panel.add(cHorarioText);
       
       JLabel cHorarioLabel = new JLabel("<html><center>Carga <br/>\r\nHor\u00E1rio:<html/>");
       cHorarioLabel.setHorizontalAlignment(SwingConstants.CENTER);
       cHorarioLabel.setToolTipText("");
       cHorarioLabel.setBackground(Color.BLACK);
-      cHorarioLabel.setBounds(245, 284, 61, 30);
+      cHorarioLabel.setBounds(134, 148, 61, 30);
       panel.add(cHorarioLabel);
       
       JLabel CentroDeCustoLabel = new JLabel("Centro de Custo:");
-      CentroDeCustoLabel.setBounds(80, 406, 100, 14);
+      CentroDeCustoLabel.setBounds(254, 148, 100, 20);
       panel.add(CentroDeCustoLabel);
       
-      cc_comboBox = new JComboBox<String>(CcComboBoxItems);
+      cc_comboBox = new JComboBox(CcComboBoxItems);
       cc_comboBox.setForeground(Color.WHITE);
       cc_comboBox.setBackground(new Color(41, 106, 158));
-      cc_comboBox.setBounds(80, 420, 175, 25);
+      cc_comboBox.setBounds(360, 148, 175, 25);
       panel.add(cc_comboBox);
       
       
       liderCheckBox.setBackground(Color.WHITE);
-      liderCheckBox.setBounds(343, 409, 90, 25);
+      liderCheckBox.setBounds(592, 130, 61, 25);
       panel.add(liderCheckBox);
       
       
       gestorCheckBox.setBackground(Color.WHITE);
-      gestorCheckBox.setBounds(343, 434, 90, 25);
+      gestorCheckBox.setBounds(592, 150, 61, 25);
       panel.add(gestorCheckBox);
+      
+      JLabel lblNewLabel = new JLabel("");
+      lblNewLabel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+      lblNewLabel.setBounds(587, 34, 95, 46);
+      panel.add(lblNewLabel);
+      
+      label = new JLabel("");
+      label.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+      label.setBounds(587, 104, 95, 97);
+      panel.add(label);
+      
+      JLabel lblNewLabel_1 = new JLabel("Fun\u00E7\u00E3o");
+      lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+      lblNewLabel_1.setBounds(587, 84, 95, 16);
+      panel.add(lblNewLabel_1);
+      
+      lblEstado = new JLabel("Estado");
+      lblEstado.setHorizontalAlignment(SwingConstants.CENTER);
+      lblEstado.setBounds(587, 17, 95, 16);
+      panel.add(lblEstado);
       
       
       salarioText.addFocusListener(new FocusAdapter() {
