@@ -2,6 +2,7 @@
 package com.myscrum.model;
 
 import java.awt.Color;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -11,16 +12,16 @@ import java.util.Date;
 
 import javax.swing.JOptionPane;
 
-import com.myscrum.banco.BD;
+import com.myscrum.banco.Banco;
 
 public class KambanDAO extends kamban {
 
-	public static BD bd = new BD();
-	public static BD bdAFazer = new BD();
-	public static BD bdFazendo = new BD();
-	public static BD bdFeito = new BD();
+	public static ResultSet bdAFazer;
+	public static ResultSet bdFazendo;
+	public static ResultSet bdFeito;
 
-//-----------------------------------------------CALCULOS DE PRODUÇÂO--------------------------------------------------------------------//		
+	// -----------------------------------------------CALCULOS DE
+	// PRODUÇÂO--------------------------------------------------------------------//
 
 	public String dataDeHoje() {
 		Date hoje = new Date();// Pegando data de hoje
@@ -172,18 +173,20 @@ public class KambanDAO extends kamban {
 		getFeriados().removeAll(getFeriados());// Zera a lista de feriados
 
 		String sql = "SELECT data_feriado FROM feriados";
-		try {
+		if (Banco.conexao()) {
+			try {
 
-			bd.st = bd.con.prepareStatement(sql);
+				Banco.st = Banco.con.prepareStatement(sql);
 
-			bd.rs = bd.st.executeQuery();
+				Banco.rs = Banco.st.executeQuery();
 
-			while (bd.rs.next() == true) {
-				setFeriados(bd.rs.getDate(1));
+				while (Banco.rs.next() == true) {
+					setFeriados(Banco.rs.getDate(1));
+				}
+
+			} catch (SQLException erro) {
+				JOptionPane.showMessageDialog(null, erro.toString(), "ERRO AO LISTAR FERIADOS NO PERIODO", 0);
 			}
-
-		} catch (SQLException erro) {
-			JOptionPane.showMessageDialog(null, erro.toString(), "ERRO AO LISTAR FERIADOS NO PERIODO", 0);
 		}
 	}
 
@@ -234,10 +237,10 @@ public class KambanDAO extends kamban {
 
 		long dt1 = (hoje.getTime() - data_fim.getTime()) + 3600000; // 1 hora para compensar horário de verão
 		long dias1 = (dt1 / 86400000L);
-		
+
 		long dt2 = data_real.getTime() - hoje.getTime() + 3600000;
 		long dias2 = (dt2 / 86400000L);
-		
+
 		double Percentual = 100 / Double.parseDouble(getPrazo(coluna, linha));
 
 		double PercentualRealizado = Double.parseDouble(String.valueOf(dias)) * Percentual;
@@ -246,7 +249,7 @@ public class KambanDAO extends kamban {
 			setAtrasada(coluna, linha, Color.RED);
 			setAtrasadoOuEmdia(coluna, linha, "ATRASADO");
 			setDias_iniciado(coluna, linha, "");
-			if(dias != 1)
+			if (dias != 1)
 				Retorno = "Atrasada em " + dias + " dias";
 			else
 				Retorno = "Atrasada em " + dias + " dia";
@@ -261,11 +264,11 @@ public class KambanDAO extends kamban {
 				Retorno = "Falta 1 dia p/ início";
 			else
 				Retorno = "Inicia hoje";
-			
+
 		} else if (getStatus(coluna, linha).equals("Fazendo") && dias1 >= 1) {
 			setAtrasada(coluna, linha, Color.RED);
 			setAtrasadoOuEmdia(coluna, linha, "ATRASADO");
-			if(dias1 != 1)
+			if (dias1 != 1)
 				Retorno = "Atrasada em " + dias1 + " dias";
 			else
 				Retorno = "Atrasada em " + dias1 + " dia";
@@ -274,7 +277,7 @@ public class KambanDAO extends kamban {
 				&& Double.parseDouble(getPorcentagem(coluna, linha)) < PercentualRealizado) {
 			setAtrasada(coluna, linha, new Color(230, 230, 0));/// AMARELO
 			setAtrasadoOuEmdia(coluna, linha, "ATENÇÂO");
-			if(dias != 1)
+			if (dias != 1)
 				Retorno = "Iniciada a " + dias + " dias";
 			else
 				Retorno = "Iniciada a " + dias + " dia";
@@ -287,7 +290,7 @@ public class KambanDAO extends kamban {
 		} else {
 			setAtrasada(coluna, linha, new Color(30, 200, 30));
 			setAtrasadoOuEmdia(coluna, linha, "ADIANTADA");
-			if(dias != 1)
+			if (dias != 1)
 				Retorno = "Tarefa adiantada"; // Confirmar escrita *********
 			else
 				Retorno = "Tarefa adiantada";
@@ -299,9 +302,11 @@ public class KambanDAO extends kamban {
 		return Retorno;
 	}
 
-//-----------------------------------------------CALCULOS DE PRODUÇÂO--------------------------------------------------------------------//	
+	// -----------------------------------------------CALCULOS DE
+	// PRODUÇÂO--------------------------------------------------------------------//
 
-//--------------------------------------------METODOS PARA TAREFAS A FAZER---------------------------------------------------------------//
+	// --------------------------------------------METODOS PARA TAREFAS A
+	// FAZER---------------------------------------------------------------//
 
 	int contadorIncioAFazer;
 	int contadorFimAFazer;
@@ -322,87 +327,97 @@ public class KambanDAO extends kamban {
 					+ "(SELECT departamento.departamento FROM departamento WHERE departamento.id_departamento=tarefa.id_departamento) AS Departamento, \r\n"
 					+ "tarefa.responsavel, tarefa.autoridade,\r\n"
 					+ "(SELECT CONCAT_WS('/',executor.executor1,executor.executor2,executor.executor3,executor.executor4,executor.executor5,executor.executor6,executor.executor7,executor.executor8,executor.executor9,executor.executor10)\r\n"
-					+ "FROM executor \r\n" 
-					+ "WHERE executor.id_tarefa=tarefa.id_tarefa) AS Executores, \r\n"
-					+ "tarefa.pendente_por, \r\n"
-					+ "tarefa.anexo1, \r\n"
-					+ "tarefa.anexo2, \r\n"
-					+ "tarefa.anexo3, \r\n"
-					+ "tarefa.anexo4 \r\n" 
-					+ "FROM tarefa\r\n" 
-					+ "WHERE  tarefa.stat= 'A fazer'\r\n"
-					+ "ORDER BY tarefa.prioridade";
+					+ "FROM executor \r\n" + "WHERE executor.id_tarefa=tarefa.id_tarefa) AS Executores, \r\n"
+					+ "tarefa.pendente_por, \r\n" + "tarefa.anexo1, \r\n" + "tarefa.anexo2, \r\n"
+					+ "tarefa.anexo3, \r\n" + "tarefa.anexo4 \r\n" + "FROM tarefa\r\n"
+					+ "WHERE  tarefa.stat= 'A fazer'\r\n" + "ORDER BY tarefa.prioridade";
 		} else {// se não use o select com filtro
 			sql = filtro;
 		}
-		try {
+		if (Banco.conexao()) {
+			try {
 
-			bdAFazer.st = bdAFazer.con.prepareStatement(sql);
+				Banco.st = Banco.con.prepareStatement(sql);
 
-			bdAFazer.rs = bdAFazer.st.executeQuery();
+				bdAFazer = Banco.st.executeQuery();
 
-			while (bdAFazer.rs.next()) {
-				// Calcua produção da tarefa
-				calcularProducao(bdAFazer.rs.getString("Data_Inicio"), bdAFazer.rs.getString("data_fim"),
-						bdAFazer.rs.getString("stat"), bdAFazer.rs.getString("porcentagem"),
-						bdAFazer.rs.getString("prioridade"), bdAFazer.rs.getDouble("Peso"));
+				while (bdAFazer.next()) {
+					// Calcua produção da tarefa
+					calcularProducao(bdAFazer.getString("Data_Inicio"), bdAFazer.getString("data_fim"),
+							bdAFazer.getString("stat"), bdAFazer.getString("porcentagem"),
+							bdAFazer.getString("prioridade"), bdAFazer.getDouble("Peso"));
 
-				setQtd_Afazer(getQtd_Afazer() + 1);
-			}
+					setQtd_Afazer(getQtd_Afazer() + 1);
+				}
 
-			bdAFazer.rs.absolute(0);// Seleciona a primeira linha o result set novamente
-			for (int a = 0; a <= 1; a++) {
-				for (int b = 0; b <= 4; b++) {
-					if (bdAFazer.rs.next() == true) {
+				bdAFazer.absolute(0);// Seleciona a primeira linha o result set novamente
+				for (int a = 0; a <= 1; a++) {
+					for (int b = 0; b <= 4; b++) {
+						if (bdAFazer.next() == true) {
 
-						// Aumenta o contador a cada tarefa armazenada
-						contadorFimAFazer++;
+							// Aumenta o contador a cada tarefa armazenada
+							contadorFimAFazer++;
 
-						// Armazena os dados da tarefa em suas posiçãs
-						setId(a, b, Integer.parseInt(bdAFazer.rs.getString("id_tarefa")));
-						setDias_iniciado(a, b, CalcularDiasIniciados(bdAFazer.rs.getDate("data_real")));
-						setDesc(a, b, bdAFazer.rs.getString("descri"));
-						setPrioridade(a, b, bdAFazer.rs.getString("prioridade"));
-						setTamanho(a, b, bdAFazer.rs.getString("Tamanho"));
-						setDpto(a, b, bdAFazer.rs.getString("Departamento"));
-						String data_real = new SimpleDateFormat("dd/MM/yyyy").format(bdAFazer.rs.getDate("data_real"));// Tranformando
-																														// data
-																														// para
-																														// BR
-						setData_real(a, b, data_real);
-						String data_fim = new SimpleDateFormat("dd/MM/yyyy").format(bdAFazer.rs.getDate("data_fim"));// Tranformando
-																														// data
-																														// para
-																														// BR
-						setData_fim(a, b, data_fim);
-						setPrazo(a, b, bdAFazer.rs.getString("prazo"));
-						setStatus_pendencia(a, b, bdAFazer.rs.getString("status_pendencia"));
-						setPorcentagem(a, b, bdAFazer.rs.getString("porcentagem"));
-						setPeso(a, b, bdAFazer.rs.getString("Peso"));
-						setPontuacao_realizada(a, b,
-								String.valueOf(CalcularPontosRealizados(bdAFazer.rs.getDouble("porcentagem"),
-										bdAFazer.rs.getDouble("Peso"))));
-						setCentro_custo(a, b, bdAFazer.rs.getString("Centro_de_Custo"));
-						setResponsavel(a, b, bdAFazer.rs.getString("responsavel"));
-						setAutoridade(a, b, bdAFazer.rs.getString("autoridade"));
-						setExecutores(a, b, bdAFazer.rs.getString("Executores"));
-						setStatus(a, b, bdAFazer.rs.getString("stat"));
-						setDias_atraso(a, b, CalcularAtraso(bdAFazer.rs.getDate("data_real"),
-								bdAFazer.rs.getDate("data_fim"), a, b));
-						setPendete_por(a, b, bdAFazer.rs.getString("pendente_por"));
-						
-						if(bdAFazer.rs.getString("anexo1") == null && bdAFazer.rs.getString("anexo2") == null 
-								&& bdAFazer.rs.getString("anexo3") == null && bdAFazer.rs.getString("anexo4") == null) {// se não houver nenhum anexo, passamos false para o set da variavel
-							setAnexo(a, b, false);
-						}else {
-							setAnexo(a, b, true);
+							// Armazena os dados da tarefa em suas posiçãs
+							setId(a, b, Integer.parseInt(bdAFazer.getString("id_tarefa")));
+							setDias_iniciado(a, b, CalcularDiasIniciados(bdAFazer.getDate("data_real")));
+							setDesc(a, b, bdAFazer.getString("descri"));
+							setPrioridade(a, b, bdAFazer.getString("prioridade"));
+							setTamanho(a, b, bdAFazer.getString("Tamanho"));
+							setDpto(a, b, bdAFazer.getString("Departamento"));
+							String data_real = new SimpleDateFormat("dd/MM/yyyy")
+									.format(bdAFazer.getDate("data_real"));// Tranformando
+																				// data
+																				// para
+																				// BR
+							setData_real(a, b, data_real);
+							String data_fim = new SimpleDateFormat("dd/MM/yyyy")
+									.format(bdAFazer.getDate("data_fim"));// Tranformando
+																				// data
+																				// para
+																				// BR
+							setData_fim(a, b, data_fim);
+							setPrazo(a, b, bdAFazer.getString("prazo"));
+							setStatus_pendencia(a, b, bdAFazer.getString("status_pendencia"));
+							setPorcentagem(a, b, bdAFazer.getString("porcentagem"));
+							setPeso(a, b, bdAFazer.getString("Peso"));
+							setPontuacao_realizada(a, b,
+									String.valueOf(CalcularPontosRealizados(bdAFazer.getDouble("porcentagem"),
+											bdAFazer.getDouble("Peso"))));
+							setCentro_custo(a, b, bdAFazer.getString("Centro_de_Custo"));
+							setResponsavel(a, b, bdAFazer.getString("responsavel"));
+							setAutoridade(a, b, bdAFazer.getString("autoridade"));
+							setExecutores(a, b, bdAFazer.getString("Executores"));
+							setStatus(a, b, bdAFazer.getString("stat"));
+							setDias_atraso(a, b, CalcularAtraso(bdAFazer.getDate("data_real"),
+									bdAFazer.getDate("data_fim"), a, b));
+							setPendete_por(a, b, bdAFazer.getString("pendente_por"));
+
+							if (bdAFazer.getString("anexo1") == null && bdAFazer.getString("anexo2") == null
+									&& bdAFazer.getString("anexo3") == null
+									&& bdAFazer.getString("anexo4") == null) {// se
+								// não
+								// houver
+								// nenhum
+								// anexo,
+								// passamos
+								// false
+								// para
+								// o
+								// set
+								// da
+								// variavel
+								setAnexo(a, b, false);
+							} else {
+								setAnexo(a, b, true);
+							}
+
 						}
-
 					}
 				}
+			} catch (SQLException erro) {
+				JOptionPane.showMessageDialog(null, erro.toString(), "Erro na pesquisa de tarefas a fazer", 0);
 			}
-		} catch (SQLException erro) {
-			JOptionPane.showMessageDialog(null, erro.toString(), "Erro na pesquisa de tarefas a fazer", 0);
 		}
 	}
 
@@ -410,49 +425,67 @@ public class KambanDAO extends kamban {
 		boolean retorno = false;
 		limparVariaveisAFazer();
 		try {
-			bdAFazer.rs.absolute(contadorFimAFazer);
-			if (bdAFazer.rs.next() == true) {// Se ainda existir resultado prossiga
+			bdAFazer.absolute(contadorFimAFazer);
+			if (bdAFazer.next() == true) {// Se ainda existir resultado prossiga
 				retorno = true;
-				bdAFazer.rs.absolute(contadorFimAFazer);// Poscicionando o ResultSet na ultima posição usada
+				bdAFazer.absolute(contadorFimAFazer);// Poscicionando o ResultSet na ultima posição usada
 				contadorIncioAFazer += 10;
 				for (int a = 0; a <= 1; a++) {
 					for (int b = 0; b <= 4; b++) {
 
-						if (bdAFazer.rs.next() == true) {
+						if (bdAFazer.next() == true) {
 
 							contadorFimAFazer++;
-							setId(a, b, Integer.parseInt(bdAFazer.rs.getString("id_tarefa")));
-							setDias_iniciado(a, b, CalcularDiasIniciados(bdAFazer.rs.getDate("data_real")));
-							setDesc(a, b, bdAFazer.rs.getString("descri"));
-							setPrioridade(a, b, bdAFazer.rs.getString("prioridade"));
-							setTamanho(a, b, bdAFazer.rs.getString("Tamanho"));
-							setDpto(a, b, bdAFazer.rs.getString("Departamento"));
+							setId(a, b, Integer.parseInt(bdAFazer.getString("id_tarefa")));
+							setDias_iniciado(a, b, CalcularDiasIniciados(bdAFazer.getDate("data_real")));
+							setDesc(a, b, bdAFazer.getString("descri"));
+							setPrioridade(a, b, bdAFazer.getString("prioridade"));
+							setTamanho(a, b, bdAFazer.getString("Tamanho"));
+							setDpto(a, b, bdAFazer.getString("Departamento"));
 							String data_real = new SimpleDateFormat("dd/MM/yyyy")
-									.format(bdAFazer.rs.getDate("data_real"));// Tranformando data para BR
+									.format(bdAFazer.getDate("data_real"));// Tranformando
+																				// data
+																				// para
+																				// BR
 							setData_real(a, b, data_real);
 							String data_fim = new SimpleDateFormat("dd/MM/yyyy")
-									.format(bdAFazer.rs.getDate("data_fim"));// Tranformando data para BR
+									.format(bdAFazer.getDate("data_fim"));// Tranformando
+																				// data
+																				// para
+																				// BR
 							setData_fim(a, b, data_fim);
-							setPrazo(a, b, bdAFazer.rs.getString("prazo"));
-							setStatus_pendencia(a, b, bdAFazer.rs.getString("status_pendencia"));
-							setPorcentagem(a, b, bdAFazer.rs.getString("porcentagem"));
-							setPeso(a, b, bdAFazer.rs.getString("Peso"));
+							setPrazo(a, b, bdAFazer.getString("prazo"));
+							setStatus_pendencia(a, b, bdAFazer.getString("status_pendencia"));
+							setPorcentagem(a, b, bdAFazer.getString("porcentagem"));
+							setPeso(a, b, bdAFazer.getString("Peso"));
 							setPontuacao_realizada(a, b,
-									String.valueOf(CalcularPontosRealizados(bdAFazer.rs.getDouble("porcentagem"),
-											bdAFazer.rs.getDouble("Peso"))));
-							setCentro_custo(a, b, bdAFazer.rs.getString("Centro_de_Custo"));
-							setResponsavel(a, b, bdAFazer.rs.getString("responsavel"));
-							setAutoridade(a, b, bdAFazer.rs.getString("autoridade"));
-							setExecutores(a, b, bdAFazer.rs.getString("Executores"));
-							setStatus(a, b, bdAFazer.rs.getString("stat"));
-							setDias_atraso(a, b, CalcularAtraso(bdAFazer.rs.getDate("data_real"),
-									bdAFazer.rs.getDate("data_fim"), a, b));
-							setPendete_por(a, b, bdAFazer.rs.getString("pendente_por"));
-							
-							if(bdAFazer.rs.getString("anexo1") == null && bdAFazer.rs.getString("anexo2") == null 
-									&& bdAFazer.rs.getString("anexo3") == null && bdAFazer.rs.getString("anexo4") == null) {// se não houver nenhum anexo, passamos false para o set da variavel
+									String.valueOf(CalcularPontosRealizados(bdAFazer.getDouble("porcentagem"),
+											bdAFazer.getDouble("Peso"))));
+							setCentro_custo(a, b, bdAFazer.getString("Centro_de_Custo"));
+							setResponsavel(a, b, bdAFazer.getString("responsavel"));
+							setAutoridade(a, b, bdAFazer.getString("autoridade"));
+							setExecutores(a, b, bdAFazer.getString("Executores"));
+							setStatus(a, b, bdAFazer.getString("stat"));
+							setDias_atraso(a, b, CalcularAtraso(bdAFazer.getDate("data_real"),
+									bdAFazer.getDate("data_fim"), a, b));
+							setPendete_por(a, b, bdAFazer.getString("pendente_por"));
+
+							if (bdAFazer.getString("anexo1") == null && bdAFazer.getString("anexo2") == null
+									&& bdAFazer.getString("anexo3") == null
+									&& bdAFazer.getString("anexo4") == null) {// se
+								// não
+								// houver
+								// nenhum
+								// anexo,
+								// passamos
+								// false
+								// para
+								// o
+								// set
+								// da
+								// variavel
 								setAnexo(a, b, false);
-							}else {
+							} else {
 								setAnexo(a, b, true);
 							}
 
@@ -473,47 +506,65 @@ public class KambanDAO extends kamban {
 		boolean retorno = false;
 		limparVariaveisAFazer();
 		try {
-			if (contadorIncioAFazer != 1 && bdAFazer.rs.previous() == true) {
+			if (contadorIncioAFazer != 1 && bdAFazer.previous() == true) {
 
 				retorno = true;
-				bdAFazer.rs.absolute(contadorIncioAFazer);
+				bdAFazer.absolute(contadorIncioAFazer);
 				for (int a = 1; a >= 0; a--) {
 					for (int b = 4; b >= 0; b--) {
-						if (bdAFazer.rs.previous() == true) {
+						if (bdAFazer.previous() == true) {
 
 							contadorIncioAFazer--;
-							setId(a, b, Integer.parseInt(bdAFazer.rs.getString("id_tarefa")));
-							setDias_iniciado(a, b, CalcularDiasIniciados(bdAFazer.rs.getDate("data_real")));
-							setDesc(a, b, bdAFazer.rs.getString("descri"));
-							setPrioridade(a, b, bdAFazer.rs.getString("prioridade"));
-							setTamanho(a, b, bdAFazer.rs.getString("Tamanho"));
-							setDpto(a, b, bdAFazer.rs.getString("Departamento"));
+							setId(a, b, Integer.parseInt(bdAFazer.getString("id_tarefa")));
+							setDias_iniciado(a, b, CalcularDiasIniciados(bdAFazer.getDate("data_real")));
+							setDesc(a, b, bdAFazer.getString("descri"));
+							setPrioridade(a, b, bdAFazer.getString("prioridade"));
+							setTamanho(a, b, bdAFazer.getString("Tamanho"));
+							setDpto(a, b, bdAFazer.getString("Departamento"));
 							String data_real = new SimpleDateFormat("dd/MM/yyyy")
-									.format(bdAFazer.rs.getDate("data_real"));// Tranformando data para BR
+									.format(bdAFazer.getDate("data_real"));// Tranformando
+																				// data
+																				// para
+																				// BR
 							setData_real(a, b, data_real);
 							String data_fim = new SimpleDateFormat("dd/MM/yyyy")
-									.format(bdAFazer.rs.getDate("data_fim"));// Tranformando data para BR
+									.format(bdAFazer.getDate("data_fim"));// Tranformando
+																				// data
+																				// para
+																				// BR
 							setData_fim(a, b, data_fim);
-							setPrazo(a, b, bdAFazer.rs.getString("prazo"));
-							setStatus_pendencia(a, b, bdAFazer.rs.getString("status_pendencia"));
-							setPorcentagem(a, b, bdAFazer.rs.getString("porcentagem"));
-							setPeso(a, b, bdAFazer.rs.getString("Peso"));
+							setPrazo(a, b, bdAFazer.getString("prazo"));
+							setStatus_pendencia(a, b, bdAFazer.getString("status_pendencia"));
+							setPorcentagem(a, b, bdAFazer.getString("porcentagem"));
+							setPeso(a, b, bdAFazer.getString("Peso"));
 							setPontuacao_realizada(a, b,
-									String.valueOf(CalcularPontosRealizados(bdAFazer.rs.getDouble("porcentagem"),
-											bdAFazer.rs.getDouble("Peso"))));
-							setCentro_custo(a, b, bdAFazer.rs.getString("Centro_de_Custo"));
-							setResponsavel(a, b, bdAFazer.rs.getString("responsavel"));
-							setAutoridade(a, b, bdAFazer.rs.getString("autoridade"));
-							setExecutores(a, b, bdAFazer.rs.getString("Executores"));
-							setStatus(a, b, bdAFazer.rs.getString("stat"));
-							setDias_atraso(a, b, CalcularAtraso(bdAFazer.rs.getDate("data_real"),
-									bdAFazer.rs.getDate("data_fim"), a, b));
-							setPendete_por(a, b, bdAFazer.rs.getString("pendente_por"));
-							
-							if(bdAFazer.rs.getString("anexo1") == null && bdAFazer.rs.getString("anexo2") == null 
-									&& bdAFazer.rs.getString("anexo3") == null && bdAFazer.rs.getString("anexo4") == null) {// se não houver nenhum anexo, passamos false para o set da variavel
+									String.valueOf(CalcularPontosRealizados(bdAFazer.getDouble("porcentagem"),
+											bdAFazer.getDouble("Peso"))));
+							setCentro_custo(a, b, bdAFazer.getString("Centro_de_Custo"));
+							setResponsavel(a, b, bdAFazer.getString("responsavel"));
+							setAutoridade(a, b, bdAFazer.getString("autoridade"));
+							setExecutores(a, b, bdAFazer.getString("Executores"));
+							setStatus(a, b, bdAFazer.getString("stat"));
+							setDias_atraso(a, b, CalcularAtraso(bdAFazer.getDate("data_real"),
+									bdAFazer.getDate("data_fim"), a, b));
+							setPendete_por(a, b, bdAFazer.getString("pendente_por"));
+
+							if (bdAFazer.getString("anexo1") == null && bdAFazer.getString("anexo2") == null
+									&& bdAFazer.getString("anexo3") == null
+									&& bdAFazer.getString("anexo4") == null) {// se
+								// não
+								// houver
+								// nenhum
+								// anexo,
+								// passamos
+								// false
+								// para
+								// o
+								// set
+								// da
+								// variavel
 								setAnexo(a, b, false);
-							}else {
+							} else {
 								setAnexo(a, b, true);
 							}
 
@@ -559,9 +610,11 @@ public class KambanDAO extends kamban {
 		}
 	}
 
-//--------------------------------------------METODOS PARA TAREFAS A FAZER---------------------------------------------------------------//	
+	// --------------------------------------------METODOS PARA TAREFAS A
+	// FAZER---------------------------------------------------------------//
 
-//--------------------------------------------METODOS PARA TAREFAS FAZENDO---------------------------------------------------------------//
+	// --------------------------------------------METODOS PARA TAREFAS
+	// FAZENDO---------------------------------------------------------------//
 
 	int contadorIncioFazendo;
 	int contadorFimFazendo;
@@ -582,89 +635,100 @@ public class KambanDAO extends kamban {
 					+ "(SELECT departamento.departamento FROM departamento WHERE departamento.id_departamento=tarefa.id_departamento) AS Deparamento, \r\n"
 					+ "tarefa.responsavel, tarefa.autoridade,\r\n"
 					+ "(SELECT CONCAT_WS('/',executor.executor1,executor.executor2,executor.executor3,executor.executor4,executor.executor5,executor.executor6,executor.executor7,executor.executor8,executor.executor9,executor.executor10)\r\n"
-					+ "FROM executor \r\n" 
-					+ "WHERE executor.id_tarefa=tarefa.id_tarefa) AS Executores, \r\n"
-					+ "tarefa.pendente_por, \r\n" 
-					+ "tarefa.anexo1, \r\n"
-					+ "tarefa.anexo2, \r\n"
-					+ "tarefa.anexo3, \r\n"
-					+ "tarefa.anexo4 \r\n" 
-					+ "FROM tarefa\r\n" 
-					+ "WHERE  tarefa.stat= 'Fazendo'\r\n"
-					+ "ORDER BY tarefa.prioridade";
+					+ "FROM executor \r\n" + "WHERE executor.id_tarefa=tarefa.id_tarefa) AS Executores, \r\n"
+					+ "tarefa.pendente_por, \r\n" + "tarefa.anexo1, \r\n" + "tarefa.anexo2, \r\n"
+					+ "tarefa.anexo3, \r\n" + "tarefa.anexo4 \r\n" + "FROM tarefa\r\n"
+					+ "WHERE  tarefa.stat= 'Fazendo'\r\n" + "ORDER BY tarefa.prioridade";
 
 		} else {// se não use o select com filtro
 			sql = filtro;
 		}
 
-		try {
+		if (Banco.conexao()) {
+			try {
 
-			bdFazendo.st = bdFazendo.con.prepareStatement(sql);
+				Banco.st = Banco.con.prepareStatement(sql);
 
-			bdFazendo.rs = bdFazendo.st.executeQuery();
+				bdFazendo = Banco.st.executeQuery();
 
-			while (bdFazendo.rs.next()) {
-				// Calcua produção da tarefa
-				calcularProducao(bdFazendo.rs.getString("Data_Inicio"), bdFazendo.rs.getString("data_fim"),
-						bdFazendo.rs.getString("stat"), bdFazendo.rs.getString("porcentagem"),
-						bdFazendo.rs.getString("prioridade"), bdFazendo.rs.getDouble("Peso"));
+				while (bdFazendo.next()) {
+					// Calcua produção da tarefa
+					calcularProducao(bdFazendo.getString("Data_Inicio"),
+							bdFazendo.getString("data_fim"),
+							bdFazendo.getString("stat"), bdFazendo.getString("porcentagem"),
+							bdFazendo.getString("prioridade"), bdFazendo.getDouble("Peso"));
 
-				setQtd_Fazendo(getQtd_Fazendo() + 1);
-			}
+					setQtd_Fazendo(getQtd_Fazendo() + 1);
+				}
 
-			bdFazendo.rs.absolute(0);// seleciona primeira linha do rsult set
-			for (int a = 2; a <= 3; a++) {
-				for (int b = 0; b <= 4; b++) {
-					if (bdFazendo.rs.next() == true) {
+				bdFazendo.absolute(0);// seleciona primeira linha do rsult set
+				for (int a = 2; a <= 3; a++) {
+					for (int b = 0; b <= 4; b++) {
+						if (bdFazendo.next() == true) {
 
-						// Aumenta o contador a cada tarefa listada
-						contadorFimFazendo++;
+							// Aumenta o contador a cada tarefa listada
+							contadorFimFazendo++;
 
-						// Armazena os dados da tarefa em suas posições
-						setId(a, b, Integer.parseInt(bdFazendo.rs.getString("id_tarefa")));
-						setDias_iniciado(a, b, CalcularDiasIniciados(bdFazendo.rs.getDate("data_real")));
-						setDesc(a, b, bdFazendo.rs.getString("descri"));
-						setPrioridade(a, b, bdFazendo.rs.getString("prioridade"));
-						setTamanho(a, b, bdFazendo.rs.getString("Tamanho"));
-						setDpto(a, b, bdFazendo.rs.getString("Departamento"));
-						String data_real = new SimpleDateFormat("dd/MM/yyyy").format(bdFazendo.rs.getDate("data_real"));// Tranformando
-																														// data
-																														// para
-																														// BR
-						setData_real(a, b, data_real);
-						String data_fim = new SimpleDateFormat("dd/MM/yyyy").format(bdFazendo.rs.getDate("data_fim"));// Tranformando
-																														// data
-																														// para
-																														// BR
-						setData_fim(a, b, data_fim);
-						setPrazo(a, b, bdFazendo.rs.getString("prazo"));
-						setStatus_pendencia(a, b, bdFazendo.rs.getString("status_pendencia"));
-						setPorcentagem(a, b, bdFazendo.rs.getString("porcentagem"));
-						setPeso(a, b, bdFazendo.rs.getString("Peso"));
-						setPontuacao_realizada(a, b,
-								String.valueOf(CalcularPontosRealizados(bdFazendo.rs.getDouble("porcentagem"),
-										bdFazendo.rs.getDouble("Peso"))));
-						setCentro_custo(a, b, bdFazendo.rs.getString("Centro_de_Custo"));
-						setResponsavel(a, b, bdFazendo.rs.getString("responsavel"));
-						setAutoridade(a, b, bdFazendo.rs.getString("autoridade"));
-						setExecutores(a, b, bdFazendo.rs.getString("Executores"));
-						setStatus(a, b, bdFazendo.rs.getString("stat"));
-						setDias_atraso(a, b, CalcularAtraso(bdFazendo.rs.getDate("data_real"),
-								bdFazendo.rs.getDate("data_fim"), a, b));
-						setPendete_por(a, b, bdFazendo.rs.getString("pendente_por"));
-						
-						if(bdFazendo.rs.getString("anexo1") == null && bdFazendo.rs.getString("anexo2") == null 
-								&& bdFazendo.rs.getString("anexo3") == null && bdFazendo.rs.getString("anexo4") == null) {// se não houver nenhum anexo, passamos false para o set da variavel
-							setAnexo(a, b, false);
-						}else {
-							setAnexo(a, b, true);
+							// Armazena os dados da tarefa em suas posições
+							setId(a, b, Integer.parseInt(bdFazendo.getString("id_tarefa")));
+							setDias_iniciado(a, b, CalcularDiasIniciados(bdFazendo.getDate("data_real")));
+							setDesc(a, b, bdFazendo.getString("descri"));
+							setPrioridade(a, b, bdFazendo.getString("prioridade"));
+							setTamanho(a, b, bdFazendo.getString("Tamanho"));
+							setDpto(a, b, bdFazendo.getString("Departamento"));
+							String data_real = new SimpleDateFormat("dd/MM/yyyy")
+									.format(bdFazendo.getDate("data_real"));// Tranformando
+																				// data
+																				// para
+																				// BR
+							setData_real(a, b, data_real);
+							String data_fim = new SimpleDateFormat("dd/MM/yyyy")
+									.format(bdFazendo.getDate("data_fim"));// Tranformando
+																				// data
+																				// para
+																				// BR
+							setData_fim(a, b, data_fim);
+							setPrazo(a, b, bdFazendo.getString("prazo"));
+							setStatus_pendencia(a, b, bdFazendo.getString("status_pendencia"));
+							setPorcentagem(a, b, bdFazendo.getString("porcentagem"));
+							setPeso(a, b, bdFazendo.getString("Peso"));
+							setPontuacao_realizada(a, b,
+									String.valueOf(CalcularPontosRealizados(bdFazendo.getDouble("porcentagem"),
+											bdFazendo.getDouble("Peso"))));
+							setCentro_custo(a, b, bdFazendo.getString("Centro_de_Custo"));
+							setResponsavel(a, b, bdFazendo.getString("responsavel"));
+							setAutoridade(a, b, bdFazendo.getString("autoridade"));
+							setExecutores(a, b, bdFazendo.getString("Executores"));
+							setStatus(a, b, bdFazendo.getString("stat"));
+							setDias_atraso(a, b, CalcularAtraso(bdFazendo.getDate("data_real"),
+									bdFazendo.getDate("data_fim"), a, b));
+							setPendete_por(a, b, bdFazendo.getString("pendente_por"));
+
+							if (bdFazendo.getString("anexo1") == null && bdFazendo.getString("anexo2") == null
+									&& bdFazendo.getString("anexo3") == null
+									&& bdFazendo.getString("anexo4") == null) {// se
+								// não
+								// houver
+								// nenhum
+								// anexo,
+								// passamos
+								// false
+								// para
+								// o
+								// set
+								// da
+								// variavel
+								setAnexo(a, b, false);
+							} else {
+								setAnexo(a, b, true);
+							}
+
 						}
-
 					}
 				}
+			} catch (SQLException erro) {
+				JOptionPane.showMessageDialog(null, erro.toString(), "ERRO AQUI", 0);
 			}
-		} catch (SQLException erro) {
-			JOptionPane.showMessageDialog(null, erro.toString(), "ERRO AQUI", 0);
 		}
 	}
 
@@ -672,49 +736,64 @@ public class KambanDAO extends kamban {
 		boolean retorno = false;
 		limparVariaveisFazendo();
 		try {
-			bdFazendo.rs.absolute(contadorFimFazendo);
-			if (bdFazendo.rs.next() == true) {// Se ainda existir resultado prossiga
+			bdFazendo.absolute(contadorFimFazendo);
+			if (bdFazendo.next() == true) {// Se ainda existir resultado prossiga
 				retorno = true;
-				bdFazendo.rs.absolute(contadorFimFazendo);// Poscicionando o ResultSet na ultima posição usada
+				bdFazendo.absolute(contadorFimFazendo);// Poscicionando o ResultSet na ultima posição usada
 				contadorIncioFazendo += 10;
 				for (int a = 2; a <= 3; a++) {
 					for (int b = 0; b <= 4; b++) {
 
-						if (bdFazendo.rs.next() == true) {
+						if (bdFazendo.next() == true) {
 
 							contadorFimFazendo++;
-							setId(a, b, Integer.parseInt(bdFazendo.rs.getString("id_tarefa")));
-							setDias_iniciado(a, b, CalcularDiasIniciados(bdFazendo.rs.getDate("data_real")));
-							setDesc(a, b, bdFazendo.rs.getString("descri"));
-							setPrioridade(a, b, bdFazendo.rs.getString("prioridade"));
-							setTamanho(a, b, bdFazendo.rs.getString("Tamanho"));
+							setId(a, b, Integer.parseInt(bdFazendo.getString("id_tarefa")));
+							setDias_iniciado(a, b, CalcularDiasIniciados(bdFazendo.getDate("data_real")));
+							setDesc(a, b, bdFazendo.getString("descri"));
+							setPrioridade(a, b, bdFazendo.getString("prioridade"));
+							setTamanho(a, b, bdFazendo.getString("Tamanho"));
 							String data_real = new SimpleDateFormat("dd/MM/yyyy")
-									.format(bdFazendo.rs.getDate("data_real"));// Tranformando data para BR
-							setDpto(a, b, bdFazendo.rs.getString("Departamento"));
+									.format(bdFazendo.getDate("data_real"));// Tranformando data para BR
+							setDpto(a, b, bdFazendo.getString("Departamento"));
 							setData_real(a, b, data_real);
 							String data_fim = new SimpleDateFormat("dd/MM/yyyy")
-									.format(bdFazendo.rs.getDate("data_fim"));// Tranformando data para BR
+									.format(bdFazendo.getDate("data_fim"));// Tranformando
+																				// data
+																				// para
+																				// BR
 							setData_fim(a, b, data_fim);
-							setPrazo(a, b, bdFazendo.rs.getString("prazo"));
-							setStatus_pendencia(a, b, bdFazendo.rs.getString("status_pendencia"));
-							setPorcentagem(a, b, bdFazendo.rs.getString("porcentagem"));
-							setPeso(a, b, bdFazendo.rs.getString("Peso"));
+							setPrazo(a, b, bdFazendo.getString("prazo"));
+							setStatus_pendencia(a, b, bdFazendo.getString("status_pendencia"));
+							setPorcentagem(a, b, bdFazendo.getString("porcentagem"));
+							setPeso(a, b, bdFazendo.getString("Peso"));
 							setPontuacao_realizada(a, b,
-									String.valueOf(CalcularPontosRealizados(bdFazendo.rs.getDouble("porcentagem"),
-											bdFazendo.rs.getDouble("Peso"))));
-							setCentro_custo(a, b, bdFazendo.rs.getString("Centro_de_Custo"));
-							setResponsavel(a, b, bdFazendo.rs.getString("responsavel"));
-							setAutoridade(a, b, bdFazendo.rs.getString("autoridade"));
-							setExecutores(a, b, bdFazendo.rs.getString("Executores"));
-							setStatus(a, b, bdFazendo.rs.getString("stat"));
-							setDias_atraso(a, b, CalcularAtraso(bdFazendo.rs.getDate("data_real"),
-									bdFazendo.rs.getDate("data_fim"), a, b));
-							setPendete_por(a, b, bdFazendo.rs.getString("pendente_por"));
-							
-							if(bdFazendo.rs.getString("anexo1") == null && bdFazendo.rs.getString("anexo2") == null 
-									&& bdFazendo.rs.getString("anexo3") == null && bdFazendo.rs.getString("anexo4") == null) {// se não houver nenhum anexo, passamos false para o set da variavel
+									String.valueOf(CalcularPontosRealizados(bdFazendo.getDouble("porcentagem"),
+											bdFazendo.getDouble("Peso"))));
+							setCentro_custo(a, b, bdFazendo.getString("Centro_de_Custo"));
+							setResponsavel(a, b, bdFazendo.getString("responsavel"));
+							setAutoridade(a, b, bdFazendo.getString("autoridade"));
+							setExecutores(a, b, bdFazendo.getString("Executores"));
+							setStatus(a, b, bdFazendo.getString("stat"));
+							setDias_atraso(a, b, CalcularAtraso(bdFazendo.getDate("data_real"),
+									bdFazendo.getDate("data_fim"), a, b));
+							setPendete_por(a, b, bdFazendo.getString("pendente_por"));
+
+							if (bdFazendo.getString("anexo1") == null && bdFazendo.getString("anexo2") == null
+									&& bdFazendo.getString("anexo3") == null
+									&& bdFazendo.getString("anexo4") == null) {// se
+								// não
+								// houver
+								// nenhum
+								// anexo,
+								// passamos
+								// false
+								// para
+								// o
+								// set
+								// da
+								// variavel
 								setAnexo(a, b, false);
-							}else {
+							} else {
 								setAnexo(a, b, true);
 							}
 
@@ -735,47 +814,62 @@ public class KambanDAO extends kamban {
 		boolean retorno = false;
 		limparVariaveisFazendo();
 		try {
-			if (contadorIncioFazendo != 1 && bdFazendo.rs.previous() == true) {
+			if (contadorIncioFazendo != 1 && bdFazendo.previous() == true) {
 
 				retorno = true;
-				bdFazendo.rs.absolute(contadorIncioFazendo);
+				bdFazendo.absolute(contadorIncioFazendo);
 				for (int a = 3; a >= 2; a--) {
 					for (int b = 4; b >= 0; b--) {
-						if (bdFazendo.rs.previous() == true) {
+						if (bdFazendo.previous() == true) {
 
 							contadorIncioFazendo--;
-							setId(a, b, Integer.parseInt(bdFazendo.rs.getString("id_tarefa")));
-							setDias_iniciado(a, b, CalcularDiasIniciados(bdFazendo.rs.getDate("data_real")));
-							setDesc(a, b, bdFazendo.rs.getString("descri"));
-							setPrioridade(a, b, bdFazendo.rs.getString("prioridade"));
-							setTamanho(a, b, bdFazendo.rs.getString("Tamanho"));
-							setDpto(a, b, bdFazendo.rs.getString("Departamento"));
+							setId(a, b, Integer.parseInt(bdFazendo.getString("id_tarefa")));
+							setDias_iniciado(a, b, CalcularDiasIniciados(bdFazendo.getDate("data_real")));
+							setDesc(a, b, bdFazendo.getString("descri"));
+							setPrioridade(a, b, bdFazendo.getString("prioridade"));
+							setTamanho(a, b, bdFazendo.getString("Tamanho"));
+							setDpto(a, b, bdFazendo.getString("Departamento"));
 							String data_real = new SimpleDateFormat("dd/MM/yyyy")
-									.format(bdFazendo.rs.getDate("data_real"));// Tranformando data para BR
+									.format(bdFazendo.getDate("data_real"));// Tranformando data para BR
 							setData_real(a, b, data_real);
 							String data_fim = new SimpleDateFormat("dd/MM/yyyy")
-									.format(bdFazendo.rs.getDate("data_fim"));// Tranformando data para BR
+									.format(bdFazendo.getDate("data_fim"));// Tranformando
+																				// data
+																				// para
+																				// BR
 							setData_fim(a, b, data_fim);
-							setPrazo(a, b, bdFazendo.rs.getString("prazo"));
-							setStatus_pendencia(a, b, bdFazendo.rs.getString("status_pendencia"));
-							setPorcentagem(a, b, bdFazendo.rs.getString("porcentagem"));
-							setPeso(a, b, bdFazendo.rs.getString("Peso"));
+							setPrazo(a, b, bdFazendo.getString("prazo"));
+							setStatus_pendencia(a, b, bdFazendo.getString("status_pendencia"));
+							setPorcentagem(a, b, bdFazendo.getString("porcentagem"));
+							setPeso(a, b, bdFazendo.getString("Peso"));
 							setPontuacao_realizada(a, b,
-									String.valueOf(CalcularPontosRealizados(bdFazendo.rs.getDouble("porcentagem"),
-											bdFazendo.rs.getDouble("Peso"))));
-							setCentro_custo(a, b, bdFazendo.rs.getString("Centro_de_Custo"));
-							setResponsavel(a, b, bdFazendo.rs.getString("responsavel"));
-							setAutoridade(a, b, bdFazendo.rs.getString("autoridade"));
-							setExecutores(a, b, bdFazendo.rs.getString("Executores"));
-							setStatus(a, b, bdFazendo.rs.getString("stat"));
-							setDias_atraso(a, b, CalcularAtraso(bdFazendo.rs.getDate("data_real"),
-									bdFazendo.rs.getDate("data_fim"), a, b));
-							setPendete_por(a, b, bdFazendo.rs.getString("pendente_por"));
-							
-							if(bdFazendo.rs.getString("anexo1") == null && bdFazendo.rs.getString("anexo2") == null 
-									&& bdFazendo.rs.getString("anexo3") == null && bdFazendo.rs.getString("anexo4") == null) {// se não houver nenhum anexo, passamos false para o set da variavel
+									String.valueOf(CalcularPontosRealizados(bdFazendo.getDouble("porcentagem"),
+											bdFazendo.getDouble("Peso"))));
+							setCentro_custo(a, b, bdFazendo.getString("Centro_de_Custo"));
+							setResponsavel(a, b, bdFazendo.getString("responsavel"));
+							setAutoridade(a, b, bdFazendo.getString("autoridade"));
+							setExecutores(a, b, bdFazendo.getString("Executores"));
+							setStatus(a, b, bdFazendo.getString("stat"));
+							setDias_atraso(a, b, CalcularAtraso(bdFazendo.getDate("data_real"),
+									bdFazendo.getDate("data_fim"), a, b));
+							setPendete_por(a, b, bdFazendo.getString("pendente_por"));
+
+							if (bdFazendo.getString("anexo1") == null && bdFazendo.getString("anexo2") == null
+									&& bdFazendo.getString("anexo3") == null
+									&& bdFazendo.getString("anexo4") == null) {// se
+								// não
+								// houver
+								// nenhum
+								// anexo,
+								// passamos
+								// false
+								// para
+								// o
+								// set
+								// da
+								// variavel
 								setAnexo(a, b, false);
-							}else {
+							} else {
 								setAnexo(a, b, true);
 							}
 
@@ -823,9 +917,11 @@ public class KambanDAO extends kamban {
 		}
 	}
 
-//--------------------------------------------METODOS PARA TAREFAS FAZENDO---------------------------------------------------------------//	
+	// --------------------------------------------METODOS PARA TAREFAS
+	// FAZENDO---------------------------------------------------------------//
 
-//--------------------------------------------METODOS PARA TAREFAS FEITO---------------------------------------------------------------//
+	// --------------------------------------------METODOS PARA TAREFAS
+	// FEITO---------------------------------------------------------------//
 
 	int contadorIncioFeito;
 	int contadorFimFeito;
@@ -837,76 +933,90 @@ public class KambanDAO extends kamban {
 		setQtd_Feito(0);
 
 		String sql = filtro;
+		if (Banco.conexao()) {
+			try {
 
-		try {
+				Banco.st = Banco.con.prepareStatement(sql);
 
-			bdFeito.st = bdFeito.con.prepareStatement(sql);
+				bdFeito = Banco.st.executeQuery();
 
-			bdFeito.rs = bdFeito.st.executeQuery();
+				while (bdFeito.next()) {
+					// Calcua produção da tarefa
+					calcularProducao(bdFeito.getString("Data_Inicio"), bdFeito.getString("data_fim"),
+							bdFeito.getString("stat"), bdFeito.getString("porcentagem"),
+							bdFeito.getString("prioridade"), bdFeito.getDouble("Peso"));
 
-			while (bdFeito.rs.next()) {
-				// Calcua produção da tarefa
-				calcularProducao(bdFeito.rs.getString("Data_Inicio"), bdFeito.rs.getString("data_fim"),
-						bdFeito.rs.getString("stat"), bdFeito.rs.getString("porcentagem"),
-						bdFeito.rs.getString("prioridade"), bdFeito.rs.getDouble("Peso"));
+					setQtd_Feito(getQtd_Feito() + 1);
+				}
 
-				setQtd_Feito(getQtd_Feito() + 1);
-			}
+				bdFeito.absolute(0);// Seleciona a primeira linha do result set
+				for (int a = 4; a <= 4; a++) {
+					for (int b = 0; b <= 4; b++) {
+						if (bdFeito.next() == true) {
 
-			bdFeito.rs.absolute(0);// Seleciona a primeira linha do result set
-			for (int a = 4; a <= 4; a++) {
-				for (int b = 0; b <= 4; b++) {
-					if (bdFeito.rs.next() == true) {
+							// Aumenta o contador a cada tarefa listada
+							contadorFimFeito++;
 
-						// Aumenta o contador a cada tarefa listada
-						contadorFimFeito++;
-
-						// Armazena os dados da tarefa em suas posições
-						setId(a, b, Integer.parseInt(bdFeito.rs.getString("id_tarefa")));
-						setDias_iniciado(a, b, CalcularDiasIniciados(bdFeito.rs.getDate("data_real")));
-						setDesc(a, b, bdFeito.rs.getString("descri"));
-						setPrioridade(a, b, bdFeito.rs.getString("prioridade"));
-						setTamanho(a, b, bdFeito.rs.getString("Tamanho"));
-						setDpto(a, b, bdFeito.rs.getString("Departamento"));
-						String data_real = new SimpleDateFormat("dd/MM/yyyy").format(bdFeito.rs.getDate("data_real"));// Tranformando
+							// Armazena os dados da tarefa em suas posições
+							setId(a, b, Integer.parseInt(bdFeito.getString("id_tarefa")));
+							setDias_iniciado(a, b, CalcularDiasIniciados(bdFeito.getDate("data_real")));
+							setDesc(a, b, bdFeito.getString("descri"));
+							setPrioridade(a, b, bdFeito.getString("prioridade"));
+							setTamanho(a, b, bdFeito.getString("Tamanho"));
+							setDpto(a, b, bdFeito.getString("Departamento"));
+							String data_real = new SimpleDateFormat("dd/MM/yyyy")
+									.format(bdFeito.getDate("data_real"));// Tranformando
+																				// data
+																				// para
+																				// BR
+							setData_real(a, b, data_real);
+							String data_fim = new SimpleDateFormat("dd/MM/yyyy").format(bdFeito.getDate("data_fim"));// Tranformando
 																														// data
 																														// para
 																														// BR
-						setData_real(a, b, data_real);
-						String data_fim = new SimpleDateFormat("dd/MM/yyyy").format(bdFeito.rs.getDate("data_fim"));// Tranformando
-																													// data
-																													// para
-																													// BR
-						setData_fim(a, b, data_fim);
-						setPrazo(a, b, bdFeito.rs.getString("prazo"));
-						setStatus_pendencia(a, b, bdFeito.rs.getString("status_pendencia"));
-						setPorcentagem(a, b, bdFeito.rs.getString("porcentagem"));
-						setPeso(a, b, bdFeito.rs.getString("Peso"));
-						setPontuacao_realizada(a, b,
-								String.valueOf(CalcularPontosRealizados(bdFeito.rs.getDouble("porcentagem"),
-										bdFeito.rs.getDouble("Peso"))));
-						setCentro_custo(a, b, bdFeito.rs.getString("Centro_de_Custo"));
-						setResponsavel(a, b, bdFeito.rs.getString("responsavel"));
-						setAutoridade(a, b, bdFeito.rs.getString("autoridade"));
-						setExecutores(a, b, bdFeito.rs.getString("Executores"));
-						setStatus(a, b, bdFeito.rs.getString("stat"));
-						setDias_atraso(a, b,
-								CalcularAtraso(bdFeito.rs.getDate("data_real"), bdFeito.rs.getDate("data_fim"), a, b));
-						setPendete_por(a, b, bdFeito.rs.getString("pendente_por"));
-						
-						if(bdFeito.rs.getString("anexo1") == null && bdFeito.rs.getString("anexo2") == null 
-								&& bdFeito.rs.getString("anexo3") == null && bdFeito.rs.getString("anexo4") == null) {// se não houver nenhum anexo, passamos false para o set da variavel
-							setAnexo(a, b, false);
-						}else {
-							setAnexo(a, b, true);
-						}
+							setData_fim(a, b, data_fim);
+							setPrazo(a, b, bdFeito.getString("prazo"));
+							setStatus_pendencia(a, b, bdFeito.getString("status_pendencia"));
+							setPorcentagem(a, b, bdFeito.getString("porcentagem"));
+							setPeso(a, b, bdFeito.getString("Peso"));
+							setPontuacao_realizada(a, b,
+									String.valueOf(CalcularPontosRealizados(bdFeito.getDouble("porcentagem"),
+											bdFeito.getDouble("Peso"))));
+							setCentro_custo(a, b, bdFeito.getString("Centro_de_Custo"));
+							setResponsavel(a, b, bdFeito.getString("responsavel"));
+							setAutoridade(a, b, bdFeito.getString("autoridade"));
+							setExecutores(a, b, bdFeito.getString("Executores"));
+							setStatus(a, b, bdFeito.getString("stat"));
+							setDias_atraso(a, b, CalcularAtraso(bdFeito.getDate("data_real"),
+									bdFeito.getDate("data_fim"), a, b));
+							setPendete_por(a, b, bdFeito.getString("pendente_por"));
 
+							if (bdFeito.getString("anexo1") == null && bdFeito.getString("anexo2") == null
+									&& bdFeito.getString("anexo3") == null
+									&& bdFeito.getString("anexo4") == null) {// se
+																				// não
+																				// houver
+																				// nenhum
+																				// anexo,
+																				// passamos
+																				// false
+																				// para
+																				// o
+																				// set
+																				// da
+																				// variavel
+								setAnexo(a, b, false);
+							} else {
+								setAnexo(a, b, true);
+							}
+
+						}
 					}
 				}
-			}
 
-		} catch (SQLException erro) {
-			JOptionPane.showMessageDialog(null, erro.toString(), "ERRO AO CARREGAR TAREFAS FEITAS", 0);
+			} catch (SQLException erro) {
+				JOptionPane.showMessageDialog(null, erro.toString(), "ERRO AO CARREGAR TAREFAS FEITAS", 0);
+			}
 		}
 	}
 
@@ -914,50 +1024,52 @@ public class KambanDAO extends kamban {
 		boolean retorno = false;
 		limparVariaveisFeito();
 		try {
-			if (bdFeito.rs.next() == true) {// Se ainda existir resultado prossiga
+			if (bdFeito.next() == true) {// Se ainda existir resultado prossiga
 				retorno = true;
-				bdFeito.rs.absolute(contadorFimFeito);// Poscicionando o ResultSet na ultima posição usada
+				bdFeito.absolute(contadorFimFeito);// Poscicionando o ResultSet na ultima posição usada
 				contadorIncioFeito += 5;
 				for (int a = 4; a <= 4; a++) {
 					for (int b = 0; b <= 4; b++) {
 
-						if (bdFeito.rs.next() == true) {
+						if (bdFeito.next() == true) {
 
 							contadorFimFeito++;
-							setId(a, b, Integer.parseInt(bdFeito.rs.getString("id_tarefa")));
-							setDias_iniciado(a, b, CalcularDiasIniciados(bdFeito.rs.getDate("data_real")));
-							setDesc(a, b, bdFeito.rs.getString("descri"));
-							setPrioridade(a, b, bdFeito.rs.getString("prioridade"));
-							setTamanho(a, b, bdFeito.rs.getString("Tamanho"));
-							setDpto(a, b, bdFeito.rs.getString("Departamento"));
+							setId(a, b, Integer.parseInt(bdFeito.getString("id_tarefa")));
+							setDias_iniciado(a, b, CalcularDiasIniciados(bdFeito.getDate("data_real")));
+							setDesc(a, b, bdFeito.getString("descri"));
+							setPrioridade(a, b, bdFeito.getString("prioridade"));
+							setTamanho(a, b, bdFeito.getString("Tamanho"));
+							setDpto(a, b, bdFeito.getString("Departamento"));
 							String data_real = new SimpleDateFormat("dd/MM/yyyy")
-									.format(bdFeito.rs.getDate("data_real"));// Tranformando data para BR
+									.format(bdFeito.getDate("data_real"));// Tranformando data para BR
 							setData_real(a, b, data_real);
-							String data_fim = new SimpleDateFormat("dd/MM/yyyy").format(bdFeito.rs.getDate("data_fim"));// Tranformando
+							String data_fim = new SimpleDateFormat("dd/MM/yyyy").format(bdFeito.getDate("data_fim"));// Tranformando
 																														// data
 																														// para
 																														// BR
 							setData_fim(a, b, data_fim);
-							setPrazo(a, b, bdFeito.rs.getString("prazo"));
-							setStatus_pendencia(a, b, bdFeito.rs.getString("status_pendencia"));
-							setPorcentagem(a, b, bdFeito.rs.getString("porcentagem"));
-							setPeso(a, b, bdFeito.rs.getString("Peso"));
+							setPrazo(a, b, bdFeito.getString("prazo"));
+							setStatus_pendencia(a, b, bdFeito.getString("status_pendencia"));
+							setPorcentagem(a, b, bdFeito.getString("porcentagem"));
+							setPeso(a, b, bdFeito.getString("Peso"));
 							setPontuacao_realizada(a, b,
-									String.valueOf(CalcularPontosRealizados(bdFeito.rs.getDouble("porcentagem"),
-											bdFeito.rs.getDouble("Peso"))));
-							setCentro_custo(a, b, bdFeito.rs.getString("Centro_de_Custo"));
-							setResponsavel(a, b, bdFeito.rs.getString("responsavel"));
-							setAutoridade(a, b, bdFeito.rs.getString("autoridade"));
-							setExecutores(a, b, bdFeito.rs.getString("Executores"));
-							setStatus(a, b, bdFeito.rs.getString("stat"));
-							setDias_atraso(a, b, CalcularAtraso(bdFeito.rs.getDate("data_real"),
-									bdFeito.rs.getDate("data_fim"), a, b));
-							setPendete_por(a, b, bdFeito.rs.getString("pendente_por"));
-							
-							if(bdFeito.rs.getString("anexo1") == null && bdFeito.rs.getString("anexo2") == null 
-									&& bdFeito.rs.getString("anexo3") == null && bdFeito.rs.getString("anexo4") == null) {// se não houver nenhum anexo, passamos false para o set da variavel
+									String.valueOf(CalcularPontosRealizados(bdFeito.getDouble("porcentagem"),
+											bdFeito.getDouble("Peso"))));
+							setCentro_custo(a, b, bdFeito.getString("Centro_de_Custo"));
+							setResponsavel(a, b, bdFeito.getString("responsavel"));
+							setAutoridade(a, b, bdFeito.getString("autoridade"));
+							setExecutores(a, b, bdFeito.getString("Executores"));
+							setStatus(a, b, bdFeito.getString("stat"));
+							setDias_atraso(a, b, CalcularAtraso(bdFeito.getDate("data_real"),
+									bdFeito.getDate("data_fim"), a, b));
+							setPendete_por(a, b, bdFeito.getString("pendente_por"));
+
+							if (bdFeito.getString("anexo1") == null && bdFeito.getString("anexo2") == null
+									&& bdFeito.getString("anexo3") == null
+									&& bdFeito.getString("anexo4") == null) {// se não houver nenhum anexo, passamos
+																				// false para o set da variavel
 								setAnexo(a, b, false);
-							}else {
+							} else {
 								setAnexo(a, b, true);
 							}
 
@@ -978,49 +1090,51 @@ public class KambanDAO extends kamban {
 		boolean retorno = false;
 		limparVariaveisFeito();
 		try {
-			if (contadorIncioFeito != 1 && bdFeito.rs.previous() == true) {
+			if (contadorIncioFeito != 1 && bdFeito.previous() == true) {
 
 				retorno = true;
-				bdFeito.rs.absolute(contadorIncioFeito);
+				bdFeito.absolute(contadorIncioFeito);
 				for (int a = 4; a <= 4; a++) {
 					for (int b = 4; b >= 0; b--) {
-						if (bdFeito.rs.previous() == true) {
+						if (bdFeito.previous() == true) {
 
 							contadorIncioFeito--;
-							setId(a, b, Integer.parseInt(bdFeito.rs.getString("id_tarefa")));
-							setDias_iniciado(a, b, CalcularDiasIniciados(bdFeito.rs.getDate("data_real")));
-							setDesc(a, b, bdFeito.rs.getString("descri"));
-							setPrioridade(a, b, bdFeito.rs.getString("prioridade"));
-							setTamanho(a, b, bdFeito.rs.getString("Tamanho"));
-							setDpto(a, b, bdFeito.rs.getString("Departamento"));
+							setId(a, b, Integer.parseInt(bdFeito.getString("id_tarefa")));
+							setDias_iniciado(a, b, CalcularDiasIniciados(bdFeito.getDate("data_real")));
+							setDesc(a, b, bdFeito.getString("descri"));
+							setPrioridade(a, b, bdFeito.getString("prioridade"));
+							setTamanho(a, b, bdFeito.getString("Tamanho"));
+							setDpto(a, b, bdFeito.getString("Departamento"));
 							String data_real = new SimpleDateFormat("dd/MM/yyyy")
-									.format(bdFeito.rs.getDate("data_real"));// Tranformando data para BR
+									.format(bdFeito.getDate("data_real"));// Tranformando data para BR
 							setData_real(a, b, data_real);
-							String data_fim = new SimpleDateFormat("dd/MM/yyyy").format(bdFeito.rs.getDate("data_fim"));// Tranformando
+							String data_fim = new SimpleDateFormat("dd/MM/yyyy").format(bdFeito.getDate("data_fim"));// Tranformando
 																														// data
 																														// para
 																														// BR
 							setData_fim(a, b, data_fim);
-							setPrazo(a, b, bdFeito.rs.getString("prazo"));
-							setStatus_pendencia(a, b, bdFeito.rs.getString("status_pendencia"));
-							setPorcentagem(a, b, bdFeito.rs.getString("porcentagem"));
-							setPeso(a, b, bdFeito.rs.getString("Peso"));
+							setPrazo(a, b, bdFeito.getString("prazo"));
+							setStatus_pendencia(a, b, bdFeito.getString("status_pendencia"));
+							setPorcentagem(a, b, bdFeito.getString("porcentagem"));
+							setPeso(a, b, bdFeito.getString("Peso"));
 							setPontuacao_realizada(a, b,
-									String.valueOf(CalcularPontosRealizados(bdFeito.rs.getDouble("porcentagem"),
-											bdFeito.rs.getDouble("Peso"))));
-							setCentro_custo(a, b, bdFeito.rs.getString("Centro_de_Custo"));
-							setResponsavel(a, b, bdFeito.rs.getString("responsavel"));
-							setAutoridade(a, b, bdFeito.rs.getString("autoridade"));
-							setExecutores(a, b, bdFeito.rs.getString("Executores"));
-							setStatus(a, b, bdFeito.rs.getString("stat"));
-							setDias_atraso(a, b, CalcularAtraso(bdFeito.rs.getDate("data_real"),
-									bdFeito.rs.getDate("data_fim"), a, b));
-							setPendete_por(a, b, bdFeito.rs.getString("pendente_por"));
-							
-							if(bdFeito.rs.getString("anexo1") == null && bdFeito.rs.getString("anexo2") == null 
-									&& bdFeito.rs.getString("anexo3") == null && bdFeito.rs.getString("anexo4") == null) {// se não houver nenhum anexo, passamos false para o set da variavel
+									String.valueOf(CalcularPontosRealizados(bdFeito.getDouble("porcentagem"),
+											bdFeito.getDouble("Peso"))));
+							setCentro_custo(a, b, bdFeito.getString("Centro_de_Custo"));
+							setResponsavel(a, b, bdFeito.getString("responsavel"));
+							setAutoridade(a, b, bdFeito.getString("autoridade"));
+							setExecutores(a, b, bdFeito.getString("Executores"));
+							setStatus(a, b, bdFeito.getString("stat"));
+							setDias_atraso(a, b, CalcularAtraso(bdFeito.getDate("data_real"),
+									bdFeito.getDate("data_fim"), a, b));
+							setPendete_por(a, b, bdFeito.getString("pendente_por"));
+
+							if (bdFeito.getString("anexo1") == null && bdFeito.getString("anexo2") == null
+									&& bdFeito.getString("anexo3") == null
+									&& bdFeito.getString("anexo4") == null) {// se não houver nenhum anexo, passamos
+																				// false para o set da variavel
 								setAnexo(a, b, false);
-							}else {
+							} else {
 								setAnexo(a, b, true);
 							}
 
@@ -1067,9 +1181,11 @@ public class KambanDAO extends kamban {
 		}
 	}
 
-//--------------------------------------------METODOS PARA TAREFAS FEITO---------------------------------------------------------------//	
+	// --------------------------------------------METODOS PARA TAREFAS
+	// FEITO---------------------------------------------------------------//
 
-//-------------------------------------------------METODOS AUXILIARES------------------------------------------------------------------//	
+	// -------------------------------------------------METODOS
+	// AUXILIARES------------------------------------------------------------------//
 
 	public String DataParaoBanco(String data) {
 		String data_correta = null;
@@ -1135,99 +1251,98 @@ public class KambanDAO extends kamban {
 	}
 
 	public static void SelectTarefa(int id) {
-		try {
-			String sql = "SELECT tarefa.id_tarefa,tarefa.descri,tarefa.prioridade,centro_custo.centrocusto,tarefa.stat,"
-					+ "tamanho.descricao,tarefa.porcentagem,tarefa.prazo,tarefa.data_ini,tarefa.data_real,tarefa.data_fim,"
-					+ "executor.executor1,executor.porcento1,executor.executor2,executor.porcento2,executor.executor3,executor.porcento3,executor.executor4,executor.porcento4,"
-					+ "executor.executor5, executor.porcento5, executor.executor6, executor.porcento6, executor.executor7, executor.porcento7, executor.executor8, executor.porcento8,"
-					+ "executor.executor9, executor.porcento9, executor.executor10, executor.porcento10,"
-					+ "tarefa.pendente_por,tarefa.status_pendencia,tarefa.historico,departamento.departamento,"
-					+ "tarefa.responsavel,tarefa.autoridade,"
-					+ "(SELECT etapas.etapa FROM etapas WHERE etapas.id_etapa = tarefa.etapa) AS etapa,"
-					+ "(SELECT sub_etapas.sub_etapa FROM sub_etapas WHERE sub_etapas.id_sub_etapas = tarefa.subetapa) AS subetapa,"
-					+ "(SELECT processo FROM processos WHERE processos.id_processo = tarefa.processo_relacionado), "
-					+ "tarefa.predecessor_1, tarefa.predecessor_2, tarefa.predecessor_3, tarefa.last_update, "
-					+ "(SELECT pessoa.nome FROM pessoa WHERE pessoa.id_pessoa = tarefa.id_update), "
-					+ "tarefa.checado \r\n"
-					+ "FROM tarefa\r\n" 
-					+ "INNER JOIN centro_custo\r\n"
-					+ "ON tarefa.id_centro_custo=centro_custo.id_centro_custo\r\n" 
-					+ "INNER JOIN tamanho\r\n"
-					+ "ON tarefa.id_tamanho=tamanho.id_tamanho\r\n" 
-					+ "INNER JOIN executor\r\n"
-					+ "ON tarefa.id_tarefa=executor.id_tarefa\r\n" 
-					+ "INNER JOIN departamento\r\n"
-					+ "ON tarefa.id_departamento=departamento.id_departamento\r\n" 
-					+ "WHERE tarefa.id_tarefa=?";
+		if (Banco.conexao()) {
+			try {
+				String sql = "SELECT tarefa.id_tarefa,tarefa.descri,tarefa.prioridade,centro_custo.centrocusto,tarefa.stat,"
+						+ "tamanho.descricao,tarefa.porcentagem,tarefa.prazo,tarefa.data_ini,tarefa.data_real,tarefa.data_fim,"
+						+ "executor.executor1,executor.porcento1,executor.executor2,executor.porcento2,executor.executor3,executor.porcento3,executor.executor4,executor.porcento4,"
+						+ "executor.executor5, executor.porcento5, executor.executor6, executor.porcento6, executor.executor7, executor.porcento7, executor.executor8, executor.porcento8,"
+						+ "executor.executor9, executor.porcento9, executor.executor10, executor.porcento10,"
+						+ "tarefa.pendente_por,tarefa.status_pendencia,tarefa.historico,departamento.departamento,"
+						+ "tarefa.responsavel,tarefa.autoridade,"
+						+ "(SELECT etapas.etapa FROM etapas WHERE etapas.id_etapa = tarefa.etapa) AS etapa,"
+						+ "(SELECT sub_etapas.sub_etapa FROM sub_etapas WHERE sub_etapas.id_sub_etapas = tarefa.subetapa) AS subetapa,"
+						+ "(SELECT processo FROM processos WHERE processos.id_processo = tarefa.processo_relacionado), "
+						+ "tarefa.predecessor_1, tarefa.predecessor_2, tarefa.predecessor_3, tarefa.last_update, "
+						+ "(SELECT pessoa.nome FROM pessoa WHERE pessoa.id_pessoa = tarefa.id_update), "
+						+ "tarefa.checado \r\n" + "FROM tarefa\r\n" + "INNER JOIN centro_custo\r\n"
+						+ "ON tarefa.id_centro_custo=centro_custo.id_centro_custo\r\n" + "INNER JOIN tamanho\r\n"
+						+ "ON tarefa.id_tamanho=tamanho.id_tamanho\r\n" + "INNER JOIN executor\r\n"
+						+ "ON tarefa.id_tarefa=executor.id_tarefa\r\n" + "INNER JOIN departamento\r\n"
+						+ "ON tarefa.id_departamento=departamento.id_departamento\r\n" + "WHERE tarefa.id_tarefa=?";
 
-			bd.st = bd.con.prepareStatement(sql);// Prepara o SQL
+				Banco.st = Banco.con.prepareStatement(sql);// Prepara o SQL
 
-			bd.st.setInt(1, id);// Seta os valroes
+				Banco.st.setInt(1, id);// Seta os valroes
 
-			bd.rs = bd.st.executeQuery();// Exxecute
+				Banco.rs = Banco.st.executeQuery();// Exxecute
 
-			bd.rs.next();// Inicia o Result Set
+				Banco.rs.next();// Inicia o Result Set
 
-			Tarefa variaveis = new Tarefa();// instancia a classe de get e set da tarefa
+				Tarefa variaveis = new Tarefa();// instancia a classe de get e set da tarefa
 
-			variaveis.setIDTarefa(bd.rs.getInt(1));
-			variaveis.setDescricao(bd.rs.getString(2));
-			variaveis.setPrioridade(bd.rs.getInt(3));
-			variaveis.setCentroCusto(bd.rs.getString(4));
-			variaveis.setStatus(bd.rs.getString(5));
-			variaveis.setTamanho(bd.rs.getString(6));
-			variaveis.setPorcentagem(bd.rs.getInt(7));
-			variaveis.setPrazo(bd.rs.getInt(8));
-			variaveis.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(bd.rs.getDate(9)));
-			variaveis.setDataReal(new SimpleDateFormat("dd/MM/yyyy").format(bd.rs.getDate(10)));
-			variaveis.setDataFim(new SimpleDateFormat("dd/MM/yyyy").format(bd.rs.getDate(11)));
-			variaveis.setExecutor1(bd.rs.getString(12));
-			variaveis.setPorcento1(bd.rs.getInt(13));
-			variaveis.setExecutor2(bd.rs.getString(14));
-			variaveis.setPorcento2(bd.rs.getInt(15));
-			variaveis.setExecutor3(bd.rs.getString(16));
-			variaveis.setPorcento3(bd.rs.getInt(17));
-			variaveis.setExecutor4(bd.rs.getString(18));
-			variaveis.setPorcento4(bd.rs.getInt(19));
-			variaveis.setExecutor5(bd.rs.getString(20));
-			variaveis.setPorcento5(bd.rs.getInt(21));
-			variaveis.setExecutor6(bd.rs.getString(22));
-			variaveis.setPorcento6(bd.rs.getInt(23));
-			variaveis.setExecutor7(bd.rs.getString(24));
-			variaveis.setPorcento7(bd.rs.getInt(25));
-			variaveis.setExecutor8(bd.rs.getString(26));
-			variaveis.setPorcento8(bd.rs.getInt(27));
-			variaveis.setExecutor9(bd.rs.getString(28));
-			variaveis.setPorcento9(bd.rs.getInt(29));
-			variaveis.setExecutor10(bd.rs.getString(30));
-			variaveis.setPorcento10(bd.rs.getInt(31));
-			variaveis.setPendentePor(bd.rs.getString(32));
-			variaveis.setStatusPendencia(bd.rs.getString(33));
-			variaveis.setHistorico(bd.rs.getString(34));
-			variaveis.setDepartamento(bd.rs.getString(35));
-			variaveis.setResponsavel(bd.rs.getString(36));
-			variaveis.setAutoridade(bd.rs.getString(37));
-			variaveis.setEtapa(bd.rs.getString(38));
-			variaveis.setSubEtapa(bd.rs.getString(39));
-			variaveis.setProcesso(bd.rs.getString(40));
-			variaveis.setPredecessor1(bd.rs.getInt(41));
-			variaveis.setPredecessor2(bd.rs.getInt(42));
-			variaveis.setPredecessor3(bd.rs.getInt(43));
-			
-			if (bd.rs.getString(45) == null || bd.rs.getString(45) == "") {// Se não existir atualização coloca vazio na variavel de atualização				// tarefa
-				variaveis.setAtualizacao("");
-			} else {
-				variaveis.setAtualizacao("Atualizado " + new SimpleDateFormat("dd/MM/yyyy").format(bd.rs.getDate(44))
-						+ " Por " + bd.rs.getString(45));
+				variaveis.setIDTarefa(Banco.rs.getInt(1));
+				variaveis.setDescricao(Banco.rs.getString(2));
+				variaveis.setPrioridade(Banco.rs.getInt(3));
+				variaveis.setCentroCusto(Banco.rs.getString(4));
+				variaveis.setStatus(Banco.rs.getString(5));
+				variaveis.setTamanho(Banco.rs.getString(6));
+				variaveis.setPorcentagem(Banco.rs.getInt(7));
+				variaveis.setPrazo(Banco.rs.getInt(8));
+				variaveis.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(9)));
+				variaveis.setDataReal(new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(10)));
+				variaveis.setDataFim(new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(11)));
+				variaveis.setExecutor1(Banco.rs.getString(12));
+				variaveis.setPorcento1(Banco.rs.getInt(13));
+				variaveis.setExecutor2(Banco.rs.getString(14));
+				variaveis.setPorcento2(Banco.rs.getInt(15));
+				variaveis.setExecutor3(Banco.rs.getString(16));
+				variaveis.setPorcento3(Banco.rs.getInt(17));
+				variaveis.setExecutor4(Banco.rs.getString(18));
+				variaveis.setPorcento4(Banco.rs.getInt(19));
+				variaveis.setExecutor5(Banco.rs.getString(20));
+				variaveis.setPorcento5(Banco.rs.getInt(21));
+				variaveis.setExecutor6(Banco.rs.getString(22));
+				variaveis.setPorcento6(Banco.rs.getInt(23));
+				variaveis.setExecutor7(Banco.rs.getString(24));
+				variaveis.setPorcento7(Banco.rs.getInt(25));
+				variaveis.setExecutor8(Banco.rs.getString(26));
+				variaveis.setPorcento8(Banco.rs.getInt(27));
+				variaveis.setExecutor9(Banco.rs.getString(28));
+				variaveis.setPorcento9(Banco.rs.getInt(29));
+				variaveis.setExecutor10(Banco.rs.getString(30));
+				variaveis.setPorcento10(Banco.rs.getInt(31));
+				variaveis.setPendentePor(Banco.rs.getString(32));
+				variaveis.setStatusPendencia(Banco.rs.getString(33));
+				variaveis.setHistorico(Banco.rs.getString(34));
+				variaveis.setDepartamento(Banco.rs.getString(35));
+				variaveis.setResponsavel(Banco.rs.getString(36));
+				variaveis.setAutoridade(Banco.rs.getString(37));
+				variaveis.setEtapa(Banco.rs.getString(38));
+				variaveis.setSubEtapa(Banco.rs.getString(39));
+				variaveis.setProcesso(Banco.rs.getString(40));
+				variaveis.setPredecessor1(Banco.rs.getInt(41));
+				variaveis.setPredecessor2(Banco.rs.getInt(42));
+				variaveis.setPredecessor3(Banco.rs.getInt(43));
+
+				if (Banco.rs.getString(45) == null || Banco.rs.getString(45) == "") {// Se não existir atualização
+																						// coloca vazio na
+					// variavel de atualização // tarefa
+					variaveis.setAtualizacao("");
+				} else {
+					variaveis.setAtualizacao(
+							"Atualizado " + new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(44)) + " Por "
+									+ Banco.rs.getString(45));
+				}
+
+				variaveis.setChecado(Banco.rs.getString(46));
+
+				// DPTO CORRETO
+				// PROCESSO RELACIONADO
+
+			} catch (SQLException erro) {
+				JOptionPane.showMessageDialog(null, erro.toString() + "KambamDao");
 			}
-			
-			variaveis.setChecado(bd.rs.getString(46));
-
-			// DPTO CORRETO
-			// PROCESSO RELACIONADO
-
-		} catch (SQLException erro) {
-			JOptionPane.showMessageDialog(null, erro.toString() + "KambamDao");
 		}
 	}
 

@@ -181,10 +181,13 @@ public class KambanTela extends JFrame {
 		setTitle("Scrum");
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				KambanDAO.bdAFazer.close();
-				KambanDAO.bdFazendo.close();
-				KambanDAO.bdFazendo.close();
-				KambanDAO.bd.close();
+				try {
+					KambanDAO.bdAFazer.close();
+					KambanDAO.bdFazendo.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
 				Controle.setKamban(false);
 				dispose();
@@ -948,11 +951,6 @@ public class KambanTela extends JFrame {
 		Jscroll.getVerticalScrollBar().setUnitIncrement(60);
 		getContentPane().add(Jscroll);
 
-		KambanDAO.bd.getConnection();// Abre conex�o
-		KambanDAO.bdAFazer.getConnection();// Abre conex�o
-		KambanDAO.bdFazendo.getConnection();// Abre conex�o
-		KambanDAO.bdFeito.getConnection();// Abre conex�o
-
 		CarregarComboBoxDpto();// Carrega as combobox de filtros
 		CarregarComboBoxCC();// Carrega as combobox de filtros
 		CarregarComboBoxExe();// Carrega as combobox de filtros
@@ -970,10 +968,13 @@ public class KambanTela extends JFrame {
 		setTitle("Scrum");
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				KambanDAO.bdAFazer.close();
-				KambanDAO.bdFazendo.close();
-				KambanDAO.bdFazendo.close();
-				KambanDAO.bd.close();
+				try {
+					KambanDAO.bdAFazer.close();
+					KambanDAO.bdFazendo.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
 				Controle.setKamban(false);
 				dispose();
@@ -1719,11 +1720,6 @@ public class KambanTela extends JFrame {
 		Jscroll.getVerticalScrollBar().setUnitIncrement(60);
 		getContentPane().add(Jscroll);
 
-		KambanDAO.bd.getConnection();// Abre conex�o
-		KambanDAO.bdAFazer.getConnection();// Abre conex�o
-		KambanDAO.bdFazendo.getConnection();// Abre conex�o
-		KambanDAO.bdFeito.getConnection();// Abre conex�o
-
 		CarregarComboBoxDpto();// Carrega as combobox de filtros
 		CarregarComboBoxCC();// Carrega as combobox de filtros
 		CarregarComboBoxExe();// Carrega as combobox de filtros
@@ -2127,12 +2123,12 @@ public class KambanTela extends JFrame {
 		String sql = "SELECT centrocusto FROM centro_custo ORDER BY centrocusto ASC";
 
 		try {
-			KambanDAO.bd.st = KambanDAO.bd.con.prepareStatement(sql);
+			Banco.st = Banco.con.prepareStatement(sql);
 
-			KambanDAO.bd.rs = KambanDAO.bd.st.executeQuery();
+			Banco.rs = Banco.st.executeQuery();
 
-			while (KambanDAO.bd.rs.next() == true) {
-				ccComboBox.addItem(KambanDAO.bd.rs.getString(1));
+			while (Banco.rs.next() == true) {
+				ccComboBox.addItem(Banco.rs.getString(1));
 			}
 
 		} catch (SQLException erro) {
@@ -2145,13 +2141,13 @@ public class KambanTela extends JFrame {
 		String sql = "SELECT nome FROM pessoa ORDER BY nome ASC";
 
 		try {
-			KambanDAO.bd.st = KambanDAO.bd.con.prepareStatement(sql);
+		Banco.st = Banco.con.prepareStatement(sql);
 
-			KambanDAO.bd.rs = KambanDAO.bd.st.executeQuery();
+			Banco.rs = Banco.st.executeQuery();
 
-			while (KambanDAO.bd.rs.next() == true) {
-				ExeRespAutComboBox.addItem(KambanDAO.bd.rs.getString(1));
-				dptoComboBox.addItem(KambanDAO.bd.rs.getString(1));
+			while (Banco.rs.next() == true) {
+				ExeRespAutComboBox.addItem(Banco.rs.getString(1));
+				dptoComboBox.addItem(Banco.rs.getString(1));
 			}
 
 		} catch (SQLException erro) {
@@ -2165,12 +2161,12 @@ public class KambanTela extends JFrame {
 		String sql = "SELECT departamento FROM departamento ORDER BY departamento ASC";
 
 		try {
-			KambanDAO.bd.st = KambanDAO.bd.con.prepareStatement(sql);
+			Banco.st = Banco.con.prepareStatement(sql);
 
-			KambanDAO.bd.rs = KambanDAO.bd.st.executeQuery();
+			Banco.rs = Banco.st.executeQuery();
 
-			while (KambanDAO.bd.rs.next() == true) {
-				dptoComboBox.addItem(KambanDAO.bd.rs.getString(1));
+			while (Banco.rs.next() == true) {
+				dptoComboBox.addItem(Banco.rs.getString(1));
 			}
 
 		} catch (SQLException erro) {

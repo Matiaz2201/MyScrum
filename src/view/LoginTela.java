@@ -47,6 +47,8 @@ import javax.swing.ImageIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class LoginTela extends JFrame {
 	/**
@@ -94,10 +96,16 @@ public class LoginTela extends JFrame {
 	 * Create the frame.
 	 */
 	public LoginTela() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				Banco.close();
+			}
+		
+		});
 		setTitle("MyScrum");
 		setIconImage(
 				Toolkit.getDefaultToolkit().getImage(LoginTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setUndecorated(true);
 		setBounds(100, 100, 868, 476);
 		setLocationRelativeTo(this);
@@ -222,6 +230,7 @@ public class LoginTela extends JFrame {
 		rightJpanel.add(cancelarButton);
 		cancelarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Banco.close();
 				System.exit(0);
 			}
 		});
