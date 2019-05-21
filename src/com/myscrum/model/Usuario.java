@@ -1,5 +1,7 @@
 package com.myscrum.model;
 
+import java.util.ArrayList;
+
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -19,6 +21,24 @@ public class Usuario {
 	static int carga_horaria;
 	static String centro_custo;
 	static int id_centro_custo;
+	static ArrayList<String> dptoVinculados = new ArrayList<String>();
+	static ArrayList<String> ccVinculados = new ArrayList<String>();
+	
+	public void setDPTOVinculados(String dpto) {
+		dptoVinculados.add(dpto);
+	}
+	
+	public ArrayList<String> getDPTOVinculados(){
+		return dptoVinculados;
+	}
+	
+	public void setCCVinculados(String cc) {
+		ccVinculados.add(cc);
+	}
+	
+	public ArrayList<String> getCCVinculados(){
+		return ccVinculados;
+	}
 	
 	public void setID(int id) {
 		this.ID = id;

@@ -90,7 +90,6 @@ public class UsuarioTela extends JFrame {
 	private JTable ccTable;
 	private JScrollPane dptoSP;
 	private JTable dptoTable;
-	private JScrollPane dptoVinculoSP;
 	private JLabel quadroVinculoLabel;
 	private JLabel funcaoLabel;
 	private JLabel estadoQuadroLabel;
@@ -104,6 +103,7 @@ public class UsuarioTela extends JFrame {
 	private JLabel cHorarioLabel;
 	private JPanel ccVinculoPanel;
 	private JLabel lblNewLabel;
+	private JPanel dptoVinculoPanel;
 
 	public UsuarioTela() {
 
@@ -301,13 +301,13 @@ public class UsuarioTela extends JFrame {
 		estadoLabel.setBounds(583, 17, 105, 16);
 		panel.add(estadoLabel);
 
-		dptoVinculoSP = new JScrollPane();
-		dptoVinculoSP.setBounds(530, 370, 155, 175);
-		panel.add(dptoVinculoSP);
-
 		ccVinculoPanel = new JPanel();
 		ccVinculoPanel.setBounds(170, 370, 155, 175);
 		panel.add(ccVinculoPanel);
+
+		dptoVinculoPanel = new JPanel();
+		dptoVinculoPanel.setBounds(525, 370, 155, 175);
+		panel.add(dptoVinculoPanel);
 
 		quadroVinculoLabel = new JLabel("Vinculos com Centro de custos e departamentos");
 		quadroVinculoLabel.setVerticalAlignment(SwingConstants.TOP);
@@ -373,6 +373,16 @@ public class UsuarioTela extends JFrame {
 							variavel.setSalario(Double.parseDouble(salarioText.getText()));
 							variavel.setCHoraria(Integer.parseInt(cHorarioText.getText()));
 							variavel.setAtivo(1);
+							
+							for(int x = 0; x < ccVinculoPanel.getComponentCount(); x++) {
+								JLabel cc = (JLabel) ccVinculoPanel.getComponent(x);
+								variavel.setCCVinculados(cc.getText());
+							}
+							
+							for(int x = 0; x < dptoVinculoPanel.getComponentCount(); x++) {
+								JLabel dpto = (JLabel) dptoVinculoPanel.getComponent(x);
+								variavel.setDPTOVinculados(dpto.getText());
+							}
 
 							// verificando se é adm ou não
 							if (usuarioCheckBox.isSelected()) {
@@ -429,6 +439,16 @@ public class UsuarioTela extends JFrame {
 								variavel.setLogin(loginText.getText());
 								variavel.setSalario(Double.parseDouble(salarioText.getText()));
 								variavel.setCHoraria(Integer.parseInt(cHorarioText.getText()));
+								
+								for(int x = 0; x < ccVinculoPanel.getComponentCount(); x++) {
+									JLabel cc = (JLabel) ccVinculoPanel.getComponent(x);
+									variavel.setCCVinculados(cc.getText());
+								}
+								
+								for(int x = 0; x < dptoVinculoPanel.getComponentCount(); x++) {
+									JLabel dpto = (JLabel) dptoVinculoPanel.getComponent(x);
+									variavel.setDPTOVinculados(dpto.getText());
+								}
 
 								// verificando se é adm ou não
 								if (usuarioCheckBox.isSelected()) {
@@ -632,42 +652,20 @@ public class UsuarioTela extends JFrame {
 			ccTable.addMouseListener(new MouseAdapter() {
 				public void mouseReleased(java.awt.event.MouseEvent a) {
 					if (a.getClickCount() == 2) {
-
+						boolean vincular = true;
 						String cc = ccTable.getValueAt(ccTable.getSelectedRow(), 0).toString();
-						if (ccVinculoPanel.getComponentCount() == 0) {
-							JLabel ccVinculado = new JLabel(cc);
-							ccVinculado.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-							ccVinculado.setName(cc);
-							ccVinculado.addMouseListener(new MouseAdapter() {
-								public void mouseReleased(java.awt.event.MouseEvent a) {
-									if (a.getClickCount() == 2) {
-										ccVinculoPanel.remove(ccVinculado);
-										ccVinculoPanel.updateUI();
-									}
-								}
-							});
-							ccVinculoPanel.add(ccVinculado);
-							ccVinculoPanel.updateUI();
-						} else {
-							for (int x = 0; x < ccVinculoPanel.getComponentCount(); x++) {
-								if (ccVinculoPanel.getComponent(x).getName() == cc) {
-									JOptionPane.showMessageDialog(null, "Usuario já vinculado a este centro de custo");
-								} else {
-									JLabel ccVinculado = new JLabel(cc);
-									ccVinculado.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-									ccVinculado.setName(cc);
-									ccVinculado.addMouseListener(new MouseAdapter() {
-										public void mouseReleased(java.awt.event.MouseEvent a) {
-											if (a.getClickCount() == 2) {
-												ccVinculoPanel.remove(ccVinculado);
-												ccVinculoPanel.updateUI();
-											}
-										}
-									});
-									ccVinculoPanel.add(ccVinculado);
-									ccVinculoPanel.updateUI();
-								}
+
+						for (int x = 0; x < ccVinculoPanel.getComponentCount(); x++) {
+							JLabel vinculo = (JLabel) ccVinculoPanel.getComponent(x);
+							if (vinculo.getText() == cc) {
+								vincular = false;
 							}
+						}
+
+						if (vincular) {
+							addLabelPainelVinculoCC(cc);
+						} else {
+							JOptionPane.showMessageDialog(null, "Usuario já está vinculado a este centro de custo");
 						}
 					}
 				}
@@ -713,6 +711,28 @@ public class UsuarioTela extends JFrame {
 
 			dptoTable = TableGrade.getTable(sqldpto, cabecalhoPersonalizado);
 
+			dptoTable.addMouseListener(new MouseAdapter() {
+				public void mouseReleased(java.awt.event.MouseEvent a) {
+					if (a.getClickCount() == 2) {
+						boolean vincular = true;
+						String dpto = dptoTable.getValueAt(dptoTable.getSelectedRow(), 0).toString();
+
+						for (int x = 0; x < dptoVinculoPanel.getComponentCount(); x++) {
+							JLabel vinculo = (JLabel) dptoVinculoPanel.getComponent(x);
+							if (vinculo.getText() == dpto) {
+								vincular = false;
+							}
+						}
+
+						if (vincular) {
+							addLabelPainelVinculoDPTO(dpto);
+						} else {
+							JOptionPane.showMessageDialog(null, "Usuario já está vinculado a este departamento");
+						}
+					}
+				}
+			});
+			
 			// adiciona Scroll ao frame
 			dptoSP = new JScrollPane(dptoTable);
 
@@ -726,4 +746,38 @@ public class UsuarioTela extends JFrame {
 
 		}
 	}
+
+	// Adiciona label ao painel de vinculo do CC
+	public void addLabelPainelVinculoCC(String cc) {
+		JLabel ccVinculado = new JLabel(cc);
+		ccVinculado.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		ccVinculado.setName(cc);
+		ccVinculado.addMouseListener(new MouseAdapter() {
+			public void mouseReleased(java.awt.event.MouseEvent a) {
+				if (a.getClickCount() == 2) {
+					ccVinculoPanel.remove(ccVinculado);
+					ccVinculoPanel.updateUI();
+				}
+			}
+		});
+		ccVinculoPanel.add(ccVinculado);
+		ccVinculoPanel.updateUI();
+	}
+	
+	// Adiciona label ao painel de vinculo do CC
+		public void addLabelPainelVinculoDPTO(String dpto) {
+			JLabel dptoVinculado = new JLabel(dpto);
+			dptoVinculado.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+			dptoVinculado.setName(dpto);
+			dptoVinculado.addMouseListener(new MouseAdapter() {
+				public void mouseReleased(java.awt.event.MouseEvent a) {
+					if (a.getClickCount() == 2) {
+						dptoVinculoPanel.remove(dptoVinculado);
+						dptoVinculoPanel.updateUI();
+					}
+				}
+			});
+			dptoVinculoPanel.add(dptoVinculado);
+			dptoVinculoPanel.updateUI();
+		}
 }
