@@ -21,23 +21,23 @@ public class Usuario {
 	static int carga_horaria;
 	static String centro_custo;
 	static int id_centro_custo;
-	static ArrayList<String> dptoVinculados = new ArrayList<String>();
-	static ArrayList<String> ccVinculados = new ArrayList<String>();
+	private String dptoVinculado;
+	private String ccVinculado;
 	
-	public void setDPTOVinculados(String dpto) {
-		dptoVinculados.add(dpto);
+	public void setDPTOVinculados(String dptoVinculado) {
+		this.dptoVinculado = dptoVinculado;
 	}
 	
-	public ArrayList<String> getDPTOVinculados(){
-		return dptoVinculados;
+	public String getDPTOVinculados(){
+		return dptoVinculado;
 	}
 	
-	public void setCCVinculados(String cc) {
-		ccVinculados.add(cc);
+	public void setCCVinculados(String ccVinculado) {
+		this.ccVinculado = ccVinculado;
 	}
 	
-	public ArrayList<String> getCCVinculados(){
-		return ccVinculados;
+	public String getCCVinculados(){
+		return ccVinculado;
 	}
 	
 	public void setID(int id) {

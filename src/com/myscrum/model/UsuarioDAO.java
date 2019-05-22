@@ -8,12 +8,13 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 import com.myscrum.banco.BD;
+import com.myscrum.banco.Banco;
 
 public class UsuarioDAO extends Usuario {
 
 	private BD bd;
 
-	//METODO CADASTRO
+	// METODO CADASTRO
 	public boolean cadastro() {
 
 		boolean ok = false;
@@ -75,7 +76,7 @@ public class UsuarioDAO extends Usuario {
 		return ok;
 	}
 
-	//METODO ATUALIZA
+	// METODO ATUALIZA
 	public boolean atualiza() {
 		boolean ok = false;
 		String sql;
@@ -151,7 +152,7 @@ public class UsuarioDAO extends Usuario {
 		return ok;
 	}
 
-	//METODO BUSCAR ID CC
+	// METODO BUSCAR ID CC
 	public int buscaidCC() {
 		bd = new BD();
 		String sql = "SELECT id_centro_custo FROM centro_custo WHERE centrocusto = ?";
@@ -180,7 +181,7 @@ public class UsuarioDAO extends Usuario {
 		return ID;
 	}
 
-	//METODO BUSCAR ID DPTO
+	// METODO BUSCAR ID DPTO
 	public int buscaidDpto() {
 		bd = new BD();
 		String sql = "SELECT id_departamento FROM departamento WHERE departamento = ?";
@@ -209,7 +210,7 @@ public class UsuarioDAO extends Usuario {
 		return ID;
 	}
 
-	//METODO VERIFICAR
+	// METODO VERIFICAR
 	public int verificar() {
 		bd = new BD();
 		String sql = "SELECT login,email FROM pessoa WHERE login=? or email=? OR nome=?";
@@ -238,9 +239,84 @@ public class UsuarioDAO extends Usuario {
 		return verifica;
 	}
 
-	// Cadastra vinculos do usuario
-	public void cadastrarVinculos() {
-		
+	// CADASTRA VINCULOS COM USUARIO
+	public boolean cadastrarVinculos(Usuario usuario, String tipoVinculo) {
+		boolean retorno = false;
+		String sql = "";
+		if (Banco.conexao()) {
+			if (tipoVinculo == "cc") {
+				sql = "INSERT INTO vinculos (id_usuario, id_cc)" + "VALUES (" + usuario.getID()
+						+ ",(SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + usuario.getCCVinculados()
+						+ "'))";
+			} else if (tipoVinculo == "dpto") {
+				sql = "INSERT INTO vinculos (id_usuario, id_dpto)" + "VALUES (" + usuario.getID()
+						+ ",(SELECT id_departamento FROM departamento WHERE departamento = '"
+						+ usuario.getDPTOVinculados() + "'))";
+			}
+			try {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.st.executeUpdate();
+				retorno = true;
+			} catch (SQLException e) {
+				JOptionPane.showConfirmDialog(null, e.toString(), "Vinculos Adicionar", 0);
+			}
+		}
+		return retorno;
 	}
-//fim
+
+	// EXCLUIR VINCULOS COM USUARIO
+	public boolean excluirVinculos(Usuario usuario, String tipoVinculo) {
+		boolean retorno = false;
+		String sql = "";
+		if (Banco.conexao()) {
+			if (tipoVinculo == "cc") {
+				sql = "DELETE FROM vinculos WHERE id_usuario = " + usuario.getID()
+						+ " AND id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '"
+						+ usuario.getCCVinculados() + "')";
+			} else if (tipoVinculo == "dpto") {
+				sql = "DELETE FROM vinculos WHERE id_usuario = " + usuario.getID()
+						+ " AND id_dpto = (SELECT id_departamento FROM departamento WHERE departamento = '"
+						+ usuario.getDPTOVinculados() + "')";
+			}
+			try {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.st.executeUpdate();
+				retorno = true;
+			} catch (SQLException e) {
+				JOptionPane.showConfirmDialog(null, e.toString(), "Vinculos Excluir", 0);
+			}
+		}
+		return retorno;
+	}
+
+	public boolean verificarVinculo(String vinculo, String tipoVinculo) {
+		boolean retorno = true;
+		String sql = "";
+
+		if (Banco.conexao()) {
+			if(tipoVinculo == "cc") {
+				sql = "SELECT * FROM vinculos"
+						+ " WHERE id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + vinculo +"')";
+			} else if (tipoVinculo == "dpto") {
+				sql = "SELECT * FROM vinculos"
+						+ " WHERE id_dpto = (SELECT id_departamento FROM departamento WHERE departamento = '" + vinculo +"')";
+			}
+			
+			try {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+				
+				if(Banco.rs.next()) {
+					retorno = false;
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(null, "Falha na verificação do vinculo", "Verificação do vinculo", 0);
+			}
+			
+		}
+		
+		return retorno;
+	}
+	// fim
 }
