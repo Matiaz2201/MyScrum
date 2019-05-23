@@ -289,17 +289,17 @@ public class UsuarioDAO extends Usuario {
 		return retorno;
 	}
 
-	public boolean verificarVinculo(String vinculo, String tipoVinculo) {
+	public boolean verificarVinculo(String vinculo, String usuario, String tipoVinculo) {
 		boolean retorno = true;
 		String sql = "";
 
 		if (Banco.conexao()) {
 			if(tipoVinculo == "cc") {
 				sql = "SELECT * FROM vinculos"
-						+ " WHERE id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + vinculo +"')";
+						+ " WHERE id_cc = (SELECT id_centro_custo FROM centro_custo WHERE centrocusto = '" + vinculo +"') AND id_usuario = '" + usuario + "'" ;
 			} else if (tipoVinculo == "dpto") {
 				sql = "SELECT * FROM vinculos"
-						+ " WHERE id_dpto = (SELECT id_departamento FROM departamento WHERE departamento = '" + vinculo +"')";
+						+ " WHERE id_dpto = (SELECT id_departamento FROM departamento WHERE departamento = '" + vinculo +"') AND id_usuario = '" + usuario + "'";
 			}
 			
 			try {

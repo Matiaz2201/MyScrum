@@ -346,7 +346,7 @@ public class TelaPrincipal extends JFrame {
                     	 tempo.setSeconds(tempo.getSeconds()+1);
                     	 rodapeText.setText("User: "+ s.getNome()+"               "
                     	 		+ "      "+"Tempo de sessão: "+format.format(tempo)
-                    	 +"                " + " (Versão 1.4.4)");
+                    	 +"                " + " (Versão 1.4.5)");
                            
                    } catch (Exception e) {      
                          e.printStackTrace();      

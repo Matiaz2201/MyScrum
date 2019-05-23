@@ -657,10 +657,10 @@ public class UsuarioTela extends JFrame {
 
 			ccTable.addMouseListener(new MouseAdapter() {
 				public void mouseReleased(java.awt.event.MouseEvent a) {
-					if (a.getClickCount() == 2) {
+					if (a.getClickCount() == 2 && idLabel1.getText() != "") {
 						String cc = ccTable.getValueAt(ccTable.getSelectedRow(), 0).toString();
 
-						if (metodo.verificarVinculo(cc, "cc")) {
+						if (metodo.verificarVinculo(cc, idLabel1.getText(), "cc")) {
 							addLabelPainelVinculoCC(cc);
 						} else {
 							JOptionPane.showMessageDialog(null, "Usuario já está vinculado a este centro de custo");
@@ -711,10 +711,10 @@ public class UsuarioTela extends JFrame {
 
 			dptoTable.addMouseListener(new MouseAdapter() {
 				public void mouseReleased(java.awt.event.MouseEvent a) {
-					if (a.getClickCount() == 2) {
+					if (a.getClickCount() == 2 && idLabel1.getText() != "") {
 						String dpto = dptoTable.getValueAt(dptoTable.getSelectedRow(), 0).toString();
 
-						if (metodo.verificarVinculo(dpto, "dpto")) {
+						if (metodo.verificarVinculo(dpto, idLabel1.getText(), "dpto")) {
 							addLabelPainelVinculoDPTO(dpto);
 						} else {
 							JOptionPane.showMessageDialog(null, "Usuario já está vinculado a este departamento");
