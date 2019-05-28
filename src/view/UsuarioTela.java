@@ -302,10 +302,14 @@ public class UsuarioTela extends JFrame {
 		panel.add(estadoLabel);
 
 		ccVinculoPanel = new JPanel();
+		ccVinculoPanel.setBackground(Color.LIGHT_GRAY);
+		ccVinculoPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		ccVinculoPanel.setBounds(170, 370, 155, 175);
 		panel.add(ccVinculoPanel);
 
 		dptoVinculoPanel = new JPanel();
+		dptoVinculoPanel.setBackground(Color.LIGHT_GRAY);
+		dptoVinculoPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		dptoVinculoPanel.setBounds(525, 370, 155, 175);
 		panel.add(dptoVinculoPanel);
 
@@ -657,7 +661,7 @@ public class UsuarioTela extends JFrame {
 
 			ccTable.addMouseListener(new MouseAdapter() {
 				public void mouseReleased(java.awt.event.MouseEvent a) {
-					if (a.getClickCount() == 2 && idLabel1.getText() != "") {
+					if (a.getClickCount() == 2 && idLabel1.getText() != "" && admCheckBox.isSelected() == false && usuarioCheckBox.isSelected() == false) {
 						String cc = ccTable.getValueAt(ccTable.getSelectedRow(), 0).toString();
 
 						if (metodo.verificarVinculo(cc, idLabel1.getText(), "cc")) {
@@ -711,7 +715,7 @@ public class UsuarioTela extends JFrame {
 
 			dptoTable.addMouseListener(new MouseAdapter() {
 				public void mouseReleased(java.awt.event.MouseEvent a) {
-					if (a.getClickCount() == 2 && idLabel1.getText() != "") {
+					if (a.getClickCount() == 2 && idLabel1.getText() != "" && admCheckBox.isSelected() == false && usuarioCheckBox.isSelected() == false) {
 						String dpto = dptoTable.getValueAt(dptoTable.getSelectedRow(), 0).toString();
 
 						if (metodo.verificarVinculo(dpto, idLabel1.getText(), "dpto")) {
@@ -726,7 +730,7 @@ public class UsuarioTela extends JFrame {
 			// adiciona Scroll ao frame
 			dptoSP = new JScrollPane(dptoTable);
 
-			dptoSP.setBounds(370, 370, 155, 175);
+			dptoSP.setBounds(365, 370, 155, 175);
 			panel.add(dptoSP);
 			panel.updateUI(); // atualiza tela
 
@@ -800,6 +804,8 @@ public class UsuarioTela extends JFrame {
 				Banco.st = Banco.con.prepareStatement(sql);
 				Banco.rs = Banco.st.executeQuery();
 
+				ccVinculoPanel.removeAll();
+				
 				while (Banco.rs.next()) {
 					Usuario usuario = new Usuario();
 					usuario.setID(Integer.parseInt(idLabel1.getText()));
@@ -829,6 +835,8 @@ public class UsuarioTela extends JFrame {
 				Banco.st = Banco.con.prepareStatement(sql);
 				Banco.rs = Banco.st.executeQuery();
 
+				dptoVinculoPanel.removeAll();
+				
 				while (Banco.rs.next()) {
 					Usuario usuario = new Usuario();
 					usuario.setID(Integer.parseInt(idLabel1.getText()));
