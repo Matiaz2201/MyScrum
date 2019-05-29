@@ -97,7 +97,6 @@ public class UsuarioTela extends JFrame {
 	Usuario variavel = new Usuario();
 	UsuarioDAO metodo = new UsuarioDAO();
 	JPanel panel = new JPanel();
-	BD bd = new BD();
 	Redimensionar rsize = new Redimensionar();
 	private JLabel CentroDeCustoLabel;
 	private JLabel cHorarioLabel;
@@ -599,14 +598,15 @@ public class UsuarioTela extends JFrame {
 		try {
 			String dpto = "";
 			sql = "SELECT * FROM departamento";
-			bd.getConnection();
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			while (bd.rs.next()) {
-				dpto = bd.rs.getString("departamento");
-				dptoComboBox.addItem(dpto);
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+				while (Banco.rs.next()) {
+					dpto = Banco.rs.getString("departamento");
+					dptoComboBox.addItem(dpto);
+				}
 			}
-			bd.close();
+
 		} catch (SQLException erro) {
 			JOptionPane.showMessageDialog(null, erro.toString());
 			{
@@ -618,18 +618,18 @@ public class UsuarioTela extends JFrame {
 		try {
 			String cc = "";
 			sql = "SELECT * FROM centro_custo";
-			bd.getConnection();
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			while (bd.rs.next()) {
-				cc = bd.rs.getString("centrocusto");
-				cc_comboBox.addItem(cc);
+			if (Banco.conexao()) {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
+				while (Banco.rs.next()) {
+					cc = Banco.rs.getString("centrocusto");
+					cc_comboBox.addItem(cc);
+				}
+
 			}
-			bd.close();
+
 		} catch (SQLException erro) {
 			JOptionPane.showMessageDialog(null, erro.toString());
-			{
-			}
 		}
 		// FIM
 	}
@@ -661,7 +661,8 @@ public class UsuarioTela extends JFrame {
 
 			ccTable.addMouseListener(new MouseAdapter() {
 				public void mouseReleased(java.awt.event.MouseEvent a) {
-					if (a.getClickCount() == 2 && idLabel1.getText() != "" && admCheckBox.isSelected() == false && usuarioCheckBox.isSelected() == false) {
+					if (a.getClickCount() == 2 && idLabel1.getText() != "" && admCheckBox.isSelected() == false
+							&& usuarioCheckBox.isSelected() == false) {
 						String cc = ccTable.getValueAt(ccTable.getSelectedRow(), 0).toString();
 
 						if (metodo.verificarVinculo(cc, idLabel1.getText(), "cc")) {
@@ -715,7 +716,8 @@ public class UsuarioTela extends JFrame {
 
 			dptoTable.addMouseListener(new MouseAdapter() {
 				public void mouseReleased(java.awt.event.MouseEvent a) {
-					if (a.getClickCount() == 2 && idLabel1.getText() != "" && admCheckBox.isSelected() == false && usuarioCheckBox.isSelected() == false) {
+					if (a.getClickCount() == 2 && idLabel1.getText() != "" && admCheckBox.isSelected() == false
+							&& usuarioCheckBox.isSelected() == false) {
 						String dpto = dptoTable.getValueAt(dptoTable.getSelectedRow(), 0).toString();
 
 						if (metodo.verificarVinculo(dpto, idLabel1.getText(), "dpto")) {
@@ -805,7 +807,7 @@ public class UsuarioTela extends JFrame {
 				Banco.rs = Banco.st.executeQuery();
 
 				ccVinculoPanel.removeAll();
-				
+
 				while (Banco.rs.next()) {
 					Usuario usuario = new Usuario();
 					usuario.setID(Integer.parseInt(idLabel1.getText()));
@@ -836,12 +838,12 @@ public class UsuarioTela extends JFrame {
 				Banco.rs = Banco.st.executeQuery();
 
 				dptoVinculoPanel.removeAll();
-				
+
 				while (Banco.rs.next()) {
 					Usuario usuario = new Usuario();
 					usuario.setID(Integer.parseInt(idLabel1.getText()));
 					usuario.setDPTOVinculados(Banco.rs.getString(1));
-					
+
 					JLabel dptoVinculado = new JLabel(Banco.rs.getString(1));
 					dptoVinculado.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 					dptoVinculado.setName(Banco.rs.getString(1));

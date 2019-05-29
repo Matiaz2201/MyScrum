@@ -253,7 +253,7 @@ public class TarefaEditTela extends JFrame {
 		String[] statusComboBoxItems = { "Selecione", "A fazer", "Fazendo", "Feito", "Cancelado" };
 		String[] prazDiaComboBoxItems = { "Selecione", "0", "1", "2", "3", "5", "8", "13", "21", "34", "55", "89",
 				"144", "233", "377", "610" };
-		String[] porcento = { "%", "100%", "75%", "50%", "25%" };
+		String[] porcento = { "%", "100%", "95%", "90%", "85%", "80%", "75%", "70%", "65%", "60%", "55%", "50%", "45%", "40%", "35%", "30%", "25%","20%","15%","10%","5%" };
 		String[] Selecione = { "Selecione" };
 		getContentPane().setLayout(null);
 
@@ -1783,12 +1783,13 @@ public class TarefaEditTela extends JFrame {
 			exec1ComboBox.requestFocus();
 		} else if (porcento1ComboBox.getSelectedIndex() == 0) {
 			porcento1ComboBox.requestFocus();
-			// } else if (processoComboBox.getSelectedIndex() == 0){
-			// processoComboBox.requestFocus();
+		} else if (processoComboBox.getSelectedIndex() == 0){
+			processoComboBox.requestFocus();
 		} else {
 			ok = true;
 		}
 
+		//Verificação usada apenas para a Masotti
 		if (dptoCombobox.getSelectedItem().toString().equals("Obra")) {
 			if (etapaCombo.getSelectedIndex() == 0 || subEtapaCombo.getSelectedIndex() == 0) {
 				JOptionPane.showMessageDialog(null, "Para o departamento obra, o campo etapa e subetapa é obrigatório");
