@@ -783,7 +783,7 @@ public class TarefaEditTela extends JFrame {
 
 						if (option == JFileChooser.APPROVE_OPTION) {
 							tratamento.salvarAnexo(anexo1Label, anexo.getSelectedFile(),
-									"//SRVMASOTTI/Documentos/10-TI/MYSCRUM-FTP/", bd, "anexo1", ID_tarefa.getText());
+									"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo1", ID_tarefa.getText());
 						} else {
 							JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 						}
@@ -814,7 +814,7 @@ public class TarefaEditTela extends JFrame {
 
 						if (option == JFileChooser.APPROVE_OPTION) {
 							tratamento.salvarAnexo(anexo2Label, anexo.getSelectedFile(),
-									"//SRVMASOTTI/Documentos/10-TI/MYSCRUM-FTP/", bd, "anexo2", ID_tarefa.getText());
+									"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo2", ID_tarefa.getText());
 						} else {
 							JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 						}
@@ -845,7 +845,7 @@ public class TarefaEditTela extends JFrame {
 
 						if (option == JFileChooser.APPROVE_OPTION) {
 							tratamento.salvarAnexo(anexo3Label, anexo.getSelectedFile(),
-									"//SRVMASOTTI/Documentos/10-TI/MYSCRUM-FTP/", bd, "anexo3", ID_tarefa.getText());
+									"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo3", ID_tarefa.getText());
 						} else {
 							JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 						}
@@ -876,7 +876,7 @@ public class TarefaEditTela extends JFrame {
 
 						if (option == JFileChooser.APPROVE_OPTION) {
 							tratamento.salvarAnexo(anexo4Label, anexo.getSelectedFile(),
-									"//SRVMASOTTI/Documentos/10-TI/MYSCRUM-FTP/", bd, "anexo4", ID_tarefa.getText());
+									"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo4", ID_tarefa.getText());
 						} else {
 							JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 						}
@@ -897,7 +897,7 @@ public class TarefaEditTela extends JFrame {
 
 				if (option == JFileChooser.APPROVE_OPTION) {
 					tratamento.salvarAnexo(anexo1Label, anexo.getSelectedFile(),
-							"//SRVMASOTTI/Documentos/10-TI/MYSCRUM-FTP/", bd, "anexo1", ID_tarefa.getText());
+							"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo1", ID_tarefa.getText());
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}
@@ -913,7 +913,7 @@ public class TarefaEditTela extends JFrame {
 
 				if (option == JFileChooser.APPROVE_OPTION) {
 					tratamento.salvarAnexo(anexo2Label, anexo.getSelectedFile(),
-							"//SRVMASOTTI/Documentos/10-TI/MYSCRUM-FTP/", bd, "anexo2", ID_tarefa.getText());
+							"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo2", ID_tarefa.getText());
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}
@@ -929,7 +929,7 @@ public class TarefaEditTela extends JFrame {
 
 				if (option == JFileChooser.APPROVE_OPTION) {
 					tratamento.salvarAnexo(anexo3Label, anexo.getSelectedFile(),
-							"//SRVMASOTTI/Documentos/10-TI/MYSCRUM-FTP/", bd, "anexo3", ID_tarefa.getText());
+							"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo3", ID_tarefa.getText());
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}
@@ -945,7 +945,7 @@ public class TarefaEditTela extends JFrame {
 
 				if (option == JFileChooser.APPROVE_OPTION) {
 					tratamento.salvarAnexo(anexo4Label, anexo.getSelectedFile(),
-							"//SRVMASOTTI/Documentos/10-TI/MYSCRUM-FTP/", bd, "anexo4", ID_tarefa.getText());
+							"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo4", ID_tarefa.getText());
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}

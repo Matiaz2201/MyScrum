@@ -502,13 +502,13 @@ public class UsuarioTela extends JFrame {
 	public void atualizarButton() {
 		atualizarButton.setVisible(true);
 		cadastarButton.setVisible(false);
-		nomeText.setEditable(false);
+	
 	}
 
 	public void cadastrarButton() {
 		atualizarButton.setVisible(false);
 		cadastarButton.setVisible(true);
-		nomeText.setEditable(true);
+
 	}
 
 	// METODO CARREGAR DADOS
