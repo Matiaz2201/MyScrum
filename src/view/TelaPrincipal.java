@@ -75,6 +75,7 @@ public class TelaPrincipal extends JFrame {
 	private JMenuItem tarefasItem;
 	private JMenuItem sairItem;
 	private JPanel panel;
+	private JMenuItem importItem;
 	
 	
 	public static void main(String[] args) {
@@ -174,6 +175,10 @@ public class TelaPrincipal extends JFrame {
 			}
 		});
 		tarefaMenu.add(tarefasItem);
+		
+		importItem = new JMenuItem("Importar");
+		importItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.VK_CONTROL));
+		tarefaMenu.add(importItem);
 		
 		//Configuração Tela
 		configMenu = new JMenu("Configura\u00E7\u00F5es");
