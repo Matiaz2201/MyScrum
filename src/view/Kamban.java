@@ -192,11 +192,8 @@ public class Kamban extends JPanel {
 					tela.setVisible(true);// Torna visivel
 					tela.atualizarButton();// Habilita botão de atualizar
 					tela.setTitle(descText.getText());// Seta o titulo da tela com a descrição
-
-					KambanDAO.SelectTarefa(Integer.parseInt(idText.getText()));// Executa o metodo para select da tarefa
-																				// baseado no ID
 					
-					tela.carregarDados();// Carrega os dados na tela
+					tela.carregarDados(KambanDAO.SelectTarefa(Integer.parseInt(idText.getText())));// Carrega os dados na tela
 					tela.ChamadaPeloKamban();// Informar a tela que ela foi chamada atraves do kamban
 				}
 			}
@@ -554,10 +551,7 @@ public class Kamban extends JPanel {
 					tela.atualizarButton();// Habilita botão de atualizar
 					tela.setTitle(descText.getText());// Seta o titulo da tela com a descrição
 
-					KambanDAO.SelectTarefa(Integer.parseInt(idText.getText()));// Executa o metodo para select da tarefa
-																				// baseado no ID
-
-					tela.carregarDados();// Carrega os dados na tela
+					tela.carregarDados(KambanDAO.SelectTarefa(Integer.parseInt(idText.getText())));// Carrega os dados na tela
 					tela.ChamadaPeloKamban();// Informar a tela que ela foi chamada atraves do kamban
 				}
 			}

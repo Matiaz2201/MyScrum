@@ -29,6 +29,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import com.myscrum.controller.Controle;
+import com.myscrum.model.ImportarTarefasXLS;
 import com.myscrum.model.Redimensionar;
 import com.myscrum.model.Sessao;
 
@@ -177,6 +178,12 @@ public class TelaPrincipal extends JFrame {
 		tarefaMenu.add(tarefasItem);
 		
 		importItem = new JMenuItem("Importar");
+		importItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ImportarTarefasXLS importar = new ImportarTarefasXLS();
+				
+			}
+		});
 		importItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.VK_CONTROL));
 		tarefaMenu.add(importItem);
 		

@@ -2,57 +2,57 @@ package com.myscrum.model;
 
 public class Tarefa {
 
-	static String descricao;
-	static int prioridade;
-	static String tamanho;
-	static int idtamanho;
-	static String status;
-	static String centrocusto;
-	static int idcc;
-	static String departamento;
-	static int iddpto;
-	static int prazo;
-	static String datainicio;
-	static String datareal;
-	static String datafim;
-	static int porcentagem;
-	static int predecessor1;
-	static int predecessor2;
-	static int predecessor3;
-	static String etapa;
-	static String subetapa;
-	static String processo;
-	static String checado;
-	static String responsavel;
-	static String autoridade;
-	static String pendente_por;
-	static String executor1;
-	static int porcento1;
-	static String executor2;
-	static int porcento2;
-	static String executor3;
-	static int porcento3;
-	static String executor4;
-	static int porcento4;
-	static String executor5;
-	static int porcento5;
-	static String executor6;
-	static int porcento6;
-	static String executor7;
-	static int porcento7;
-	static String executor8;
-	static int porcento8;
-	static String executor9;
-	static int porcento9;
-	static String executor10;
-	static int porcento10;
-	static String status_pendencia;
-	static String historico;
-	static int ID_tarefa;
-	static String atualizacao;
+	private String descricao;
+	private int prioridade;
+	private String tamanho;
+	private int idtamanho;
+	private String status;
+	private String centrocusto;
+	private int idcc;
+	private String departamento;
+	private int iddpto;
+	private int prazo;
+	private String datainicio;
+	private String datareal;
+	private String datafim;
+	private int porcentagem;
+	private int predecessor1;
+	private int predecessor2;
+	private int predecessor3;
+	private String etapa;
+	private String subetapa;
+	private String processo;
+	private String checado;
+	private String responsavel;
+	private String autoridade;
+	private String pendente_por;
+	private String executor1;
+	private int porcento1;
+	private String executor2;
+	private int porcento2;
+	private String executor3;
+	private int porcento3;
+	private String executor4;
+	private int porcento4;
+	private String executor5;
+	private int porcento5;
+	private String executor6;
+	private int porcento6;
+	private String executor7;
+	private int porcento7;
+	private String executor8;
+	private int porcento8;
+	private String executor9;
+	private int porcento9;
+	private String executor10;
+	private int porcento10;
+	private String status_pendencia;
+	private String historico;
+	private int ID_tarefa;
+	private String atualizacao;
 
 	public void setDescricao(String descricao) {
-		Tarefa.descricao = descricao;
+		this.descricao = descricao;
 	}
 
 	public String getDescricao() {
@@ -60,7 +60,7 @@ public class Tarefa {
 	}
 
 	public void setPrioridade(int prioridade) {
-		Tarefa.prioridade = prioridade;
+		this.prioridade = prioridade;
 	}
 
 	public int getPrioridade() {
@@ -68,7 +68,7 @@ public class Tarefa {
 	}
 
 	public void setTamanho(String tamanho) {
-		Tarefa.tamanho = tamanho;
+		this.tamanho = tamanho;
 	}
 
 	public String getTamanho() {
@@ -76,7 +76,7 @@ public class Tarefa {
 	}
 
 	public void setIdtamanho(int idtamanho) {
-		Tarefa.idtamanho = idtamanho;
+		this.idtamanho = idtamanho;
 	}
 
 	public int getIdtamanho() {
@@ -84,7 +84,7 @@ public class Tarefa {
 	}
 
 	public void setStatus(String status) {
-		Tarefa.status = status;
+		this.status = status;
 	}
 
 	public String getStatus() {
@@ -92,7 +92,7 @@ public class Tarefa {
 	}
 
 	public void setCentroCusto(String centrocusto) {
-		Tarefa.centrocusto = centrocusto;
+		this.centrocusto = centrocusto;
 	}
 
 	public String getCentroCusto() {
@@ -100,7 +100,7 @@ public class Tarefa {
 	}
 
 	public void setIdcc(int idcc) {
-		Tarefa.idcc = idcc;
+		this.idcc = idcc;
 	}
 
 	public int getIdcc() {
@@ -108,7 +108,7 @@ public class Tarefa {
 	}
 
 	public void setDepartamento(String departamento) {
-		Tarefa.departamento = departamento;
+		this.departamento = departamento;
 	}
 
 	public String getDepartamento() {
@@ -116,7 +116,7 @@ public class Tarefa {
 	}
 
 	public void setIddpto(int iddpto) {
-		Tarefa.iddpto = iddpto;
+		this.iddpto = iddpto;
 	}
 
 	public int getIddpto() {
@@ -124,7 +124,7 @@ public class Tarefa {
 	}
 
 	public void setPrazo(int prazo) {
-		Tarefa.prazo = prazo;
+		this.prazo = prazo;
 	}
 
 	public int getPrazo() {
@@ -132,7 +132,7 @@ public class Tarefa {
 	}
 
 	public void setDataInicio(String datainicio) {
-		Tarefa.datainicio = datainicio;
+		this.datainicio = datainicio;
 	}
 
 	public String getDataInicio() {
@@ -140,7 +140,7 @@ public class Tarefa {
 	}
 
 	public void setDataReal(String datareal) {
-		Tarefa.datareal = datareal;
+		this.datareal = datareal;
 	}
 
 	public String getDataReal() {
@@ -148,7 +148,7 @@ public class Tarefa {
 	}
 
 	public void setDataFim(String datafim) {
-		Tarefa.datafim = datafim;
+		this.datafim = datafim;
 	}
 
 	public String getDataFim() {
@@ -156,7 +156,7 @@ public class Tarefa {
 	}
 
 	public void setPorcentagem(int porcentagem) {
-		Tarefa.porcentagem = porcentagem;
+		this.porcentagem = porcentagem;
 	}
 
 	public int getPorcentagem() {
@@ -164,7 +164,7 @@ public class Tarefa {
 	}
 
 	public void setPredecessor1(int predecessor1) {
-		Tarefa.predecessor1 = predecessor1;
+		this.predecessor1 = predecessor1;
 	}
 
 	public int getPredecessor1() {
@@ -172,7 +172,7 @@ public class Tarefa {
 	}
 
 	public void setPredecessor2(int predecessor2) {
-		Tarefa.predecessor2 = predecessor2;
+		this.predecessor2 = predecessor2;
 	}
 
 	public int getPredecessor2() {
@@ -180,7 +180,7 @@ public class Tarefa {
 	}
 
 	public void setPredecessor3(int predecessor3) {
-		Tarefa.predecessor3 = predecessor3;
+		this.predecessor3 = predecessor3;
 	}
 
 	public int getPredecessor3() {
@@ -188,7 +188,7 @@ public class Tarefa {
 	}
 	
 	public void setEtapa(String etapa) {
-		Tarefa.etapa = etapa;
+		this.etapa = etapa;
 	}
 
 	public String getEtapa() {
@@ -196,7 +196,7 @@ public class Tarefa {
 	}
 	
 	public void setSubEtapa(String subetapa) {
-		Tarefa.subetapa = subetapa;
+		this.subetapa = subetapa;
 	}
 
 	public String getSubEtapa() {
@@ -204,7 +204,7 @@ public class Tarefa {
 	}
 	
 	public void setProcesso(String processo) {
-		Tarefa.processo = processo;
+		this.processo = processo;
 	}
 
 	public String getProcesso() {
@@ -212,7 +212,7 @@ public class Tarefa {
 	}
 	
 	public void setChecado(String checado) {
-		Tarefa.checado = checado;
+		this.checado = checado;
 	}
 
 	public String getChecado() {
@@ -220,7 +220,7 @@ public class Tarefa {
 	}
 
 	public void setResponsavel(String responsavel) {
-		Tarefa.responsavel = responsavel;
+		this.responsavel = responsavel;
 	}
 
 	public String getResponsavel() {
@@ -228,7 +228,7 @@ public class Tarefa {
 	}
 
 	public void setAutoridade(String autoridade) {
-		Tarefa.autoridade = autoridade;
+		this.autoridade = autoridade;
 	}
 
 	public String getAutoridade() {
@@ -236,7 +236,7 @@ public class Tarefa {
 	}
 
 	public void setPendentePor(String pendente_por) {
-		Tarefa.pendente_por = pendente_por;
+		this.pendente_por = pendente_por;
 	}
 
 	public String getPendentePor() {
@@ -244,7 +244,7 @@ public class Tarefa {
 	}
 
 	public void setExecutor1(String executor1) {
-		Tarefa.executor1 = executor1;
+		this.executor1 = executor1;
 	}
 
 	public String getExecutor1() {
@@ -252,7 +252,7 @@ public class Tarefa {
 	}
 
 	public void setPorcento1(int porcento1) {
-		Tarefa.porcento1 = porcento1;
+		this.porcento1 = porcento1;
 	}
 
 	public int getPorcento1() {
@@ -260,7 +260,7 @@ public class Tarefa {
 	}
 
 	public void setExecutor2(String executor2) {
-		Tarefa.executor2 = executor2;
+		this.executor2 = executor2;
 	}
 
 	public String getExecutor2() {
@@ -268,7 +268,7 @@ public class Tarefa {
 	}
 
 	public void setPorcento2(int porcento2) {
-		Tarefa.porcento2 = porcento2;
+		this.porcento2 = porcento2;
 	}
 
 	public int getPorcento2() {
@@ -276,7 +276,7 @@ public class Tarefa {
 	}
 
 	public void setExecutor3(String executor3) {
-		Tarefa.executor3 = executor3;
+		this.executor3 = executor3;
 	}
 
 	public String getExecutor3() {
@@ -284,7 +284,7 @@ public class Tarefa {
 	}
 
 	public void setPorcento3(int porcento3) {
-		Tarefa.porcento3 = porcento3;
+		this.porcento3 = porcento3;
 	}
 
 	public int getPorcento3() {
@@ -292,7 +292,7 @@ public class Tarefa {
 	}
 
 	public void setExecutor4(String executor4) {
-		Tarefa.executor4 = executor4;
+		this.executor4 = executor4;
 	}
 
 	public String getExecutor4() {
@@ -300,7 +300,7 @@ public class Tarefa {
 	}
 
 	public void setPorcento4(int porcento4) {
-		Tarefa.porcento4 = porcento4;
+		this.porcento4 = porcento4;
 	}
 
 	public int getPorcento4() {
@@ -308,7 +308,7 @@ public class Tarefa {
 	}
 
 	public void setExecutor5(String executor5) {
-		Tarefa.executor5 = executor5;
+		this.executor5 = executor5;
 	}
 
 	public String getExecutor5() {
@@ -316,7 +316,7 @@ public class Tarefa {
 	}
 
 	public void setPorcento5(int porcento5) {
-		Tarefa.porcento5 = porcento5;
+		this.porcento5 = porcento5;
 	}
 
 	public int getPorcento5() {
@@ -324,7 +324,7 @@ public class Tarefa {
 	}
 
 	public void setExecutor6(String executor6) {
-		Tarefa.executor6 = executor6;
+		this.executor6 = executor6;
 	}
 
 	public String getExecutor6() {
@@ -332,7 +332,7 @@ public class Tarefa {
 	}
 
 	public void setPorcento6(int porcento6) {
-		Tarefa.porcento6 = porcento6;
+		this.porcento6 = porcento6;
 	}
 
 	public int getPorcento6() {
@@ -340,7 +340,7 @@ public class Tarefa {
 	}
 
 	public void setExecutor7(String executor7) {
-		Tarefa.executor7 = executor7;
+		this.executor7 = executor7;
 	}
 
 	public String getExecutor7() {
@@ -348,7 +348,7 @@ public class Tarefa {
 	}
 
 	public void setPorcento7(int porcento7) {
-		Tarefa.porcento7 = porcento7;
+		this.porcento7 = porcento7;
 	}
 
 	public int getPorcento7() {
@@ -356,7 +356,7 @@ public class Tarefa {
 	}
 
 	public void setExecutor8(String executor8) {
-		Tarefa.executor8 = executor8;
+		this.executor8 = executor8;
 	}
 
 	public String getExecutor8() {
@@ -364,7 +364,7 @@ public class Tarefa {
 	}
 
 	public void setPorcento8(int porcento8) {
-		Tarefa.porcento8 = porcento8;
+		this.porcento8 = porcento8;
 	}
 
 	public int getPorcento8() {
@@ -372,7 +372,7 @@ public class Tarefa {
 	}
 
 	public void setExecutor9(String executor9) {
-		Tarefa.executor9 = executor9;
+		this.executor9 = executor9;
 	}
 
 	public String getExecutor9() {
@@ -380,7 +380,7 @@ public class Tarefa {
 	}
 
 	public void setPorcento9(int porcento9) {
-		Tarefa.porcento9 = porcento9;
+		this.porcento9 = porcento9;
 	}
 
 	public int getPorcento9() {
@@ -388,7 +388,7 @@ public class Tarefa {
 	}
 
 	public void setExecutor10(String executor10) {
-		Tarefa.executor10 = executor10;
+		this.executor10 = executor10;
 	}
 
 	public String getExecutor10() {
@@ -396,7 +396,7 @@ public class Tarefa {
 	}
 
 	public void setPorcento10(int porcento10) {
-		Tarefa.porcento10 = porcento10;
+		this.porcento10 = porcento10;
 	}
 
 	public int getPorcento10() {
@@ -404,7 +404,7 @@ public class Tarefa {
 	}
 
 	public void setStatusPendencia(String status_pendencia) {
-		Tarefa.status_pendencia = status_pendencia;
+		this.status_pendencia = status_pendencia;
 	}
 
 	public String getStatusPendencia() {
@@ -412,7 +412,7 @@ public class Tarefa {
 	}
 
 	public void setHistorico(String historico) {
-		Tarefa.historico = historico;
+		this.historico = historico;
 	}
 
 	public String getHistorico() {
@@ -420,7 +420,7 @@ public class Tarefa {
 	}
 
 	public void setIDTarefa(int ID_Tarefa) {
-		Tarefa.ID_tarefa = ID_Tarefa;
+		this.ID_tarefa = ID_Tarefa;
 	}
 
 	public int getIDTarefa() {
@@ -428,7 +428,7 @@ public class Tarefa {
 	}
 
 	public void setAtualizacao(String atualizacao) {
-		Tarefa.atualizacao = atualizacao;
+		this.atualizacao = atualizacao;
 	}
 
 	public String getAtuaizacao() {

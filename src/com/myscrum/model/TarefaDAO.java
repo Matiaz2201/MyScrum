@@ -17,7 +17,7 @@ public class TarefaDAO extends Tarefa {
 	public BD bd;
 	public int ID_TAREFA;
 
-	public void cadastrar() {
+	public void cadastrar(Tarefa tarefa) {
 
 		bd = new BD();
 		String sql = "INSERT INTO tarefa(id_centro_custo,id_tamanho,id_departamento,processo_relacionado,descri,prioridade,stat,porcentagem,prazo,predecessor_1,predecessor_2,predecessor_3,checado,data_ini,data_real,data_fim,pendente_por,status_pendencia,historico,responsavel,autoridade,dpto_correto,id_pessoa,id_update,etapa,subetapa)"
@@ -54,45 +54,45 @@ public class TarefaDAO extends Tarefa {
 			try {
 				bd.st = bd.con.prepareStatement(sql);
 
-				bd.st.setString(1, getCentroCusto());
-				bd.st.setString(2, getTamanho());
-				bd.st.setString(3, getDepartamento());
-				bd.st.setString(4, getProcesso());/// Processo relacionado
-				bd.st.setString(5, getDescricao());
-				bd.st.setInt(6, getPrioridade());
-				bd.st.setString(7, getStatus());
-				bd.st.setInt(8, getPorcentagem());
-				bd.st.setInt(9, getPrazo());
-				if (getPredecessor1() == 0) {
+				bd.st.setString(1, tarefa.getCentroCusto());
+				bd.st.setString(2, tarefa.getTamanho());
+				bd.st.setString(3, tarefa.getDepartamento());
+				bd.st.setString(4, tarefa.getProcesso());/// Processo relacionado
+				bd.st.setString(5, tarefa.getDescricao());
+				bd.st.setInt(6, tarefa.getPrioridade());
+				bd.st.setString(7, tarefa.getStatus());
+				bd.st.setInt(8, tarefa.getPorcentagem());
+				bd.st.setInt(9, tarefa.getPrazo());
+				if (tarefa.getPredecessor1() == 0) {
 					bd.st.setNull(10, 1);
 				} else {
-					bd.st.setInt(10, getPredecessor1());
+					bd.st.setInt(10, tarefa.getPredecessor1());
 				}
-				if (getPredecessor2() == 0) {
+				if (tarefa.getPredecessor2() == 0) {
 					bd.st.setNull(11, 0);
 				} else {
-					bd.st.setInt(11, getPredecessor2());
+					bd.st.setInt(11, tarefa.getPredecessor2());
 				}
 
-				if (getPredecessor3() == 0) {
+				if (tarefa.getPredecessor3() == 0) {
 					bd.st.setNull(12, 0);
 				} else {
-					bd.st.setInt(12, getPredecessor3());
+					bd.st.setInt(12, tarefa.getPredecessor3());
 				}
-				bd.st.setString(13, getChecado());
-				bd.st.setString(14, DataParaoBanco(getDataInicio()));
-				bd.st.setString(15, DataParaoBanco(getDataReal()));
-				bd.st.setString(16, DataParaoBanco(getDataFim()));
-				bd.st.setString(17, getPendentePor());
-				bd.st.setString(18, getStatusPendencia());
-				bd.st.setString(19, getHistorico());
-				bd.st.setString(20, getResponsavel());
-				bd.st.setString(21, getAutoridade());
+				bd.st.setString(13, tarefa.getChecado());
+				bd.st.setString(14, DataParaoBanco(tarefa.getDataInicio()));
+				bd.st.setString(15, DataParaoBanco(tarefa.getDataReal()));
+				bd.st.setString(16, DataParaoBanco(tarefa.getDataFim()));
+				bd.st.setString(17, tarefa.getPendentePor());
+				bd.st.setString(18, tarefa.getStatusPendencia());
+				bd.st.setString(19, tarefa.getHistorico());
+				bd.st.setString(20, tarefa.getResponsavel());
+				bd.st.setString(21, tarefa.getAutoridade());
 				bd.st.setString(22, "");// Departamento correto
 				bd.st.setInt(23, sessao.getId());
 				bd.st.setInt(24, sessao.getId());
-				bd.st.setString(25, BuscaIDEtapaESubEtapa(getCentroCusto(), getEtapa(), getSubEtapa(), "Etapa"));
-				bd.st.setString(26, BuscaIDEtapaESubEtapa(getCentroCusto(), getEtapa(), getSubEtapa(), "SubEtapa"));
+				bd.st.setString(25, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "Etapa"));
+				bd.st.setString(26, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "SubEtapa"));
 
 				int ok = bd.st.executeUpdate();
 
@@ -106,7 +106,7 @@ public class TarefaDAO extends Tarefa {
 				}
 
 				if (ok == 1) {
-					cadastrarExe();
+					cadastrarExe(tarefa);
 					JOptionPane.showMessageDialog(null, "Tarefa cadastrada com sucesso");
 				} else {
 					JOptionPane.showMessageDialog(null, "Falha ao cadastrar tarefa");
@@ -120,7 +120,7 @@ public class TarefaDAO extends Tarefa {
 		bd.close();
 	}
 
-	public boolean cadastrarExe() {
+	public boolean cadastrarExe(Tarefa tarefa) {
 		boolean executor = false;
 
 		bd = new BD();
@@ -131,26 +131,26 @@ public class TarefaDAO extends Tarefa {
 			try {
 				bd.st = bd.con.prepareStatement(sql);
 
-				bd.st.setString(1, getExecutor1());
-				bd.st.setInt(2, getPorcento1());
-				bd.st.setString(3, getExecutor2());
-				bd.st.setInt(4, getPorcento2());
-				bd.st.setString(5, getExecutor3());
-				bd.st.setInt(6, getPorcento3());
-				bd.st.setString(7, getExecutor4());
-				bd.st.setInt(8, getPorcento4());
-				bd.st.setString(9, getExecutor5());
-				bd.st.setInt(10, getPorcento5());
-				bd.st.setString(11, getExecutor6());
-				bd.st.setInt(12, getPorcento6());
-				bd.st.setString(13, getExecutor7());
-				bd.st.setInt(14, getPorcento7());
-				bd.st.setString(15, getExecutor8());
-				bd.st.setInt(16, getPorcento8());
-				bd.st.setString(17, getExecutor9());
-				bd.st.setInt(18, getPorcento9());
-				bd.st.setString(19, getExecutor10());
-				bd.st.setInt(20, getPorcento10());
+				bd.st.setString(1, tarefa.getExecutor1());
+				bd.st.setInt(2, tarefa.getPorcento1());
+				bd.st.setString(3, tarefa.getExecutor2());
+				bd.st.setInt(4, tarefa.getPorcento2());
+				bd.st.setString(5, tarefa.getExecutor3());
+				bd.st.setInt(6, tarefa.getPorcento3());
+				bd.st.setString(7, tarefa.getExecutor4());
+				bd.st.setInt(8, tarefa.getPorcento4());
+				bd.st.setString(9, tarefa.getExecutor5());
+				bd.st.setInt(10, tarefa.getPorcento5());
+				bd.st.setString(11, tarefa.getExecutor6());
+				bd.st.setInt(12, tarefa.getPorcento6());
+				bd.st.setString(13, tarefa.getExecutor7());
+				bd.st.setInt(14, tarefa.getPorcento7());
+				bd.st.setString(15, tarefa.getExecutor8());
+				bd.st.setInt(16, tarefa.getPorcento8());
+				bd.st.setString(17, tarefa.getExecutor9());
+				bd.st.setInt(18, tarefa.getPorcento9());
+				bd.st.setString(19, tarefa.getExecutor10());
+				bd.st.setInt(20, tarefa.getPorcento10());
 				bd.st.setInt(21, ID_TAREFA);
 
 				bd.st.executeUpdate();
@@ -164,8 +164,8 @@ public class TarefaDAO extends Tarefa {
 		bd.close();
 		return executor;
 	}
-
-	public void atualizar() {
+	
+	public void atualizar(Tarefa tarefa) {
 		bd = new BD();
 		String sql = "UPDATE tarefa \n\r" + "INNER JOIN executor ON tarefa.id_tarefa = executor.id_tarefa \n\r"
 				+ "SET \n\r "
@@ -189,69 +189,69 @@ public class TarefaDAO extends Tarefa {
 			try {
 				bd.st = bd.con.prepareStatement(sql);
 
-				bd.st.setString(1, getCentroCusto());
-				bd.st.setString(2, getTamanho());
-				bd.st.setString(3, getDepartamento());
-				bd.st.setString(4, getDescricao());
-				bd.st.setInt(5, getPrioridade());
-				bd.st.setString(6, getStatus());
-				bd.st.setInt(7, getPorcentagem());
-				bd.st.setInt(8, getPrazo());
-				if (getPredecessor1() == 0) {
+				bd.st.setString(1, tarefa.getCentroCusto());
+				bd.st.setString(2, tarefa.getTamanho());
+				bd.st.setString(3, tarefa.getDepartamento());
+				bd.st.setString(4, tarefa.getDescricao());
+				bd.st.setInt(5, tarefa.getPrioridade());
+				bd.st.setString(6, tarefa.getStatus());
+				bd.st.setInt(7, tarefa.getPorcentagem());
+				bd.st.setInt(8, tarefa.getPrazo());
+				if (tarefa.getPredecessor1() == 0) {
 					bd.st.setNull(9, 1);
 				} else {
-					bd.st.setInt(9, getPredecessor1());
+					bd.st.setInt(9, tarefa.getPredecessor1());
 				}
-				if (getPredecessor2() == 0) {
+				if (tarefa.getPredecessor2() == 0) {
 					bd.st.setNull(10, 0);
 				} else {
-					bd.st.setInt(10, getPredecessor2());
+					bd.st.setInt(10, tarefa.getPredecessor2());
 				}
 
-				if (getPredecessor3() == 0) {
+				if (tarefa.getPredecessor3() == 0) {
 					bd.st.setNull(11, 0);
 				} else {
-					bd.st.setInt(11, getPredecessor3());
+					bd.st.setInt(11, tarefa.getPredecessor3());
 				}
-				bd.st.setString(12, getChecado());
-				bd.st.setString(13, DataParaoBanco(getDataInicio()));
-				bd.st.setString(14, DataParaoBanco(getDataReal()));
-				bd.st.setString(15, DataParaoBanco(getDataFim()));
-				bd.st.setString(16, getPendentePor());
-				bd.st.setString(17, getStatusPendencia());
-				bd.st.setString(18, getHistorico());
-				bd.st.setString(19, getResponsavel());
-				bd.st.setString(20, getAutoridade());
+				bd.st.setString(12, tarefa.getChecado());
+				bd.st.setString(13, DataParaoBanco(tarefa.getDataInicio()));
+				bd.st.setString(14, DataParaoBanco(tarefa.getDataReal()));
+				bd.st.setString(15, DataParaoBanco(tarefa.getDataFim()));
+				bd.st.setString(16, tarefa.getPendentePor());
+				bd.st.setString(17, tarefa.getStatusPendencia());
+				bd.st.setString(18, tarefa.getHistorico());
+				bd.st.setString(19, tarefa.getResponsavel());
+				bd.st.setString(20, tarefa.getAutoridade());
 				bd.st.setString(21, "");// Departamento correto
-				bd.st.setString(22, getProcesso());/// Processo relacionado
-				bd.st.setString(23, BuscaIDEtapaESubEtapa(getCentroCusto(), getEtapa(), getSubEtapa(), "Etapa"));
-				bd.st.setString(24, BuscaIDEtapaESubEtapa(getCentroCusto(), getEtapa(), getSubEtapa(), "SubEtapa"));
+				bd.st.setString(22, tarefa.getProcesso());/// Processo relacionado
+				bd.st.setString(23, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "Etapa"));
+				bd.st.setString(24, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "SubEtapa"));
 				bd.st.setInt(25, sessao.getId());
-				bd.st.setString(26, getExecutor1());
-				bd.st.setInt(27, getPorcento1());
-				bd.st.setString(28, getExecutor2());
-				bd.st.setInt(29, getPorcento2());
-				bd.st.setString(30, getExecutor3());
-				bd.st.setInt(31, getPorcento3());
-				bd.st.setString(32, getExecutor4());
-				bd.st.setInt(33, getPorcento4());
-				bd.st.setString(34, getExecutor5());
-				bd.st.setInt(35, getPorcento5());
-				bd.st.setString(36, getExecutor6());
-				bd.st.setInt(37, getPorcento6());
-				bd.st.setString(38, getExecutor7());
-				bd.st.setInt(39, getPorcento7());
-				bd.st.setString(40, getExecutor8());
-				bd.st.setInt(41, getPorcento8());
-				bd.st.setString(42, getExecutor9());
-				bd.st.setInt(43, getPorcento9());
-				bd.st.setString(44, getExecutor10());
-				bd.st.setInt(45, getPorcento10());
-				bd.st.setInt(46, getIDTarefa());
+				bd.st.setString(26, tarefa.getExecutor1());
+				bd.st.setInt(27, tarefa.getPorcento1());
+				bd.st.setString(28, tarefa.getExecutor2());
+				bd.st.setInt(29, tarefa.getPorcento2());
+				bd.st.setString(30, tarefa.getExecutor3());
+				bd.st.setInt(31, tarefa.getPorcento3());
+				bd.st.setString(32, tarefa.getExecutor4());
+				bd.st.setInt(33, tarefa.getPorcento4());
+				bd.st.setString(34, tarefa.getExecutor5());
+				bd.st.setInt(35, tarefa.getPorcento5());
+				bd.st.setString(36, tarefa.getExecutor6());
+				bd.st.setInt(37, tarefa.getPorcento6());
+				bd.st.setString(38, tarefa.getExecutor7());
+				bd.st.setInt(39, tarefa.getPorcento7());
+				bd.st.setString(40, tarefa.getExecutor8());
+				bd.st.setInt(41, tarefa.getPorcento8());
+				bd.st.setString(42, tarefa.getExecutor9());
+				bd.st.setInt(43, tarefa.getPorcento9());
+				bd.st.setString(44, tarefa.getExecutor10());
+				bd.st.setInt(45, tarefa.getPorcento10());
+				bd.st.setInt(46, tarefa.getIDTarefa());
 
 				int ok = bd.st.executeUpdate();
 				if (ok == 2) {
-					JOptionPane.showMessageDialog(null, "Tarefa atualizada com sucesso");
+					JOptionPane.showMessageDialog(null, "Tarefa " + tarefa.getIDTarefa() +" atualizada com sucesso");
 				} else {
 					JOptionPane.showMessageDialog(null, "Falha ao atualizar tarefa", "Atualização tarefa", 0);
 				}
@@ -263,7 +263,7 @@ public class TarefaDAO extends Tarefa {
 		}
 		bd.close();
 	}
-
+	
 	public void zeraVariaveis() {
 		setAutoridade("");
 		setCentroCusto("");

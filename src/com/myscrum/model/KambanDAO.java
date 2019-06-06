@@ -1250,7 +1250,8 @@ public class KambanDAO extends kamban {
 		return feriados;
 	}
 
-	public static void SelectTarefa(int id) {
+	public static Tarefa SelectTarefa(int id) {
+		Tarefa tarefa = new Tarefa();// instancia a classe de get e set da tarefa
 		if (Banco.conexao()) {
 			try {
 				String sql = "SELECT tarefa.id_tarefa,tarefa.descri,tarefa.prioridade,centro_custo.centrocusto,tarefa.stat,"
@@ -1279,63 +1280,61 @@ public class KambanDAO extends kamban {
 
 				Banco.rs.next();// Inicia o Result Set
 
-				Tarefa variaveis = new Tarefa();// instancia a classe de get e set da tarefa
-
-				variaveis.setIDTarefa(Banco.rs.getInt(1));
-				variaveis.setDescricao(Banco.rs.getString(2));
-				variaveis.setPrioridade(Banco.rs.getInt(3));
-				variaveis.setCentroCusto(Banco.rs.getString(4));
-				variaveis.setStatus(Banco.rs.getString(5));
-				variaveis.setTamanho(Banco.rs.getString(6));
-				variaveis.setPorcentagem(Banco.rs.getInt(7));
-				variaveis.setPrazo(Banco.rs.getInt(8));
-				variaveis.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(9)));
-				variaveis.setDataReal(new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(10)));
-				variaveis.setDataFim(new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(11)));
-				variaveis.setExecutor1(Banco.rs.getString(12));
-				variaveis.setPorcento1(Banco.rs.getInt(13));
-				variaveis.setExecutor2(Banco.rs.getString(14));
-				variaveis.setPorcento2(Banco.rs.getInt(15));
-				variaveis.setExecutor3(Banco.rs.getString(16));
-				variaveis.setPorcento3(Banco.rs.getInt(17));
-				variaveis.setExecutor4(Banco.rs.getString(18));
-				variaveis.setPorcento4(Banco.rs.getInt(19));
-				variaveis.setExecutor5(Banco.rs.getString(20));
-				variaveis.setPorcento5(Banco.rs.getInt(21));
-				variaveis.setExecutor6(Banco.rs.getString(22));
-				variaveis.setPorcento6(Banco.rs.getInt(23));
-				variaveis.setExecutor7(Banco.rs.getString(24));
-				variaveis.setPorcento7(Banco.rs.getInt(25));
-				variaveis.setExecutor8(Banco.rs.getString(26));
-				variaveis.setPorcento8(Banco.rs.getInt(27));
-				variaveis.setExecutor9(Banco.rs.getString(28));
-				variaveis.setPorcento9(Banco.rs.getInt(29));
-				variaveis.setExecutor10(Banco.rs.getString(30));
-				variaveis.setPorcento10(Banco.rs.getInt(31));
-				variaveis.setPendentePor(Banco.rs.getString(32));
-				variaveis.setStatusPendencia(Banco.rs.getString(33));
-				variaveis.setHistorico(Banco.rs.getString(34));
-				variaveis.setDepartamento(Banco.rs.getString(35));
-				variaveis.setResponsavel(Banco.rs.getString(36));
-				variaveis.setAutoridade(Banco.rs.getString(37));
-				variaveis.setEtapa(Banco.rs.getString(38));
-				variaveis.setSubEtapa(Banco.rs.getString(39));
-				variaveis.setProcesso(Banco.rs.getString(40));
-				variaveis.setPredecessor1(Banco.rs.getInt(41));
-				variaveis.setPredecessor2(Banco.rs.getInt(42));
-				variaveis.setPredecessor3(Banco.rs.getInt(43));
+				tarefa.setIDTarefa(Banco.rs.getInt(1));
+				tarefa.setDescricao(Banco.rs.getString(2));
+				tarefa.setPrioridade(Banco.rs.getInt(3));
+				tarefa.setCentroCusto(Banco.rs.getString(4));
+				tarefa.setStatus(Banco.rs.getString(5));
+				tarefa.setTamanho(Banco.rs.getString(6));
+				tarefa.setPorcentagem(Banco.rs.getInt(7));
+				tarefa.setPrazo(Banco.rs.getInt(8));
+				tarefa.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(9)));
+				tarefa.setDataReal(new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(10)));
+				tarefa.setDataFim(new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(11)));
+				tarefa.setExecutor1(Banco.rs.getString(12));
+				tarefa.setPorcento1(Banco.rs.getInt(13));
+				tarefa.setExecutor2(Banco.rs.getString(14));
+				tarefa.setPorcento2(Banco.rs.getInt(15));
+				tarefa.setExecutor3(Banco.rs.getString(16));
+				tarefa.setPorcento3(Banco.rs.getInt(17));
+				tarefa.setExecutor4(Banco.rs.getString(18));
+				tarefa.setPorcento4(Banco.rs.getInt(19));
+				tarefa.setExecutor5(Banco.rs.getString(20));
+				tarefa.setPorcento5(Banco.rs.getInt(21));
+				tarefa.setExecutor6(Banco.rs.getString(22));
+				tarefa.setPorcento6(Banco.rs.getInt(23));
+				tarefa.setExecutor7(Banco.rs.getString(24));
+				tarefa.setPorcento7(Banco.rs.getInt(25));
+				tarefa.setExecutor8(Banco.rs.getString(26));
+				tarefa.setPorcento8(Banco.rs.getInt(27));
+				tarefa.setExecutor9(Banco.rs.getString(28));
+				tarefa.setPorcento9(Banco.rs.getInt(29));
+				tarefa.setExecutor10(Banco.rs.getString(30));
+				tarefa.setPorcento10(Banco.rs.getInt(31));
+				tarefa.setPendentePor(Banco.rs.getString(32));
+				tarefa.setStatusPendencia(Banco.rs.getString(33));
+				tarefa.setHistorico(Banco.rs.getString(34));
+				tarefa.setDepartamento(Banco.rs.getString(35));
+				tarefa.setResponsavel(Banco.rs.getString(36));
+				tarefa.setAutoridade(Banco.rs.getString(37));
+				tarefa.setEtapa(Banco.rs.getString(38));
+				tarefa.setSubEtapa(Banco.rs.getString(39));
+				tarefa.setProcesso(Banco.rs.getString(40));
+				tarefa.setPredecessor1(Banco.rs.getInt(41));
+				tarefa.setPredecessor2(Banco.rs.getInt(42));
+				tarefa.setPredecessor3(Banco.rs.getInt(43));
 
 				if (Banco.rs.getString(45) == null || Banco.rs.getString(45) == "") {// Se não existir atualização
 																						// coloca vazio na
 					// variavel de atualização // tarefa
-					variaveis.setAtualizacao("");
+					tarefa.setAtualizacao("");
 				} else {
-					variaveis.setAtualizacao(
+					tarefa.setAtualizacao(
 							"Atualizado " + new SimpleDateFormat("dd/MM/yyyy").format(Banco.rs.getDate(44)) + " Por "
 									+ Banco.rs.getString(45));
 				}
 
-				variaveis.setChecado(Banco.rs.getString(46));
+				tarefa.setChecado(Banco.rs.getString(46));
 
 				// DPTO CORRETO
 				// PROCESSO RELACIONADO
@@ -1344,6 +1343,7 @@ public class KambanDAO extends kamban {
 				JOptionPane.showMessageDialog(null, erro.toString() + "KambamDao");
 			}
 		}
+		return tarefa;
 	}
 
 	// -------------------------------------------------METODOS

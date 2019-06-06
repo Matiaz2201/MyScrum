@@ -1024,11 +1024,8 @@ public class TarefaEditTela extends JFrame {
 					// metodo para zerar variaveis
 					metodos.zeraVariaveis();
 
-					// metodo para setar variaveis
-					setarVariaveis();
-
 					// Metodo para salvar no banco
-					metodos.cadastrar();
+					metodos.cadastrar(setarVariaveis());
 
 					// Setando o ID da tarefa
 					ID_tarefa.setText(String.valueOf(metodos.ID_TAREFA));
@@ -1103,14 +1100,11 @@ public class TarefaEditTela extends JFrame {
 					// metodo para zerar variaveis
 					metodos.zeraVariaveis();
 
-					// metodo para setar variaveis
-					setarVariaveis();
-
 					// Setando id da tarefa a ser atualizada
 					variavel.setIDTarefa(Integer.parseInt(ID_tarefa.getText()));
 
 					// metodo para atualizar tarefa no banco
-					metodos.atualizar();
+					metodos.atualizar(setarVariaveis());
 
 					// Verificando se a tela foi aberta pelo kamban ou tarefa para determinar se
 					// atualiza a lista ou não caso seja aberta pelo kamban
@@ -1479,251 +1473,255 @@ public class TarefaEditTela extends JFrame {
 		}
 	}
 
-	public void setarVariaveis() {
+	public Tarefa setarVariaveis() {
+		Tarefa tarefa = new Tarefa();
+		
 		// setando variaveis
-		variavel.setDescricao(descText.getText());
-		variavel.setPrioridade(Integer.parseInt(prioridadeComboBox.getSelectedItem().toString()));
-		variavel.setTamanho(tamanhoComboBox.getSelectedItem().toString());
-		variavel.setStatus(statusComboBox.getSelectedItem().toString());
-		variavel.setCentroCusto(centroCComboBox.getSelectedItem().toString());
-		variavel.setPrazo(Integer.parseInt(prazDiaComboBox.getSelectedItem().toString()));
+		tarefa.setDescricao(descText.getText());
+		tarefa.setPrioridade(Integer.parseInt(prioridadeComboBox.getSelectedItem().toString()));
+		tarefa.setTamanho(tamanhoComboBox.getSelectedItem().toString());
+		tarefa.setStatus(statusComboBox.getSelectedItem().toString());
+		tarefa.setCentroCusto(centroCComboBox.getSelectedItem().toString());
+		tarefa.setPrazo(Integer.parseInt(prazDiaComboBox.getSelectedItem().toString()));
 		if (pred1Text.getText().equals("")) {
-			variavel.setPredecessor1(0);
+			tarefa.setPredecessor1(0);
 		} else {
-			variavel.setPredecessor1(Integer.parseInt(pred1Text.getText()));
+			tarefa.setPredecessor1(Integer.parseInt(pred1Text.getText()));
 		}
 		if (pred2Text.getText().equals("")) {
-			variavel.setPredecessor2(0);
+			tarefa.setPredecessor2(0);
 		} else {
-			variavel.setPredecessor2(Integer.parseInt(pred2Text.getText()));
+			tarefa.setPredecessor2(Integer.parseInt(pred2Text.getText()));
 		}
 		if (pred3Text.getText().equals("")) {
-			variavel.setPredecessor3(0);
+			tarefa.setPredecessor3(0);
 		} else {
-			variavel.setPredecessor3(Integer.parseInt(pred3Text.getText()));
+			tarefa.setPredecessor3(Integer.parseInt(pred3Text.getText()));
 		}
-		variavel.setChecado(checadoComboBox.getSelectedItem().toString());
-		variavel.setDataInicio(dataIniText.getText());
-		variavel.setDataReal(dataRealText.getText());
-		variavel.setDataFim(datafimText.getText());
-		variavel.setPorcentagem(Integer.parseInt(pecentText.getText().replaceAll("[^0-9]*", "")));
+		tarefa.setChecado(checadoComboBox.getSelectedItem().toString());
+		tarefa.setDataInicio(dataIniText.getText());
+		tarefa.setDataReal(dataRealText.getText());
+		tarefa.setDataFim(datafimText.getText());
+		tarefa.setPorcentagem(Integer.parseInt(pecentText.getText().replaceAll("[^0-9]*", "")));
 
 		if (etapaCombo.getSelectedIndex() != 0) {
-			variavel.setEtapa(etapaCombo.getSelectedItem().toString());
+			tarefa.setEtapa(etapaCombo.getSelectedItem().toString());
 		}
 
 		if (subEtapaCombo.getSelectedIndex() != 0) {
-			variavel.setSubEtapa(subEtapaCombo.getSelectedItem().toString());
+			tarefa.setSubEtapa(subEtapaCombo.getSelectedItem().toString());
 		}
 
-		if (pendComboBox.getSelectedIndex() != 0) {// Se o index for diferente de zero carregue a variavel
-			variavel.setPendentePor(pendComboBox.getSelectedItem().toString());
+		if (pendComboBox.getSelectedIndex() != 0) {// Se o index for diferente de zero carregue a tarefa
+			tarefa.setPendentePor(pendComboBox.getSelectedItem().toString());
 		}
 
 		if (processoComboBox.getSelectedIndex() != 0) {
-			variavel.setProcesso(processoComboBox.getSelectedItem().toString());
+			tarefa.setProcesso(processoComboBox.getSelectedItem().toString());
 		}
 
-		variavel.setResponsavel(respComboBox.getSelectedItem().toString());
-		variavel.setAutoridade(autoridadeComboBox.getSelectedItem().toString());
-		variavel.setDepartamento(dptoCombobox.getSelectedItem().toString());
+		tarefa.setResponsavel(respComboBox.getSelectedItem().toString());
+		tarefa.setAutoridade(autoridadeComboBox.getSelectedItem().toString());
+		tarefa.setDepartamento(dptoCombobox.getSelectedItem().toString());
 
 		if (exec1ComboBox.getSelectedIndex() != 0 && porcento1ComboBox.getSelectedIndex() != 0) {
-			variavel.setExecutor1(exec1ComboBox.getSelectedItem().toString());
+			tarefa.setExecutor1(exec1ComboBox.getSelectedItem().toString());
 			String porcento = porcento1ComboBox.getSelectedItem().toString().replace("%", "");
-			variavel.setPorcento1(Integer.parseInt((porcento)));
+			tarefa.setPorcento1(Integer.parseInt((porcento)));
 		} else {
-			variavel.setExecutor1(null);
+			tarefa.setExecutor1(null);
 		}
 		if (exec2ComboBox.getSelectedIndex() != 0 && porcento2ComboBox.getSelectedIndex() != 0) {
-			variavel.setExecutor2(exec2ComboBox.getSelectedItem().toString());
+			tarefa.setExecutor2(exec2ComboBox.getSelectedItem().toString());
 			String porcento = porcento2ComboBox.getSelectedItem().toString().replace("%", "");
-			variavel.setPorcento2(Integer.parseInt(porcento));
+			tarefa.setPorcento2(Integer.parseInt(porcento));
 		} else {
-			variavel.setExecutor2(null);
+			tarefa.setExecutor2(null);
 		}
 		if (exec3ComboBox.getSelectedIndex() != 0 && porcento3ComboBox.getSelectedIndex() != 0) {
-			variavel.setExecutor3(exec3ComboBox.getSelectedItem().toString());
+			tarefa.setExecutor3(exec3ComboBox.getSelectedItem().toString());
 			String porcento = porcento3ComboBox.getSelectedItem().toString().replace("%", "");
-			variavel.setPorcento3(Integer.parseInt(porcento));
+			tarefa.setPorcento3(Integer.parseInt(porcento));
 		} else {
-			variavel.setExecutor3(null);
+			tarefa.setExecutor3(null);
 		}
 		if (exec4ComboBox.getSelectedIndex() != 0 && porcento4ComboBox.getSelectedIndex() != 0) {
-			variavel.setExecutor4(exec4ComboBox.getSelectedItem().toString());
+			tarefa.setExecutor4(exec4ComboBox.getSelectedItem().toString());
 			String porcento = porcento4ComboBox.getSelectedItem().toString().replace("%", "");
-			variavel.setPorcento4(Integer.parseInt(porcento));
+			tarefa.setPorcento4(Integer.parseInt(porcento));
 		} else {
-			variavel.setExecutor4(null);
+			tarefa.setExecutor4(null);
 		}
 		if (exec5ComboBox.getSelectedIndex() != 0 && porcento5ComboBox.getSelectedIndex() != 0) {
-			variavel.setExecutor5(exec5ComboBox.getSelectedItem().toString());
+			tarefa.setExecutor5(exec5ComboBox.getSelectedItem().toString());
 			String porcento = porcento5ComboBox.getSelectedItem().toString().replace("%", "");
-			variavel.setPorcento5(Integer.parseInt(porcento));
+			tarefa.setPorcento5(Integer.parseInt(porcento));
 		} else {
-			variavel.setExecutor5(null);
+			tarefa.setExecutor5(null);
 		}
 		if (exec6ComboBox.getSelectedIndex() != 0 && porcento6ComboBox.getSelectedIndex() != 0) {
-			variavel.setExecutor6(exec6ComboBox.getSelectedItem().toString());
+			tarefa.setExecutor6(exec6ComboBox.getSelectedItem().toString());
 			String porcento = porcento6ComboBox.getSelectedItem().toString().replace("%", "");
-			variavel.setPorcento6(Integer.parseInt(porcento));
+			tarefa.setPorcento6(Integer.parseInt(porcento));
 		} else {
-			variavel.setExecutor6(null);
+			tarefa.setExecutor6(null);
 		}
 		if (exec7ComboBox.getSelectedIndex() != 0 && porcento7ComboBox.getSelectedIndex() != 0) {
-			variavel.setExecutor7(exec7ComboBox.getSelectedItem().toString());
+			tarefa.setExecutor7(exec7ComboBox.getSelectedItem().toString());
 			String porcento = porcento7ComboBox.getSelectedItem().toString().replace("%", "");
-			variavel.setPorcento7(Integer.parseInt(porcento));
+			tarefa.setPorcento7(Integer.parseInt(porcento));
 		} else {
-			variavel.setExecutor7(null);
+			tarefa.setExecutor7(null);
 		}
 		if (exec8ComboBox.getSelectedIndex() != 0 && porcento8ComboBox.getSelectedIndex() != 0) {
-			variavel.setExecutor8(exec8ComboBox.getSelectedItem().toString());
+			tarefa.setExecutor8(exec8ComboBox.getSelectedItem().toString());
 			String porcento = porcento8ComboBox.getSelectedItem().toString().replace("%", "");
-			variavel.setPorcento8(Integer.parseInt(porcento));
+			tarefa.setPorcento8(Integer.parseInt(porcento));
 		} else {
-			variavel.setExecutor8(null);
+			tarefa.setExecutor8(null);
 		}
 		if (exec9ComboBox.getSelectedIndex() != 0 && porcento9ComboBox.getSelectedIndex() != 0) {
-			variavel.setExecutor9(exec9ComboBox.getSelectedItem().toString());
+			tarefa.setExecutor9(exec9ComboBox.getSelectedItem().toString());
 			String porcento = porcento9ComboBox.getSelectedItem().toString().replace("%", "");
-			variavel.setPorcento9(Integer.parseInt(porcento));
+			tarefa.setPorcento9(Integer.parseInt(porcento));
 		} else {
-			variavel.setExecutor9(null);
+			tarefa.setExecutor9(null);
 		}
 		if (exec10ComboBox.getSelectedIndex() != 0 && porcento10ComboBox.getSelectedIndex() != 0) {
-			variavel.setExecutor10(exec10ComboBox.getSelectedItem().toString());
+			tarefa.setExecutor10(exec10ComboBox.getSelectedItem().toString());
 			String porcento = porcento10ComboBox.getSelectedItem().toString().replace("%", "");
-			variavel.setPorcento10(Integer.parseInt(porcento));
+			tarefa.setPorcento10(Integer.parseInt(porcento));
 		} else {
-			variavel.setExecutor10(null);
+			tarefa.setExecutor10(null);
 		}
 
-		variavel.setStatusPendencia(statPendText.getText());
-		variavel.setHistorico(historicoText.getText());
+		tarefa.setStatusPendencia(statPendText.getText());
+		tarefa.setHistorico(historicoText.getText());
+		
+		return tarefa;
 
 	}
 
-	public void carregarDados() {
-		ID_tarefa.setText(String.valueOf(variavel.getIDTarefa()));
-		descText.setText(variavel.getDescricao());
-		prioridadeComboBox.setSelectedItem(String.valueOf(variavel.getPrioridade()));
-		centroCComboBox.setSelectedItem(variavel.getCentroCusto());
-		statusComboBox.setSelectedItem(variavel.getStatus());
-		tamanhoComboBox.setSelectedItem(variavel.getTamanho());
-		pecentText.setText(String.valueOf(variavel.getPorcentagem()));
-		prazDiaComboBox.setSelectedItem(String.valueOf(variavel.getPrazo()));
-		pred1Text.setText(String.valueOf(variavel.getPredecessor1()));
-		pred2Text.setText(String.valueOf(variavel.getPredecessor2()));
-		pred3Text.setText(String.valueOf(variavel.getPredecessor3()));
+	public void carregarDados(Tarefa tarefa) {
+		ID_tarefa.setText(String.valueOf(tarefa.getIDTarefa()));
+		descText.setText(tarefa.getDescricao());
+		prioridadeComboBox.setSelectedItem(String.valueOf(tarefa.getPrioridade()));
+		centroCComboBox.setSelectedItem(tarefa.getCentroCusto());
+		statusComboBox.setSelectedItem(tarefa.getStatus());
+		tamanhoComboBox.setSelectedItem(tarefa.getTamanho());
+		pecentText.setText(String.valueOf(tarefa.getPorcentagem()));
+		prazDiaComboBox.setSelectedItem(String.valueOf(tarefa.getPrazo()));
+		pred1Text.setText(String.valueOf(tarefa.getPredecessor1()));
+		pred2Text.setText(String.valueOf(tarefa.getPredecessor2()));
+		pred3Text.setText(String.valueOf(tarefa.getPredecessor3()));
 
-		if (variavel.getChecado() == "" || variavel.getChecado() == null) {
+		if (tarefa.getChecado() == "" || tarefa.getChecado() == null) {
 			checadoComboBox.setSelectedIndex(0);
 		} else {
-			checadoComboBox.setSelectedItem(variavel.getChecado());
+			checadoComboBox.setSelectedItem(tarefa.getChecado());
 		}
 
-		dataIniText.setText(variavel.getDataInicio());
-		dataRealText.setText(variavel.getDataReal());
-		datafimText.setText(variavel.getDataFim());
-		pendComboBox.setSelectedItem(variavel.getPendentePor());
-		historicoText.setText(variavel.getStatusPendencia());
-		dptoCombobox.setSelectedItem(variavel.getDepartamento());
-		respComboBox.setSelectedItem(variavel.getResponsavel());
-		autoridadeComboBox.setSelectedItem(variavel.getAutoridade());
+		dataIniText.setText(tarefa.getDataInicio());
+		dataRealText.setText(tarefa.getDataReal());
+		datafimText.setText(tarefa.getDataFim());
+		pendComboBox.setSelectedItem(tarefa.getPendentePor());
+		historicoText.setText(tarefa.getStatusPendencia());
+		dptoCombobox.setSelectedItem(tarefa.getDepartamento());
+		respComboBox.setSelectedItem(tarefa.getResponsavel());
+		autoridadeComboBox.setSelectedItem(tarefa.getAutoridade());
 
-		if (variavel.getEtapa() == "" || variavel.getEtapa() == null) {
+		if (tarefa.getEtapa() == "" || tarefa.getEtapa() == null) {
 			etapaCombo.setSelectedIndex(0);
 		} else {
-			etapaCombo.setSelectedItem(variavel.getEtapa());
+			etapaCombo.setSelectedItem(tarefa.getEtapa());
 		}
 
-		if (variavel.getSubEtapa() == "" || variavel.getSubEtapa() == null) {
+		if (tarefa.getSubEtapa() == "" || tarefa.getSubEtapa() == null) {
 			subEtapaCombo.setSelectedIndex(0);
 		} else {
-			subEtapaCombo.setSelectedItem(variavel.getSubEtapa());
+			subEtapaCombo.setSelectedItem(tarefa.getSubEtapa());
 		}
 
-		if (variavel.getProcesso() == "" || variavel.getProcesso() == null) {
+		if (tarefa.getProcesso() == "" || tarefa.getProcesso() == null) {
 			processoComboBox.setSelectedIndex(0);
 		} else {
-			processoComboBox.setSelectedItem(variavel.getProcesso());
+			processoComboBox.setSelectedItem(tarefa.getProcesso());
 		}
 
-		statPendText.setText(variavel.getStatusPendencia());
-		historicoText.setText(variavel.getHistorico());
-		atualiazacaoLabel.setText(variavel.getAtuaizacao());
+		statPendText.setText(tarefa.getStatusPendencia());
+		historicoText.setText(tarefa.getHistorico());
+		atualiazacaoLabel.setText(tarefa.getAtuaizacao());
 
-		exec1ComboBox.setSelectedItem(variavel.getExecutor1());
-		porcento1ComboBox.setSelectedItem(retornaPorcento(String.valueOf(variavel.getPorcento1())));
+		exec1ComboBox.setSelectedItem(tarefa.getExecutor1());
+		porcento1ComboBox.setSelectedItem(retornaPorcento(String.valueOf(tarefa.getPorcento1())));
 
-		if (variavel.getExecutor2() != "" && variavel.getExecutor2() != null) {
-			exec2ComboBox.setSelectedItem(variavel.getExecutor2());
-			porcento2ComboBox.setSelectedItem(retornaPorcento(String.valueOf(variavel.getPorcento2())));
+		if (tarefa.getExecutor2() != "" && tarefa.getExecutor2() != null) {
+			exec2ComboBox.setSelectedItem(tarefa.getExecutor2());
+			porcento2ComboBox.setSelectedItem(retornaPorcento(String.valueOf(tarefa.getPorcento2())));
 			exec2ComboBox.setVisible(true);
 			porcento2ComboBox.setVisible(true);
 			cont = 2;
 		}
 
-		if (variavel.getExecutor3() != "" && variavel.getExecutor3() != null) {
-			exec3ComboBox.setSelectedItem(variavel.getExecutor3());
-			porcento3ComboBox.setSelectedItem(retornaPorcento(String.valueOf(variavel.getPorcento3())));
+		if (tarefa.getExecutor3() != "" && tarefa.getExecutor3() != null) {
+			exec3ComboBox.setSelectedItem(tarefa.getExecutor3());
+			porcento3ComboBox.setSelectedItem(retornaPorcento(String.valueOf(tarefa.getPorcento3())));
 			exec3ComboBox.setVisible(true);
 			porcento3ComboBox.setVisible(true);
 			cont = 3;
 		}
 
-		if (variavel.getExecutor4() != "" && variavel.getExecutor4() != null) {
-			exec4ComboBox.setSelectedItem(variavel.getExecutor4());
-			porcento4ComboBox.setSelectedItem(retornaPorcento(String.valueOf(variavel.getPorcento4())));
+		if (tarefa.getExecutor4() != "" && tarefa.getExecutor4() != null) {
+			exec4ComboBox.setSelectedItem(tarefa.getExecutor4());
+			porcento4ComboBox.setSelectedItem(retornaPorcento(String.valueOf(tarefa.getPorcento4())));
 			exec4ComboBox.setVisible(true);
 			porcento4ComboBox.setVisible(true);
 			cont = 4;
 		}
 
-		if (variavel.getExecutor5() != "" && variavel.getExecutor5() != null) {
-			exec5ComboBox.setSelectedItem(variavel.getExecutor5());
-			porcento5ComboBox.setSelectedItem(retornaPorcento(String.valueOf(variavel.getPorcento5())));
+		if (tarefa.getExecutor5() != "" && tarefa.getExecutor5() != null) {
+			exec5ComboBox.setSelectedItem(tarefa.getExecutor5());
+			porcento5ComboBox.setSelectedItem(retornaPorcento(String.valueOf(tarefa.getPorcento5())));
 			exec5ComboBox.setVisible(true);
 			porcento5ComboBox.setVisible(true);
 			cont = 5;
 		}
 
-		if (variavel.getExecutor6() != "" && variavel.getExecutor6() != null) {
-			exec6ComboBox.setSelectedItem(variavel.getExecutor6());
-			porcento6ComboBox.setSelectedItem(retornaPorcento(String.valueOf(variavel.getPorcento6())));
+		if (tarefa.getExecutor6() != "" && tarefa.getExecutor6() != null) {
+			exec6ComboBox.setSelectedItem(tarefa.getExecutor6());
+			porcento6ComboBox.setSelectedItem(retornaPorcento(String.valueOf(tarefa.getPorcento6())));
 			exec6ComboBox.setVisible(true);
 			porcento6ComboBox.setVisible(true);
 			cont = 6;
 		}
 
-		if (variavel.getExecutor7() != "" && variavel.getExecutor7() != null) {
-			exec7ComboBox.setSelectedItem(variavel.getExecutor7());
-			porcento7ComboBox.setSelectedItem(retornaPorcento(String.valueOf(variavel.getPorcento7())));
+		if (tarefa.getExecutor7() != "" && tarefa.getExecutor7() != null) {
+			exec7ComboBox.setSelectedItem(tarefa.getExecutor7());
+			porcento7ComboBox.setSelectedItem(retornaPorcento(String.valueOf(tarefa.getPorcento7())));
 			exec7ComboBox.setVisible(true);
 			porcento7ComboBox.setVisible(true);
 			cont = 7;
 		}
 
-		if (variavel.getExecutor8() != "" && variavel.getExecutor8() != null) {
-			exec8ComboBox.setSelectedItem(variavel.getExecutor8());
-			porcento8ComboBox.setSelectedItem(retornaPorcento(String.valueOf(variavel.getPorcento8())));
+		if (tarefa.getExecutor8() != "" && tarefa.getExecutor8() != null) {
+			exec8ComboBox.setSelectedItem(tarefa.getExecutor8());
+			porcento8ComboBox.setSelectedItem(retornaPorcento(String.valueOf(tarefa.getPorcento8())));
 			exec8ComboBox.setVisible(true);
 			porcento8ComboBox.setVisible(true);
 			cont = 8;
 		}
 
-		if (variavel.getExecutor9() != "" && variavel.getExecutor9() != null) {
-			exec9ComboBox.setSelectedItem(variavel.getExecutor9());
-			porcento9ComboBox.setSelectedItem(retornaPorcento(String.valueOf(variavel.getPorcento9())));
+		if (tarefa.getExecutor9() != "" && tarefa.getExecutor9() != null) {
+			exec9ComboBox.setSelectedItem(tarefa.getExecutor9());
+			porcento9ComboBox.setSelectedItem(retornaPorcento(String.valueOf(tarefa.getPorcento9())));
 			exec9ComboBox.setVisible(true);
 			porcento9ComboBox.setVisible(true);
 			cont = 9;
 		}
 
-		if (variavel.getExecutor10() != "" && variavel.getExecutor10() != null) {
-			exec10ComboBox.setSelectedItem(variavel.getExecutor10());
-			porcento10ComboBox.setSelectedItem(retornaPorcento(String.valueOf(variavel.getPorcento10())));
+		if (tarefa.getExecutor10() != "" && tarefa.getExecutor10() != null) {
+			exec10ComboBox.setSelectedItem(tarefa.getExecutor10());
+			porcento10ComboBox.setSelectedItem(retornaPorcento(String.valueOf(tarefa.getPorcento10())));
 			exec10ComboBox.setVisible(true);
 			porcento10ComboBox.setVisible(true);
 			cont = 10;
