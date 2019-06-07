@@ -106,7 +106,7 @@ public class TarefaTela extends javax.swing.JFrame {
 				tela.setVisible(true);// mostrando a tela
 				tela.toFront();
 				tela.atualizarButton();
-				tela.carregarDados();
+				tela.carregarDados(tarefa);
 				tela.setTitle(tabela.getValueAt(tabela.getSelectedRow(), 1).toString());
 			}
 		}
@@ -817,141 +817,143 @@ public class TarefaTela extends javax.swing.JFrame {
 		tabelaMult.addMouseListener(new MouseAdapter() {
 			public void mouseReleased(MouseEvent a) {
 				if (a.getClickCount() == 2) {
-					variavel.setDescricao(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 1).toString());
-					variavel.setPrioridade(
+					tarefa = new Tarefa();
+					
+					tarefa.setDescricao(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 1).toString());
+					tarefa.setPrioridade(
 							Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 2).toString()));
-					variavel.setCentroCusto(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 3).toString());
-					variavel.setStatus(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 4).toString());
-					variavel.setTamanho(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 5).toString());
-					variavel.setPorcentagem(
+					tarefa.setCentroCusto(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 3).toString());
+					tarefa.setStatus(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 4).toString());
+					tarefa.setTamanho(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 5).toString());
+					tarefa.setPorcentagem(
 							Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 6).toString()));
-					variavel.setPrazo(
+					tarefa.setPrazo(
 							Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 7).toString()));
-					variavel.setDataInicio(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 8).toString());
-					variavel.setDataReal(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 9).toString());
-					variavel.setDataFim(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 10).toString());
+					tarefa.setDataInicio(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 8).toString());
+					tarefa.setDataReal(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 9).toString());
+					tarefa.setDataFim(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 10).toString());
 
 					// teste se existi executor 1
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 11) == null) {
-						variavel.setExecutor1("");
-						variavel.setPorcento2(0);
+						tarefa.setExecutor1("");
+						tarefa.setPorcento2(0);
 					} else {
-						variavel.setExecutor1(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 11).toString());
-						variavel.setPorcento1(
+						tarefa.setExecutor1(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 11).toString());
+						tarefa.setPorcento1(
 								Integer.parseInt((tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 12).toString())));
 					}
 
 					// teste se existi executor 2
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 13) == null) {
-						variavel.setExecutor2("");
-						variavel.setPorcento2(0);
+						tarefa.setExecutor2("");
+						tarefa.setPorcento2(0);
 					} else {
-						variavel.setExecutor2(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 13).toString());
-						variavel.setPorcento2(
+						tarefa.setExecutor2(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 13).toString());
+						tarefa.setPorcento2(
 								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 14).toString()));
 					}
 
 					// teste se existi executor 3
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 15) == null) {
-						variavel.setExecutor3("");
-						variavel.setPorcento3(0);
+						tarefa.setExecutor3("");
+						tarefa.setPorcento3(0);
 					} else {
-						variavel.setExecutor3(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 15).toString());
-						variavel.setPorcento3(
+						tarefa.setExecutor3(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 15).toString());
+						tarefa.setPorcento3(
 								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 16).toString()));
 					}
 
 					// teste se existi executor 4
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 17) == null) {
-						variavel.setExecutor4("");
-						variavel.setPorcento4(0);
+						tarefa.setExecutor4("");
+						tarefa.setPorcento4(0);
 					} else {
-						variavel.setExecutor4(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 17).toString());
-						variavel.setPorcento4(
+						tarefa.setExecutor4(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 17).toString());
+						tarefa.setPorcento4(
 								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 18).toString()));
 					}
 
 					// teste se existi executor 5
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 19) == null) {
-						variavel.setExecutor5("");
-						variavel.setPorcento5(0);
+						tarefa.setExecutor5("");
+						tarefa.setPorcento5(0);
 					} else {
-						variavel.setExecutor5(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 19).toString());
-						variavel.setPorcento5(
+						tarefa.setExecutor5(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 19).toString());
+						tarefa.setPorcento5(
 								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 20).toString()));
 					}
 
 					// teste se existi executor 6
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 21) == null) {
-						variavel.setExecutor6("");
-						variavel.setPorcento6(0);
+						tarefa.setExecutor6("");
+						tarefa.setPorcento6(0);
 					} else {
-						variavel.setExecutor6(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 21).toString());
-						variavel.setPorcento6(
+						tarefa.setExecutor6(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 21).toString());
+						tarefa.setPorcento6(
 								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 22).toString()));
 					}
 
 					// teste se existi executor 7
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 23) == null) {
-						variavel.setExecutor7("");
-						variavel.setPorcento7(0);
+						tarefa.setExecutor7("");
+						tarefa.setPorcento7(0);
 					} else {
-						variavel.setExecutor7(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 23).toString());
-						variavel.setPorcento7(
+						tarefa.setExecutor7(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 23).toString());
+						tarefa.setPorcento7(
 								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 24).toString()));
 					}
 
 					// teste se existi executor 8
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 25) == null) {
-						variavel.setExecutor8("");
-						variavel.setPorcento8(0);
+						tarefa.setExecutor8("");
+						tarefa.setPorcento8(0);
 					} else {
-						variavel.setExecutor8(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 25).toString());
-						variavel.setPorcento8(
+						tarefa.setExecutor8(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 25).toString());
+						tarefa.setPorcento8(
 								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 26).toString()));
 					}
 
 					// teste se existi executor 9
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 27) == null) {
-						variavel.setExecutor9("");
-						variavel.setPorcento9(0);
+						tarefa.setExecutor9("");
+						tarefa.setPorcento9(0);
 					} else {
-						variavel.setExecutor9(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 27).toString());
-						variavel.setPorcento9(
+						tarefa.setExecutor9(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 27).toString());
+						tarefa.setPorcento9(
 								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 28).toString()));
 					}
 
 					// teste se existi executor 10
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 29) == null) {
-						variavel.setExecutor10("");
-						variavel.setPorcento10(0);
+						tarefa.setExecutor10("");
+						tarefa.setPorcento10(0);
 					} else {
-						variavel.setExecutor10(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 29).toString());
-						variavel.setPorcento10(
+						tarefa.setExecutor10(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 29).toString());
+						tarefa.setPorcento10(
 								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 30).toString()));
 					}
 
 					// teste se pendente existir
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 31) == null) {
-						variavel.setPendentePor("");
+						tarefa.setPendentePor("");
 					} else {
-						variavel.setPendentePor(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 31).toString());
+						tarefa.setPendentePor(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 31).toString());
 					}
 					// teste se status pendencia eexistir
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 32) == null) {
-						variavel.setStatusPendencia("");
+						tarefa.setStatusPendencia("");
 					} else {
-						variavel.setStatusPendencia(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 32).toString());
+						tarefa.setStatusPendencia(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 32).toString());
 					}
 					// teste se existir historico
 					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 33) == null) {
-						variavel.setHistorico("");
+						tarefa.setHistorico("");
 					} else {
-						variavel.setHistorico(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 33).toString());
+						tarefa.setHistorico(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 33).toString());
 					}
-					variavel.setDepartamento(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 34).toString());
-					variavel.setResponsavel(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 35).toString());
-					variavel.setAutoridade(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 36).toString());
+					tarefa.setDepartamento(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 34).toString());
+					tarefa.setResponsavel(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 35).toString());
+					tarefa.setAutoridade(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 36).toString());
 				}
 			}
 		});
@@ -1298,192 +1300,194 @@ public class TarefaTela extends javax.swing.JFrame {
 				tabela.addMouseListener(new MouseAdapter() {
 					public void mouseReleased(MouseEvent a) {
 						if (a.getClickCount() == 2) {
-							variavel.setIDTarefa(
+							tarefa = new Tarefa();
+							
+							tarefa.setIDTarefa(
 									Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 0).toString()));
-							variavel.setDescricao(tabela.getValueAt(tabela.getSelectedRow(), 1).toString());
-							variavel.setPrioridade(
+							tarefa.setDescricao(tabela.getValueAt(tabela.getSelectedRow(), 1).toString());
+							tarefa.setPrioridade(
 									Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 2).toString()));
-							variavel.setCentroCusto(tabela.getValueAt(tabela.getSelectedRow(), 3).toString());
-							variavel.setStatus(tabela.getValueAt(tabela.getSelectedRow(), 4).toString());
-							variavel.setTamanho(tabela.getValueAt(tabela.getSelectedRow(), 5).toString());
-							variavel.setPorcentagem(
+							tarefa.setCentroCusto(tabela.getValueAt(tabela.getSelectedRow(), 3).toString());
+							tarefa.setStatus(tabela.getValueAt(tabela.getSelectedRow(), 4).toString());
+							tarefa.setTamanho(tabela.getValueAt(tabela.getSelectedRow(), 5).toString());
+							tarefa.setPorcentagem(
 									Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 6).toString()));
-							variavel.setPrazo(
+							tarefa.setPrazo(
 									Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 7).toString()));
-							variavel.setDataInicio(tabela.getValueAt(tabela.getSelectedRow(), 8).toString());
-							variavel.setDataReal(tabela.getValueAt(tabela.getSelectedRow(), 9).toString());
-							variavel.setDataFim(tabela.getValueAt(tabela.getSelectedRow(), 10).toString());
+							tarefa.setDataInicio(tabela.getValueAt(tabela.getSelectedRow(), 8).toString());
+							tarefa.setDataReal(tabela.getValueAt(tabela.getSelectedRow(), 9).toString());
+							tarefa.setDataFim(tabela.getValueAt(tabela.getSelectedRow(), 10).toString());
 
 							// teste se existi executor 1
 							if (tabela.getValueAt(tabela.getSelectedRow(), 11) == null) {
-								variavel.setExecutor1("");
-								variavel.setPorcento2(0);
+								tarefa.setExecutor1("");
+								tarefa.setPorcento2(0);
 							} else {
-								variavel.setExecutor1(tabela.getValueAt(tabela.getSelectedRow(), 11).toString());
-								variavel.setPorcento1(
+								tarefa.setExecutor1(tabela.getValueAt(tabela.getSelectedRow(), 11).toString());
+								tarefa.setPorcento1(
 										Integer.parseInt((tabela.getValueAt(tabela.getSelectedRow(), 12).toString())));
 							}
 
 							// teste se existi executor 2
 							if (tabela.getValueAt(tabela.getSelectedRow(), 13) == null) {
-								variavel.setExecutor2("");
-								variavel.setPorcento2(0);
+								tarefa.setExecutor2("");
+								tarefa.setPorcento2(0);
 							} else {
-								variavel.setExecutor2(tabela.getValueAt(tabela.getSelectedRow(), 13).toString());
-								variavel.setPorcento2(
+								tarefa.setExecutor2(tabela.getValueAt(tabela.getSelectedRow(), 13).toString());
+								tarefa.setPorcento2(
 										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 14).toString()));
 							}
 
 							// teste se existi executor 3
 							if (tabela.getValueAt(tabela.getSelectedRow(), 15) == null) {
-								variavel.setExecutor3("");
-								variavel.setPorcento3(0);
+								tarefa.setExecutor3("");
+								tarefa.setPorcento3(0);
 							} else {
-								variavel.setExecutor3(tabela.getValueAt(tabela.getSelectedRow(), 15).toString());
-								variavel.setPorcento3(
+								tarefa.setExecutor3(tabela.getValueAt(tabela.getSelectedRow(), 15).toString());
+								tarefa.setPorcento3(
 										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 16).toString()));
 							}
 
 							// teste se existi executor 4
 							if (tabela.getValueAt(tabela.getSelectedRow(), 17) == null) {
-								variavel.setExecutor4("");
-								variavel.setPorcento4(0);
+								tarefa.setExecutor4("");
+								tarefa.setPorcento4(0);
 							} else {
-								variavel.setExecutor4(tabela.getValueAt(tabela.getSelectedRow(), 17).toString());
-								variavel.setPorcento4(
+								tarefa.setExecutor4(tabela.getValueAt(tabela.getSelectedRow(), 17).toString());
+								tarefa.setPorcento4(
 										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 18).toString()));
 							}
 
 							// teste se existi executor 5
 							if (tabela.getValueAt(tabela.getSelectedRow(), 19) == null) {
-								variavel.setExecutor5("");
-								variavel.setPorcento5(0);
+								tarefa.setExecutor5("");
+								tarefa.setPorcento5(0);
 							} else {
-								variavel.setExecutor5(tabela.getValueAt(tabela.getSelectedRow(), 19).toString());
-								variavel.setPorcento5(
+								tarefa.setExecutor5(tabela.getValueAt(tabela.getSelectedRow(), 19).toString());
+								tarefa.setPorcento5(
 										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 20).toString()));
 							}
 
 							// teste se existi executor 6
 							if (tabela.getValueAt(tabela.getSelectedRow(), 21) == null) {
-								variavel.setExecutor6("");
-								variavel.setPorcento6(0);
+								tarefa.setExecutor6("");
+								tarefa.setPorcento6(0);
 							} else {
-								variavel.setExecutor6(tabela.getValueAt(tabela.getSelectedRow(), 21).toString());
-								variavel.setPorcento6(
+								tarefa.setExecutor6(tabela.getValueAt(tabela.getSelectedRow(), 21).toString());
+								tarefa.setPorcento6(
 										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 22).toString()));
 							}
 
 							// teste se existi executor 7
 							if (tabela.getValueAt(tabela.getSelectedRow(), 23) == null) {
-								variavel.setExecutor7("");
-								variavel.setPorcento7(0);
+								tarefa.setExecutor7("");
+								tarefa.setPorcento7(0);
 							} else {
-								variavel.setExecutor7(tabela.getValueAt(tabela.getSelectedRow(), 23).toString());
-								variavel.setPorcento7(
+								tarefa.setExecutor7(tabela.getValueAt(tabela.getSelectedRow(), 23).toString());
+								tarefa.setPorcento7(
 										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 24).toString()));
 							}
 
 							// teste se existi executor 8
 							if (tabela.getValueAt(tabela.getSelectedRow(), 25) == null) {
-								variavel.setExecutor8("");
-								variavel.setPorcento8(0);
+								tarefa.setExecutor8("");
+								tarefa.setPorcento8(0);
 							} else {
-								variavel.setExecutor8(tabela.getValueAt(tabela.getSelectedRow(), 25).toString());
-								variavel.setPorcento8(
+								tarefa.setExecutor8(tabela.getValueAt(tabela.getSelectedRow(), 25).toString());
+								tarefa.setPorcento8(
 										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 26).toString()));
 							}
 
 							// teste se existi executor 9
 							if (tabela.getValueAt(tabela.getSelectedRow(), 27) == null) {
-								variavel.setExecutor9("");
-								variavel.setPorcento9(0);
+								tarefa.setExecutor9("");
+								tarefa.setPorcento9(0);
 							} else {
-								variavel.setExecutor9(tabela.getValueAt(tabela.getSelectedRow(), 27).toString());
-								variavel.setPorcento9(
+								tarefa.setExecutor9(tabela.getValueAt(tabela.getSelectedRow(), 27).toString());
+								tarefa.setPorcento9(
 										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 28).toString()));
 							}
 
 							// teste se existi executor 10
 							if (tabela.getValueAt(tabela.getSelectedRow(), 29) == null) {
-								variavel.setExecutor10("");
-								variavel.setPorcento10(0);
+								tarefa.setExecutor10("");
+								tarefa.setPorcento10(0);
 							} else {
-								variavel.setExecutor10(tabela.getValueAt(tabela.getSelectedRow(), 29).toString());
-								variavel.setPorcento10(
+								tarefa.setExecutor10(tabela.getValueAt(tabela.getSelectedRow(), 29).toString());
+								tarefa.setPorcento10(
 										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 30).toString()));
 							}
 
 							// teste se pendente existir
 							if (tabela.getValueAt(tabela.getSelectedRow(), 31) == null) {
-								variavel.setPendentePor("");
+								tarefa.setPendentePor("");
 							} else {
-								variavel.setPendentePor(tabela.getValueAt(tabela.getSelectedRow(), 31).toString());
+								tarefa.setPendentePor(tabela.getValueAt(tabela.getSelectedRow(), 31).toString());
 							}
 							// teste se status pendencia eexistir
 							if (tabela.getValueAt(tabela.getSelectedRow(), 32) == null) {
-								variavel.setStatusPendencia("");
+								tarefa.setStatusPendencia("");
 							} else {
-								variavel.setStatusPendencia(tabela.getValueAt(tabela.getSelectedRow(), 32).toString());
+								tarefa.setStatusPendencia(tabela.getValueAt(tabela.getSelectedRow(), 32).toString());
 							}
 							// teste se existir historico
 							if (tabela.getValueAt(tabela.getSelectedRow(), 33) == null) {
-								variavel.setHistorico("");
+								tarefa.setHistorico("");
 							} else {
-								variavel.setHistorico(tabela.getValueAt(tabela.getSelectedRow(), 33).toString());
+								tarefa.setHistorico(tabela.getValueAt(tabela.getSelectedRow(), 33).toString());
 							}
-							variavel.setDepartamento(tabela.getValueAt(tabela.getSelectedRow(), 34).toString());
-							variavel.setResponsavel(tabela.getValueAt(tabela.getSelectedRow(), 35).toString());
-							variavel.setAutoridade(tabela.getValueAt(tabela.getSelectedRow(), 36).toString());
+							tarefa.setDepartamento(tabela.getValueAt(tabela.getSelectedRow(), 34).toString());
+							tarefa.setResponsavel(tabela.getValueAt(tabela.getSelectedRow(), 35).toString());
+							tarefa.setAutoridade(tabela.getValueAt(tabela.getSelectedRow(), 36).toString());
 							
 							
 							if(tabela.getValueAt(tabela.getSelectedRow(), 37) == null) {
-								variavel.setEtapa("");
+								tarefa.setEtapa("");
 							}else {
-								variavel.setEtapa(tabela.getValueAt(tabela.getSelectedRow(), 37).toString());
+								tarefa.setEtapa(tabela.getValueAt(tabela.getSelectedRow(), 37).toString());
 							}
 							
 							if(tabela.getValueAt(tabela.getSelectedRow(), 38) == null) {
-								variavel.setSubEtapa("");
+								tarefa.setSubEtapa("");
 							}else {
-								variavel.setSubEtapa(tabela.getValueAt(tabela.getSelectedRow(), 38).toString());
+								tarefa.setSubEtapa(tabela.getValueAt(tabela.getSelectedRow(), 38).toString());
 							}
 							
-							if (tabela.getValueAt(tabela.getSelectedRow(), 40) == null) {//Se existir processo carrega a variavel
-								variavel.setProcesso("");
+							if (tabela.getValueAt(tabela.getSelectedRow(), 40) == null) {//Se existir processo carrega a tarefa
+								tarefa.setProcesso("");
 							}else {
-								variavel.setProcesso(tabela.getValueAt(tabela.getSelectedRow(), 40).toString());
+								tarefa.setProcesso(tabela.getValueAt(tabela.getSelectedRow(), 40).toString());
 							}
 							
 							if(tabela.getValueAt(tabela.getSelectedRow(), 41) == "" || tabela.getValueAt(tabela.getSelectedRow(), 41) == null) {
-								variavel.setPredecessor1(0);
+								tarefa.setPredecessor1(0);
 							} else {
-								variavel.setPredecessor1(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 41).toString()));
+								tarefa.setPredecessor1(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 41).toString()));
 							}
 							
 							if(tabela.getValueAt(tabela.getSelectedRow(), 42) == "" || tabela.getValueAt(tabela.getSelectedRow(), 42) == null) {
-								variavel.setPredecessor2(0);
+								tarefa.setPredecessor2(0);
 							} else {
-								variavel.setPredecessor2(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 42).toString()));
+								tarefa.setPredecessor2(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 42).toString()));
 							}
 							
 							if(tabela.getValueAt(tabela.getSelectedRow(), 43) == "" || tabela.getValueAt(tabela.getSelectedRow(), 43) == null) {
-								variavel.setPredecessor3(0);
+								tarefa.setPredecessor3(0);
 							} else {
-								variavel.setPredecessor3(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 43).toString()));
+								tarefa.setPredecessor3(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 43).toString()));
 							}
 							
 							if (tabela.getValueAt(tabela.getSelectedRow(), 44) == null) {
-								variavel.setAtualizacao("");
+								tarefa.setAtualizacao("");
 							} else {
-								variavel.setAtualizacao("Atualizado " + tabela.getValueAt(tabela.getSelectedRow(), 45)
+								tarefa.setAtualizacao("Atualizado " + tabela.getValueAt(tabela.getSelectedRow(), 45)
 										+ " Por " + tabela.getValueAt(tabela.getSelectedRow(), 44));
 							}
 							
 							if(tabela.getValueAt(tabela.getSelectedRow(), 46) == "" || tabela.getValueAt(tabela.getSelectedRow(), 46) == null ) {
-								variavel.setChecado("");
+								tarefa.setChecado("");
 							} else {
-								variavel.setChecado(tabela.getValueAt(tabela.getSelectedRow(), 46).toString());
+								tarefa.setChecado(tabela.getValueAt(tabela.getSelectedRow(), 46).toString());
 							}
 						}
 					}
@@ -1689,6 +1693,8 @@ public class TarefaTela extends javax.swing.JFrame {
 	Toolkit r = Toolkit.getDefaultToolkit();
 	Dimension d = r.getScreenSize();
 
+	Tarefa tarefa = new Tarefa();
+	
 	private CalendarView deText;
 	private javax.swing.JButton jButton1;
 	private app.bolivia.swing.JCTextField searchText;

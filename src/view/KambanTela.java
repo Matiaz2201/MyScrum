@@ -2235,11 +2235,16 @@ public class KambanTela extends JFrame {
 		kamban.execText.setText(exec);
 		kamban.diasatrasadosLabel.setText(dias);
 		kamban.pendenteText.setText(pendente);
-		if (pendente != "" && pendente != null) {
+		if (pendente == "" || pendente == null || pendente == " ") {
+			kamban.pendenteText.setBackground(Color.WHITE);
+		}else {
 			kamban.pendenteText.setBackground(Color.ORANGE);
 		}
+		
 		if (anexo == true) {
 			kamban.anexoLabel.setVisible(true);
+		} else {
+			kamban.anexoLabel.setVisible(false);
 		}
 
 	}

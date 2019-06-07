@@ -148,8 +148,8 @@ public class TarefaEditTela extends JFrame {
 	private JLabel ID;
 	private JLabel ID_tarefa;
 	public boolean kamban;
+	Tarefa tarefaDuplicar = new Tarefa();
 	Controle control = new Controle();
-	Tarefa variavel = new Tarefa();
 	TarefaDAO metodos = new TarefaDAO();
 	TratamentoDeAnexo tratamento = new TratamentoDeAnexo();
 	JPanel leftPanel = new JPanel();
@@ -206,31 +206,8 @@ public class TarefaEditTela extends JFrame {
 				dispose();
 			}
 		});
-		if (formularioPai instanceof TarefaTela)
-			this.formularioPai = (TarefaTela) formularioPai;
 
-		// Criando classe e metodo listener para implementar na classe listusuarioTela
-		class AdicionarTarefaListener implements ActionListener {
-			public TarefaTela formularioPrincipal;// criando objeto para o formulario pai
-
-			public AdicionarTarefaListener(JFrame formularioPrincipal) {
-				this.formularioPrincipal = (TarefaTela) formularioPrincipal;
-
-			}
-
-			public void actionPerformed(ActionEvent event) {
-				if (verificar() == true) {
-					TarefaEditTela tela = new TarefaEditTela(formularioPrincipal); // colocando a tela dentro do objeto
-					tela.setVisible(true);// mostrando a tela
-					tela.salvarButton();// ativa botaão salvar e desativa botão atualizar
-					tela.carregarDados();// carrega os dados
-					tela.ID_tarefa.setText("");
-					if (kamban == true) {// Informa a tela que foi duplicada pelo kamban
-						tela.kamban = true;
-					}
-				}
-			}
-		}
+		this.formularioPai = (TarefaTela) formularioPai;
 
 		criarListEtapa();
 		criarListSubEtapa();
@@ -253,7 +230,8 @@ public class TarefaEditTela extends JFrame {
 		String[] statusComboBoxItems = { "Selecione", "A fazer", "Fazendo", "Feito", "Cancelado" };
 		String[] prazDiaComboBoxItems = { "Selecione", "0", "1", "2", "3", "5", "8", "13", "21", "34", "55", "89",
 				"144", "233", "377", "610" };
-		String[] porcento = { "%", "100%", "95%", "90%", "85%", "80%", "75%", "70%", "65%", "60%", "55%", "50%", "45%", "40%", "35%", "30%", "25%","20%","15%","10%","5%" };
+		String[] porcento = { "%", "100%", "95%", "90%", "85%", "80%", "75%", "70%", "65%", "60%", "55%", "50%", "45%",
+				"40%", "35%", "30%", "25%", "20%", "15%", "10%", "5%" };
 		String[] Selecione = { "Selecione" };
 		getContentPane().setLayout(null);
 
@@ -896,8 +874,8 @@ public class TarefaEditTela extends JFrame {
 				int option = anexo.showOpenDialog(null);
 
 				if (option == JFileChooser.APPROVE_OPTION) {
-					tratamento.salvarAnexo(anexo1Label, anexo.getSelectedFile(),
-							"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo1", ID_tarefa.getText());
+					tratamento.salvarAnexo(anexo1Label, anexo.getSelectedFile(), "//server/REDE/10-TI/MYSCRUM-FTP", bd,
+							"anexo1", ID_tarefa.getText());
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}
@@ -912,8 +890,8 @@ public class TarefaEditTela extends JFrame {
 				int option = anexo.showOpenDialog(null);
 
 				if (option == JFileChooser.APPROVE_OPTION) {
-					tratamento.salvarAnexo(anexo2Label, anexo.getSelectedFile(),
-							"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo2", ID_tarefa.getText());
+					tratamento.salvarAnexo(anexo2Label, anexo.getSelectedFile(), "//server/REDE/10-TI/MYSCRUM-FTP", bd,
+							"anexo2", ID_tarefa.getText());
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}
@@ -928,8 +906,8 @@ public class TarefaEditTela extends JFrame {
 				int option = anexo.showOpenDialog(null);
 
 				if (option == JFileChooser.APPROVE_OPTION) {
-					tratamento.salvarAnexo(anexo3Label, anexo.getSelectedFile(),
-							"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo3", ID_tarefa.getText());
+					tratamento.salvarAnexo(anexo3Label, anexo.getSelectedFile(), "//server/REDE/10-TI/MYSCRUM-FTP", bd,
+							"anexo3", ID_tarefa.getText());
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}
@@ -944,8 +922,8 @@ public class TarefaEditTela extends JFrame {
 				int option = anexo.showOpenDialog(null);
 
 				if (option == JFileChooser.APPROVE_OPTION) {
-					tratamento.salvarAnexo(anexo4Label, anexo.getSelectedFile(),
-							"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo4", ID_tarefa.getText());
+					tratamento.salvarAnexo(anexo4Label, anexo.getSelectedFile(), "//server/REDE/10-TI/MYSCRUM-FTP", bd,
+							"anexo4", ID_tarefa.getText());
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}
@@ -1021,11 +999,11 @@ public class TarefaEditTela extends JFrame {
 		salvarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (verificar() == true) {
-					// metodo para zerar variaveis
-					metodos.zeraVariaveis();
+					// Instanciando um novo objeto
+					Tarefa tarefa = new Tarefa();
 
 					// Metodo para salvar no banco
-					metodos.cadastrar(setarVariaveis());
+					metodos.cadastrar(setarVariaveis(tarefa));
 
 					// Setando o ID da tarefa
 					ID_tarefa.setText(String.valueOf(metodos.ID_TAREFA));
@@ -1035,7 +1013,6 @@ public class TarefaEditTela extends JFrame {
 					if (kamban == false) {
 						TarefaEditTela.this.formularioPai.listar();
 
-				
 						// Setando o titulo da tela atual com a descrição da tarefa
 						setTitle(descText.getText());
 
@@ -1050,12 +1027,12 @@ public class TarefaEditTela extends JFrame {
 
 						// Habilitando o botão atualizar
 						atualizarButton();
-						
+
 						// Se a tela foi aberta pelo kamban atualiza o kamban
 						Controle.telaKamban.CarregarDadosKambans();
 
 						for (int a = 1; a < Controle.telaKamban.voltarAfazer; a++) {// Volta para a pagina que
-																						// estava
+																					// estava
 							Controle.telaKamban.proximoAFazerButton.doClick();
 						}
 						for (int a = 1; a < Controle.telaKamban.voltarFazendo; a++) {
@@ -1065,7 +1042,7 @@ public class TarefaEditTela extends JFrame {
 							Controle.telaKamban.proximoFeitoButton.doClick();
 						}
 					}
-				
+
 				} else {
 					JOptionPane.showMessageDialog(null, "Preencha todas informações obrigatorias", "Aviso", 1);
 				}
@@ -1074,19 +1051,29 @@ public class TarefaEditTela extends JFrame {
 		});
 
 		// Adicionando chamada de tela filho
-		duplicarButton.addActionListener(new AdicionarTarefaListener(formularioPai));
 		duplicarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (verificar() == true) {
-
-					// metodo para zerar variaveis
-					metodos.zeraVariaveis();
+					// INstanciando objeto
+					tarefaDuplicar = new Tarefa();
 
 					// metodo para setar variaveis
-					setarVariaveis();
+					setarVariaveis(tarefaDuplicar);
 
 					// Fecha a tarefa original
 					dispose();
+
+					if (verificar() == true) {
+						TarefaEditTela tela = new TarefaEditTela(formularioPai); // colocando a tela dentro do objeto
+						tela.setVisible(true);// mostrando a tela
+						tela.salvarButton();// ativa botaão salvar e desativa botão atualizar
+						tela.carregarDados(tarefaDuplicar);// carrega os dados
+						tela.ID_tarefa.setText("");
+						if (kamban == true) {// Informa a tela que foi duplicada pelo kamban
+							tela.kamban = true;
+						}
+					}
+
 				} else {
 					JOptionPane.showMessageDialog(null, "Preencha todos os campos para duplicar uma tarefa");
 				}
@@ -1096,15 +1083,15 @@ public class TarefaEditTela extends JFrame {
 		atualizarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (verificar() == true) {
-
-					// metodo para zerar variaveis
-					metodos.zeraVariaveis();
+					// Criando nova instancia do objeto
+					Tarefa tarefa = new Tarefa();
 
 					// Setando id da tarefa a ser atualizada
-					variavel.setIDTarefa(Integer.parseInt(ID_tarefa.getText()));
+					tarefa.setIDTarefa(Integer.parseInt(ID_tarefa.getText()));
 
-					// metodo para atualizar tarefa no banco
-					metodos.atualizar(setarVariaveis());
+					// metodo para atualizar tarefa no banco passando como atributo o retorno do
+					// metodo setarVariaveis que é um objeto
+					metodos.atualizar(setarVariaveis(tarefa));
 
 					// Verificando se a tela foi aberta pelo kamban ou tarefa para determinar se
 					// atualiza a lista ou não caso seja aberta pelo kamban
@@ -1473,9 +1460,8 @@ public class TarefaEditTela extends JFrame {
 		}
 	}
 
-	public Tarefa setarVariaveis() {
-		Tarefa tarefa = new Tarefa();
-		
+	public Tarefa setarVariaveis(Tarefa tarefa) {
+
 		// setando variaveis
 		tarefa.setDescricao(descText.getText());
 		tarefa.setPrioridade(Integer.parseInt(prioridadeComboBox.getSelectedItem().toString()));
@@ -1597,7 +1583,7 @@ public class TarefaEditTela extends JFrame {
 
 		tarefa.setStatusPendencia(statPendText.getText());
 		tarefa.setHistorico(historicoText.getText());
-		
+
 		return tarefa;
 
 	}
@@ -1624,7 +1610,13 @@ public class TarefaEditTela extends JFrame {
 		dataIniText.setText(tarefa.getDataInicio());
 		dataRealText.setText(tarefa.getDataReal());
 		datafimText.setText(tarefa.getDataFim());
-		pendComboBox.setSelectedItem(tarefa.getPendentePor());
+
+		if (tarefa.getPendentePor() == null || tarefa.getPendentePor() == "" || tarefa.getPendentePor() == " ") {
+			pendComboBox.setSelectedIndex(0);
+		} else {
+			pendComboBox.setSelectedItem(tarefa.getPendentePor());
+		}
+
 		historicoText.setText(tarefa.getStatusPendencia());
 		dptoCombobox.setSelectedItem(tarefa.getDepartamento());
 		respComboBox.setSelectedItem(tarefa.getResponsavel());
@@ -1781,13 +1773,13 @@ public class TarefaEditTela extends JFrame {
 			exec1ComboBox.requestFocus();
 		} else if (porcento1ComboBox.getSelectedIndex() == 0) {
 			porcento1ComboBox.requestFocus();
-		} else if (processoComboBox.getSelectedIndex() == 0){
+		} else if (processoComboBox.getSelectedIndex() == 0) {
 			processoComboBox.requestFocus();
 		} else {
 			ok = true;
 		}
 
-		//Verificação usada apenas para a Masotti
+		// Verificação usada apenas para a Masotti
 		if (dptoCombobox.getSelectedItem().toString().equals("Obra")) {
 			if (etapaCombo.getSelectedIndex() == 0 || subEtapaCombo.getSelectedIndex() == 0) {
 				JOptionPane.showMessageDialog(null, "Para o departamento obra, o campo etapa e subetapa é obrigatório");

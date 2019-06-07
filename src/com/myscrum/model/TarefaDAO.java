@@ -107,7 +107,7 @@ public class TarefaDAO extends Tarefa {
 
 				if (ok == 1) {
 					cadastrarExe(tarefa);
-					JOptionPane.showMessageDialog(null, "Tarefa cadastrada com sucesso");
+					JOptionPane.showMessageDialog(null, "Tarefa " + ID_TAREFA + " cadastrada com sucesso");
 				} else {
 					JOptionPane.showMessageDialog(null, "Falha ao cadastrar tarefa");
 				}
