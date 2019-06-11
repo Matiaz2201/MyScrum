@@ -15,29 +15,26 @@ public class ImportarTarefasXLS {
 	TarefaDAO dao = new TarefaDAO();
 
 	public ImportarTarefasXLS() {
+		JFileChooser arquivo = new JFileChooser();
+		arquivo.addChoosableFileFilter(new Filtro());
+		arquivo.setAcceptAllFileFilterUsed(false);
 		
-		ArrayList<Tarefa> tarefas =  montarListaDeTarefas(selecionarXLS());
-		
-		int option = JOptionPane.showConfirmDialog(null, "Deseja realmente cadastrar/atualizar " + tarefas.size() + " tarefa(s)");
-		
-		if (option == JOptionPane.YES_OPTION) {
-			for (int x = 0; x != tarefas.size(); x++) {
-				if(tarefas.get(x).getIDTarefa() != 0) {
-					atualizarTarefa(tarefas.get(x));
-				} else {
-					inserirTarefa(tarefas.get(x));
+		if (arquivo.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			ArrayList<Tarefa> tarefas = montarListaDeTarefas(arquivo);
+
+			int option = JOptionPane.showConfirmDialog(null,
+					"Deseja realmente cadastrar/atualizar " + tarefas.size() + " tarefa(s)");
+
+			if (option == JOptionPane.YES_OPTION) {
+				for (int x = 0; x != tarefas.size(); x++) {
+					if (tarefas.get(x).getIDTarefa() != 0) {
+						atualizarTarefa(tarefas.get(x));
+					} else {
+						inserirTarefa(tarefas.get(x));
+					}
 				}
-	
 			}
 		}
-	}
-
-	public JFileChooser selecionarXLS() {
-		JFileChooser arquivo = new JFileChooser();
-		arquivo.showOpenDialog(null);
-
-		return arquivo;
-
 	}
 
 	public ArrayList<Tarefa> montarListaDeTarefas(JFileChooser arquivo) {
@@ -148,7 +145,6 @@ public class ImportarTarefasXLS {
 				String historico = a43.getContents();
 				String id_tarefa = a44.getContents();
 
-				
 				Tarefa tarefa = new Tarefa();
 				dao.zeraVariaveis();
 
@@ -251,7 +247,7 @@ public class ImportarTarefasXLS {
 	public void inserirTarefa(Tarefa tarefa) {
 		dao.cadastrar(tarefa);
 	}
-	
+
 	public void atualizarTarefa(Tarefa tarefa) {
 		dao.atualizar(tarefa);
 	}
