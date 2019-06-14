@@ -1011,7 +1011,7 @@ public class TarefaEditTela extends JFrame {
 					// Verificando se a tela foi aberta pelo kamban ou tarefa para determinar se
 					// atualiza a lista ou não caso seja aberta pelo kamban
 					if (kamban == false) {
-						TarefaEditTela.this.formularioPai.listar();
+						TarefaEditTela.this.formularioPai.listar(TarefaEditTela.this.formularioPai.gerarSQL());
 
 						// Setando o titulo da tela atual com a descrição da tarefa
 						setTitle(descText.getText());
@@ -1096,7 +1096,7 @@ public class TarefaEditTela extends JFrame {
 					// Verificando se a tela foi aberta pelo kamban ou tarefa para determinar se
 					// atualiza a lista ou não caso seja aberta pelo kamban
 					if (kamban == false) {
-						TarefaEditTela.this.formularioPai.listar();
+						TarefaEditTela.this.formularioPai.listar(TarefaEditTela.this.formularioPai.gerarSQL());
 					}
 
 					// Se a tela foi aberta pelo kamban atualiza o kamban

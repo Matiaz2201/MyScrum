@@ -16,7 +16,6 @@ import java.awt.event.MouseListener;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
@@ -35,8 +34,10 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import com.myscrum.banco.BD;
+import com.myscrum.banco.Banco;
 import com.myscrum.controller.Controle;
 import com.myscrum.controller.Controlev;
+import com.myscrum.model.ExportarTarefasXLS;
 import com.myscrum.model.Sessao;
 import com.myscrum.model.TableGrade;
 import com.myscrum.model.Tarefa;
@@ -88,7 +89,7 @@ public class TarefaTela extends javax.swing.JFrame {
 			tela.setVisible(true);// mostrando a tela
 			tela.toFront();
 			tela.salvarButton();
-			tela.dataIniText.setText(tela.AtalhoCTRL());//Inserindo data de hoje no calendario
+			tela.dataIniText.setText(tela.AtalhoCTRL());// Inserindo data de hoje no calendario
 			tela.dataRealText.setText(tela.AtalhoCTRL());
 		}
 	}
@@ -143,7 +144,8 @@ public class TarefaTela extends javax.swing.JFrame {
 
 			}
 		});
-		setIconImage(Toolkit.getDefaultToolkit().getImage(TarefaTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
+		setIconImage(
+				Toolkit.getDefaultToolkit().getImage(TarefaTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
 		initComponents();
 		setExtendedState(MAXIMIZED_BOTH);
 		setSize(d.width, d.height);
@@ -268,7 +270,7 @@ public class TarefaTela extends javax.swing.JFrame {
 
 		pesquisarButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				listar();
+				listar(gerarSQL());
 				JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
 
 			}
@@ -305,7 +307,7 @@ public class TarefaTela extends javax.swing.JFrame {
 
 					ccCombo.setEnabled(false);
 					ccCombo.setSelectedIndex(0);
-					
+
 					dptoCombo.setEnabled(false);
 					dptoCombo.setSelectedIndex(0);
 
@@ -501,7 +503,7 @@ public class TarefaTela extends javax.swing.JFrame {
 		searchText.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
 		searchText.setPhColor(new java.awt.Color(255, 255, 255));
 		searchText.setPlaceholder("SEARCH");
-		
+
 		descText = new app.bolivia.swing.JCTextField();
 		descText.setPhColor(new Color(255, 255, 255));
 		descText.setPlaceholder("DESCRI\u00C7\u00C3O");
@@ -513,10 +515,10 @@ public class TarefaTela extends javax.swing.JFrame {
 		descText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				sorter.setRowFilter(RowFilter.regexFilter("(?i)" + descText.getText(),1));
+				sorter.setRowFilter(RowFilter.regexFilter("(?i)" + descText.getText(), 1));
 			}
 		});
-		
+
 		JCTextField statusText = new app.bolivia.swing.JCTextField();
 		statusText.setPlaceholder("STATUS");
 		statusText.setPhColor(new Color(255, 255, 255));
@@ -528,11 +530,10 @@ public class TarefaTela extends javax.swing.JFrame {
 		statusText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				sorter.setRowFilter(RowFilter.regexFilter("(?i)" + statusText.getText(),32));
+				sorter.setRowFilter(RowFilter.regexFilter("(?i)" + statusText.getText(), 32));
 			}
 		});
 
-		
 		JCTextField historicoText = new app.bolivia.swing.JCTextField();
 		historicoText.setPlaceholder("HIST\u00D3RICO");
 		historicoText.setPhColor(new Color(255, 255, 255));
@@ -544,43 +545,39 @@ public class TarefaTela extends javax.swing.JFrame {
 		historicoText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				sorter.setRowFilter(RowFilter.regexFilter("(?i)" + historicoText.getText(),33));
+				sorter.setRowFilter(RowFilter.regexFilter("(?i)" + historicoText.getText(), 33));
 			}
 		});
 
-		
 		javax.swing.GroupLayout gl_panelSuperior = new javax.swing.GroupLayout(panelSuperior);
-		gl_panelSuperior.setHorizontalGroup(
-			gl_panelSuperior.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelSuperior.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(jButton1)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(myScrumLabel)
-					.addGap(71)
-					.addComponent(searchText, GroupLayout.PREFERRED_SIZE, 282, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(descText, GroupLayout.PREFERRED_SIZE, 282, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(statusText, GroupLayout.PREFERRED_SIZE, 282, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(historicoText, GroupLayout.PREFERRED_SIZE, 282, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(515, Short.MAX_VALUE))
-		);
-		gl_panelSuperior.setVerticalGroup(
-			gl_panelSuperior.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelSuperior.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_panelSuperior.createParallelGroup(Alignment.LEADING, false)
+		gl_panelSuperior
+				.setHorizontalGroup(gl_panelSuperior.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panelSuperior.createSequentialGroup().addContainerGap().addComponent(jButton1)
+								.addPreferredGap(ComponentPlacement.RELATED).addComponent(myScrumLabel).addGap(71)
+								.addComponent(searchText, GroupLayout.PREFERRED_SIZE, 282, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(descText, GroupLayout.PREFERRED_SIZE, 282, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(statusText, GroupLayout.PREFERRED_SIZE, 282, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED).addComponent(historicoText,
+										GroupLayout.PREFERRED_SIZE, 282, GroupLayout.PREFERRED_SIZE)
+								.addContainerGap(515, Short.MAX_VALUE)));
+		gl_panelSuperior.setVerticalGroup(gl_panelSuperior.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelSuperior.createSequentialGroup().addContainerGap().addGroup(gl_panelSuperior
+						.createParallelGroup(Alignment.LEADING, false)
 						.addComponent(jButton1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addGroup(gl_panelSuperior.createParallelGroup(Alignment.BASELINE)
-							.addComponent(myScrumLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addComponent(searchText, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addComponent(descText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(statusText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(historicoText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-		);
+								.addComponent(myScrumLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(searchText, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(descText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(statusText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(historicoText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)))
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		panelSuperior.setLayout(gl_panelSuperior);
 
 		gbc_panelSuperior = new java.awt.GridBagConstraints();
@@ -627,39 +624,26 @@ public class TarefaTela extends javax.swing.JFrame {
 		checkCancelado.setBackground(SystemColor.inactiveCaptionBorder);
 		checkCancelado.setFont(new Font("Tahoma", Font.BOLD, 14));
 
-		button = new JButton("Multiplicar");
+		button = new JButton("Exportar tarefas");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (internalFrame.isVisible() == true) {
-
-					internalFrame.setVisible(false);
-
-				} else {
-					if(tabela.getRowSorter().getViewRowCount() > 20) {
-						if(JOptionPane.showConfirmDialog(null, " Deseja multiplicar "+tabela.getRowSorter().getViewRowCount()+" tarefas ?", "Multiplicar tarefas", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-							Multiplicar();
-							internalFrame.setVisible(true);
-							
-						}
-					
-					}else {
-						Multiplicar();
-						internalFrame.setVisible(true);
-					
+				String sql = gerarSQL();
+				JOptionPane.showMessageDialog(null, sql);
+				if (Banco.conexao()) {
+					try {
+						Banco.st = Banco.con.prepareStatement(sql);
+						Banco.rs = Banco.st.executeQuery();
+						
+						ExportarTarefasXLS.exportar(Banco.rs, "");
+						
+					} catch (SQLException erro) {
+						JOptionPane.showMessageDialog(null, erro.toString());
 					}
 				}
-
 			}
 		});
 		button.setBounds(674, 16, 115, 29);
-		button.setIcon(new ImageIcon(TarefaTela.class.getResource("/com/myscrum/assets/icone_mais.png")));
-		button.setContentAreaFilled(false);
-		button.setBorderPainted(false);
-		if(Sessao.getInstance().getFuncao() == 1) {
-			button.setVisible(true);
-		}else {
-			button.setVisible(false);
-		}
+
 		panelBelow.setLayout(null);
 		panelBelow.add(novaTarefa);
 		panelBelow.add(checkAFazer);
@@ -677,37 +661,6 @@ public class TarefaTela extends javax.swing.JFrame {
 		gbc_panelMain.weightx = 0.4;
 		gbc_panelMain.weighty = 0.1;
 		jPanel1.add(panelMain, gbc_panelMain);
-
-		internalFrame = new JInternalFrame("Multiplicar");
-		internalFrame.setFrameIcon(new ImageIcon(TarefaTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
-		internalFrame.setBounds(170, 49, 1218, 564);
-		internalFrame.setVisible(false);
-
-		panelMain.add(internalFrame);
-		internalFrame.getContentPane().setLayout(null);
-		
-		southPanel = new JPanel();
-		southPanel.setBounds(0, 451, 1206, 82);
-		internalFrame.getContentPane().add(southPanel);
-		
-		multButton = new JButton("Multiplicar");
-		multButton.setBounds(981, 27, 97, 27);
-		
-		cancelarButton = new JButton("Cancelar");
-		cancelarButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				internalFrame.setVisible(false);
-			}
-		});
-		cancelarButton.setBounds(1103, 26, 97, 28);
-		southPanel.setLayout(null);
-		southPanel.add(multButton);
-		southPanel.add(cancelarButton);
-		
-		centerPanel = new JPanel();
-		centerPanel.setBounds(0, 0, 1206, 412);
-		internalFrame.getContentPane().add(centerPanel);
-		centerPanel.setLayout(new BorderLayout(0, 0));
 		panelMain.add(panelBelow);
 		panelMain.add(centro);
 
@@ -721,246 +674,354 @@ public class TarefaTela extends javax.swing.JFrame {
 		bd.getConnection();
 
 		CarregaDatas();
-		listar();
+		listar(gerarSQL());
 		CarregaCombobox();
 
 	}
 
-	public void Multiplicar() {
-		
-		if (tabelaMult != null) {// se existir outra tabela montada apaga
+	public void listar(String sql) {
 
-			spMult.setVisible(false);
-			spMult.remove(tabelaMult);
-			spMult = null;
-			tabelaMult.setVisible(false);
-			tabelaMult = null;
+		try {
+			bd.st = bd.con.prepareStatement(sql);
+			bd.rs = bd.st.executeQuery();
+			if (bd.rs.next()) {// se haver tarefas continue
+				if (tabela != null) {// se existir outra tabela montada apaga
 
-		}
+					sp.setVisible(false);
+					sp.remove(tabela);
+					sp = null;
+					tabela.setVisible(false);
+					tabela = null;
 
-		@SuppressWarnings("rawtypes")
-		Vector<ArrayList> matriz = new Vector<ArrayList>();
-
-		
-		
-		
-		for (int coluna = 0; coluna < tabela.getColumnCount(); coluna++) {
-			ArrayList<String> linhaAtual = new ArrayList<>();
-			for (int linha = 0; linha < tabela.getRowSorter().getViewRowCount(); linha++) {
-				try {
-					linhaAtual.add(linha, tabela.getValueAt(linha, coluna).toString());
-				}catch(Exception e) {
-					linhaAtual.add("");	
 				}
 
+				Vector<String> cabecalhoPersonalizado = new Vector<>();
+
+				cabecalhoPersonalizado.addElement("ID");// 0
+				cabecalhoPersonalizado.addElement("Descrição");// 1
+				cabecalhoPersonalizado.addElement("Prioridade");// 2
+				cabecalhoPersonalizado.addElement("C.C");// 3
+				cabecalhoPersonalizado.addElement("Status");// 4
+				cabecalhoPersonalizado.addElement("Tamanho");// 5
+				cabecalhoPersonalizado.addElement("Porcentagem");// 6
+				cabecalhoPersonalizado.addElement("Prazo");// 7
+				cabecalhoPersonalizado.addElement("Data Inicial");// 8
+				cabecalhoPersonalizado.addElement("Data Real");// 9
+				cabecalhoPersonalizado.addElement("Data Fim");// 10
+				cabecalhoPersonalizado.addElement("1º Executor");// 11
+				cabecalhoPersonalizado.addElement("%");// 12
+				cabecalhoPersonalizado.addElement("2º Executor");// 13
+				cabecalhoPersonalizado.addElement("%");// 14
+				cabecalhoPersonalizado.addElement("3º Executor");// 15
+				cabecalhoPersonalizado.addElement("%");// 16
+				cabecalhoPersonalizado.addElement("4º Executor");// 17
+				cabecalhoPersonalizado.addElement("%");// 18
+				cabecalhoPersonalizado.addElement("5º Executor");// 19
+				cabecalhoPersonalizado.addElement("%");// 20
+				cabecalhoPersonalizado.addElement("6º Executor");// 21
+				cabecalhoPersonalizado.addElement("%");// 22
+				cabecalhoPersonalizado.addElement("7º Executor");// 23
+				cabecalhoPersonalizado.addElement("%");// 24
+				cabecalhoPersonalizado.addElement("8º Executor");// 25
+				cabecalhoPersonalizado.addElement("%");// 26
+				cabecalhoPersonalizado.addElement("9º Executor");// 27
+				cabecalhoPersonalizado.addElement("%");// 28
+				cabecalhoPersonalizado.addElement("10º Executor");// 29
+				cabecalhoPersonalizado.addElement("%");// 30
+				cabecalhoPersonalizado.addElement("Pendente");// 31
+				cabecalhoPersonalizado.addElement("Status pendência");// 32
+				cabecalhoPersonalizado.addElement("Historico");// 33
+				cabecalhoPersonalizado.addElement("Departamento");// 34
+				cabecalhoPersonalizado.addElement("Responsavel");// 35
+				cabecalhoPersonalizado.addElement("Autoridade");// 36
+				cabecalhoPersonalizado.addElement("Etapa");// 37
+				cabecalhoPersonalizado.addElement("Sub Etapa");// 38
+				cabecalhoPersonalizado.addElement("Departamento Correto");// Obsoletos //39
+				cabecalhoPersonalizado.addElement("Processo Relacionado");// 40
+				cabecalhoPersonalizado.addElement("Predecessor 1");// 41
+				cabecalhoPersonalizado.addElement("Predecessor 2");// 42
+				cabecalhoPersonalizado.addElement("Predecessor 3");
+				;// 43
+				cabecalhoPersonalizado.addElement("Ultima Atualização");// 44
+				cabecalhoPersonalizado.addElement("Atualizado por");// 45
+				cabecalhoPersonalizado.addElement("Checado");// 46
+
+				tabela = TableGrade.getTable(sql, cabecalhoPersonalizado);
+
+				tabela.getColumnModel().getColumn(0).setPreferredWidth(30);
+				tabela.getColumnModel().getColumn(1).setPreferredWidth(400);
+				tabela.getColumnModel().getColumn(2).setPreferredWidth(80);
+				tabela.getColumnModel().getColumn(4).setPreferredWidth(65);
+				tabela.getColumnModel().getColumn(5).setPreferredWidth(80);
+				tabela.getColumnModel().getColumn(6).setPreferredWidth(100);
+				tabela.getColumnModel().getColumn(7).setPreferredWidth(50);
+				tabela.getColumnModel().getColumn(11).setPreferredWidth(100);
+				tabela.getColumnModel().getColumn(12).setPreferredWidth(30);
+				tabela.getColumnModel().getColumn(13).setPreferredWidth(100);
+				tabela.getColumnModel().getColumn(14).setPreferredWidth(30);
+				tabela.getColumnModel().getColumn(15).setPreferredWidth(100);
+				tabela.getColumnModel().getColumn(16).setPreferredWidth(30);
+				tabela.getColumnModel().getColumn(17).setPreferredWidth(100);
+				tabela.getColumnModel().getColumn(18).setPreferredWidth(30);
+				tabela.getColumnModel().getColumn(19).setPreferredWidth(100);
+				tabela.getColumnModel().getColumn(20).setPreferredWidth(30);
+				tabela.getColumnModel().getColumn(21).setPreferredWidth(100);
+				tabela.getColumnModel().getColumn(22).setPreferredWidth(30);
+				tabela.getColumnModel().getColumn(23).setPreferredWidth(100);
+				tabela.getColumnModel().getColumn(24).setPreferredWidth(30);
+				tabela.getColumnModel().getColumn(25).setPreferredWidth(100);
+				tabela.getColumnModel().getColumn(26).setPreferredWidth(30);
+				tabela.getColumnModel().getColumn(27).setPreferredWidth(100);
+				tabela.getColumnModel().getColumn(28).setPreferredWidth(30);
+				tabela.getColumnModel().getColumn(29).setPreferredWidth(100);
+				tabela.getColumnModel().getColumn(30).setPreferredWidth(30);
+
+				sp = new JScrollPane(tabela);
+
+				// adiciona Scroll ao frame
+				centro.add(sp);
+
+				centro.updateUI(); // atualiza tela
+
+				tabela.setEditingRow(1);
+				tabela.setEditingColumn(1);
+				tabela.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				tabela.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+				sorter = new TableRowSorter<TableModel>(tabela.getModel());
+				tabela.setRowSorter(sorter);
+
+				sorter.setRowFilter(RowFilter.regexFilter(searchText.getText()));
+
+				tabela.addMouseListener(new AdicionarTarefaMouseListener(this));// Adicionando a clase de abrir tela
+				tabela.addMouseListener(new MouseAdapter() {
+					public void mouseReleased(MouseEvent a) {
+						if (a.getClickCount() == 2) {
+							tarefa = new Tarefa();
+
+							tarefa.setIDTarefa(
+									Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 0).toString()));
+							tarefa.setDescricao(tabela.getValueAt(tabela.getSelectedRow(), 1).toString());
+							tarefa.setPrioridade(
+									Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 2).toString()));
+							tarefa.setCentroCusto(tabela.getValueAt(tabela.getSelectedRow(), 3).toString());
+							tarefa.setStatus(tabela.getValueAt(tabela.getSelectedRow(), 4).toString());
+							tarefa.setTamanho(tabela.getValueAt(tabela.getSelectedRow(), 5).toString());
+							tarefa.setPorcentagem(
+									Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 6).toString()));
+							tarefa.setPrazo(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 7).toString()));
+							tarefa.setDataInicio(tabela.getValueAt(tabela.getSelectedRow(), 8).toString());
+							tarefa.setDataReal(tabela.getValueAt(tabela.getSelectedRow(), 9).toString());
+							tarefa.setDataFim(tabela.getValueAt(tabela.getSelectedRow(), 10).toString());
+
+							// teste se existi executor 1
+							if (tabela.getValueAt(tabela.getSelectedRow(), 11) == null) {
+								tarefa.setExecutor1("");
+								tarefa.setPorcento2(0);
+							} else {
+								tarefa.setExecutor1(tabela.getValueAt(tabela.getSelectedRow(), 11).toString());
+								tarefa.setPorcento1(
+										Integer.parseInt((tabela.getValueAt(tabela.getSelectedRow(), 12).toString())));
+							}
+
+							// teste se existi executor 2
+							if (tabela.getValueAt(tabela.getSelectedRow(), 13) == null) {
+								tarefa.setExecutor2("");
+								tarefa.setPorcento2(0);
+							} else {
+								tarefa.setExecutor2(tabela.getValueAt(tabela.getSelectedRow(), 13).toString());
+								tarefa.setPorcento2(
+										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 14).toString()));
+							}
+
+							// teste se existi executor 3
+							if (tabela.getValueAt(tabela.getSelectedRow(), 15) == null) {
+								tarefa.setExecutor3("");
+								tarefa.setPorcento3(0);
+							} else {
+								tarefa.setExecutor3(tabela.getValueAt(tabela.getSelectedRow(), 15).toString());
+								tarefa.setPorcento3(
+										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 16).toString()));
+							}
+
+							// teste se existi executor 4
+							if (tabela.getValueAt(tabela.getSelectedRow(), 17) == null) {
+								tarefa.setExecutor4("");
+								tarefa.setPorcento4(0);
+							} else {
+								tarefa.setExecutor4(tabela.getValueAt(tabela.getSelectedRow(), 17).toString());
+								tarefa.setPorcento4(
+										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 18).toString()));
+							}
+
+							// teste se existi executor 5
+							if (tabela.getValueAt(tabela.getSelectedRow(), 19) == null) {
+								tarefa.setExecutor5("");
+								tarefa.setPorcento5(0);
+							} else {
+								tarefa.setExecutor5(tabela.getValueAt(tabela.getSelectedRow(), 19).toString());
+								tarefa.setPorcento5(
+										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 20).toString()));
+							}
+
+							// teste se existi executor 6
+							if (tabela.getValueAt(tabela.getSelectedRow(), 21) == null) {
+								tarefa.setExecutor6("");
+								tarefa.setPorcento6(0);
+							} else {
+								tarefa.setExecutor6(tabela.getValueAt(tabela.getSelectedRow(), 21).toString());
+								tarefa.setPorcento6(
+										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 22).toString()));
+							}
+
+							// teste se existi executor 7
+							if (tabela.getValueAt(tabela.getSelectedRow(), 23) == null) {
+								tarefa.setExecutor7("");
+								tarefa.setPorcento7(0);
+							} else {
+								tarefa.setExecutor7(tabela.getValueAt(tabela.getSelectedRow(), 23).toString());
+								tarefa.setPorcento7(
+										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 24).toString()));
+							}
+
+							// teste se existi executor 8
+							if (tabela.getValueAt(tabela.getSelectedRow(), 25) == null) {
+								tarefa.setExecutor8("");
+								tarefa.setPorcento8(0);
+							} else {
+								tarefa.setExecutor8(tabela.getValueAt(tabela.getSelectedRow(), 25).toString());
+								tarefa.setPorcento8(
+										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 26).toString()));
+							}
+
+							// teste se existi executor 9
+							if (tabela.getValueAt(tabela.getSelectedRow(), 27) == null) {
+								tarefa.setExecutor9("");
+								tarefa.setPorcento9(0);
+							} else {
+								tarefa.setExecutor9(tabela.getValueAt(tabela.getSelectedRow(), 27).toString());
+								tarefa.setPorcento9(
+										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 28).toString()));
+							}
+
+							// teste se existi executor 10
+							if (tabela.getValueAt(tabela.getSelectedRow(), 29) == null) {
+								tarefa.setExecutor10("");
+								tarefa.setPorcento10(0);
+							} else {
+								tarefa.setExecutor10(tabela.getValueAt(tabela.getSelectedRow(), 29).toString());
+								tarefa.setPorcento10(
+										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 30).toString()));
+							}
+
+							// teste se pendente existir
+							if (tabela.getValueAt(tabela.getSelectedRow(), 31) == null) {
+								tarefa.setPendentePor("");
+							} else {
+								tarefa.setPendentePor(tabela.getValueAt(tabela.getSelectedRow(), 31).toString());
+							}
+							// teste se status pendencia eexistir
+							if (tabela.getValueAt(tabela.getSelectedRow(), 32) == null) {
+								tarefa.setStatusPendencia("");
+							} else {
+								tarefa.setStatusPendencia(tabela.getValueAt(tabela.getSelectedRow(), 32).toString());
+							}
+							// teste se existir historico
+							if (tabela.getValueAt(tabela.getSelectedRow(), 33) == null) {
+								tarefa.setHistorico("");
+							} else {
+								tarefa.setHistorico(tabela.getValueAt(tabela.getSelectedRow(), 33).toString());
+							}
+							tarefa.setDepartamento(tabela.getValueAt(tabela.getSelectedRow(), 34).toString());
+							tarefa.setResponsavel(tabela.getValueAt(tabela.getSelectedRow(), 35).toString());
+							tarefa.setAutoridade(tabela.getValueAt(tabela.getSelectedRow(), 36).toString());
+
+							if (tabela.getValueAt(tabela.getSelectedRow(), 37) == null) {
+								tarefa.setEtapa("");
+							} else {
+								tarefa.setEtapa(tabela.getValueAt(tabela.getSelectedRow(), 37).toString());
+							}
+
+							if (tabela.getValueAt(tabela.getSelectedRow(), 38) == null) {
+								tarefa.setSubEtapa("");
+							} else {
+								tarefa.setSubEtapa(tabela.getValueAt(tabela.getSelectedRow(), 38).toString());
+							}
+
+							if (tabela.getValueAt(tabela.getSelectedRow(), 40) == null) {// Se existir processo carrega
+																							// a tarefa
+								tarefa.setProcesso("");
+							} else {
+								tarefa.setProcesso(tabela.getValueAt(tabela.getSelectedRow(), 40).toString());
+							}
+
+							if (tabela.getValueAt(tabela.getSelectedRow(), 41) == ""
+									|| tabela.getValueAt(tabela.getSelectedRow(), 41) == null) {
+								tarefa.setPredecessor1(0);
+							} else {
+								tarefa.setPredecessor1(
+										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 41).toString()));
+							}
+
+							if (tabela.getValueAt(tabela.getSelectedRow(), 42) == ""
+									|| tabela.getValueAt(tabela.getSelectedRow(), 42) == null) {
+								tarefa.setPredecessor2(0);
+							} else {
+								tarefa.setPredecessor2(
+										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 42).toString()));
+							}
+
+							if (tabela.getValueAt(tabela.getSelectedRow(), 43) == ""
+									|| tabela.getValueAt(tabela.getSelectedRow(), 43) == null) {
+								tarefa.setPredecessor3(0);
+							} else {
+								tarefa.setPredecessor3(
+										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 43).toString()));
+							}
+
+							if (tabela.getValueAt(tabela.getSelectedRow(), 44) == null) {
+								tarefa.setAtualizacao("");
+							} else {
+								tarefa.setAtualizacao("Atualizado " + tabela.getValueAt(tabela.getSelectedRow(), 45)
+										+ " Por " + tabela.getValueAt(tabela.getSelectedRow(), 44));
+							}
+
+							if (tabela.getValueAt(tabela.getSelectedRow(), 46) == ""
+									|| tabela.getValueAt(tabela.getSelectedRow(), 46) == null) {
+								tarefa.setChecado("");
+							} else {
+								tarefa.setChecado(tabela.getValueAt(tabela.getSelectedRow(), 46).toString());
+							}
+						}
+					}
+				});
+
+				tabela.addMouseListener(new MouseAdapter() {
+					public void mouseReleased(MouseEvent a) {
+						if (a.getClickCount() == 1 && a.getModifiersEx() == InputEvent.ALT_DOWN_MASK) {
+							try {
+								predecessora.setText((tabela.getValueAt(tabela.getSelectedRow(), 0).toString()));
+								tela.toFront();
+							} catch (Exception e) {
+
+							}
+
+						}
+					}
+				});
+
+			} else {
+
+				JOptionPane.showMessageDialog(null, "Sem registro de tarefas");
 			}
-			matriz.addElement(linhaAtual);
+
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
 		}
-				
-		Vector<String> cabecalhoPersonalizado = new Vector<>();
 
-		cabecalhoPersonalizado.addElement("ID");// 0
-		cabecalhoPersonalizado.addElement("Descrição");// 1
-		cabecalhoPersonalizado.addElement("Prioridade");// 2
-		cabecalhoPersonalizado.addElement("C.C");// 3
-		cabecalhoPersonalizado.addElement("Status");// 4
-		cabecalhoPersonalizado.addElement("Tamanho");// 5
-		cabecalhoPersonalizado.addElement("Porcentagem");// 6
-		cabecalhoPersonalizado.addElement("Prazo");// 7
-		cabecalhoPersonalizado.addElement("Data Inicial");// 8
-		cabecalhoPersonalizado.addElement("Data Real");// 9
-		cabecalhoPersonalizado.addElement("Data Fim");// 10
-		cabecalhoPersonalizado.addElement("1º Executor");// 11
-		cabecalhoPersonalizado.addElement("%");// 12
-		cabecalhoPersonalizado.addElement("2º Executor");// 13
-		cabecalhoPersonalizado.addElement("%");// 14
-		cabecalhoPersonalizado.addElement("3º Executor");// 15
-		cabecalhoPersonalizado.addElement("%");// 16
-		cabecalhoPersonalizado.addElement("4º Executor");// 17
-		cabecalhoPersonalizado.addElement("%");// 18
-		cabecalhoPersonalizado.addElement("5º Executor");// 19
-		cabecalhoPersonalizado.addElement("%");// 20
-		cabecalhoPersonalizado.addElement("6º Executor");// 21
-		cabecalhoPersonalizado.addElement("%");// 22
-		cabecalhoPersonalizado.addElement("7º Executor");// 23
-		cabecalhoPersonalizado.addElement("%");// 24
-		cabecalhoPersonalizado.addElement("8º Executor");// 25
-		cabecalhoPersonalizado.addElement("%");// 26
-		cabecalhoPersonalizado.addElement("9º Executor");// 27
-		cabecalhoPersonalizado.addElement("%");// 28
-		cabecalhoPersonalizado.addElement("10º Executor");// 29
-		cabecalhoPersonalizado.addElement("%");// 30
-		cabecalhoPersonalizado.addElement("Pendente");// 31
-		cabecalhoPersonalizado.addElement("Status pendência");// 32
-		cabecalhoPersonalizado.addElement("Historico");// 33
-		cabecalhoPersonalizado.addElement("Departamento");// 34
-		cabecalhoPersonalizado.addElement("Responsavel");// 35
-		cabecalhoPersonalizado.addElement("Autoridade");// 36
-		cabecalhoPersonalizado.addElement("Departamento Correto");// Obsoletos //37
-		cabecalhoPersonalizado.addElement("Processo Relacionado");// Obsoletos //38
-		cabecalhoPersonalizado.addElement("Ultima Atualização");// 39
-		cabecalhoPersonalizado.addElement("Atualizado por");// 40
+	}
 
-		tabelaMult = TableGrade.getTableSemBanco(matriz, cabecalhoPersonalizado);
-		
-		spMult = new JScrollPane(tabelaMult);
-		
-		centerPanel.add(spMult);
-
-		tabelaMult.setEditingRow(0);
-		tabelaMult.setEditingColumn(0);
-		tabelaMult.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		tabelaMult.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		
-		tabelaMult.addMouseListener(new AdicionarTarefaMouseListener(this));
-		
-		tabelaMult.addMouseListener(new MouseAdapter() {
-			public void mouseReleased(MouseEvent a) {
-				if (a.getClickCount() == 2) {
-					tarefa = new Tarefa();
-					
-					tarefa.setDescricao(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 1).toString());
-					tarefa.setPrioridade(
-							Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 2).toString()));
-					tarefa.setCentroCusto(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 3).toString());
-					tarefa.setStatus(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 4).toString());
-					tarefa.setTamanho(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 5).toString());
-					tarefa.setPorcentagem(
-							Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 6).toString()));
-					tarefa.setPrazo(
-							Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 7).toString()));
-					tarefa.setDataInicio(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 8).toString());
-					tarefa.setDataReal(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 9).toString());
-					tarefa.setDataFim(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 10).toString());
-
-					// teste se existi executor 1
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 11) == null) {
-						tarefa.setExecutor1("");
-						tarefa.setPorcento2(0);
-					} else {
-						tarefa.setExecutor1(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 11).toString());
-						tarefa.setPorcento1(
-								Integer.parseInt((tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 12).toString())));
-					}
-
-					// teste se existi executor 2
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 13) == null) {
-						tarefa.setExecutor2("");
-						tarefa.setPorcento2(0);
-					} else {
-						tarefa.setExecutor2(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 13).toString());
-						tarefa.setPorcento2(
-								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 14).toString()));
-					}
-
-					// teste se existi executor 3
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 15) == null) {
-						tarefa.setExecutor3("");
-						tarefa.setPorcento3(0);
-					} else {
-						tarefa.setExecutor3(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 15).toString());
-						tarefa.setPorcento3(
-								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 16).toString()));
-					}
-
-					// teste se existi executor 4
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 17) == null) {
-						tarefa.setExecutor4("");
-						tarefa.setPorcento4(0);
-					} else {
-						tarefa.setExecutor4(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 17).toString());
-						tarefa.setPorcento4(
-								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 18).toString()));
-					}
-
-					// teste se existi executor 5
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 19) == null) {
-						tarefa.setExecutor5("");
-						tarefa.setPorcento5(0);
-					} else {
-						tarefa.setExecutor5(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 19).toString());
-						tarefa.setPorcento5(
-								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 20).toString()));
-					}
-
-					// teste se existi executor 6
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 21) == null) {
-						tarefa.setExecutor6("");
-						tarefa.setPorcento6(0);
-					} else {
-						tarefa.setExecutor6(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 21).toString());
-						tarefa.setPorcento6(
-								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 22).toString()));
-					}
-
-					// teste se existi executor 7
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 23) == null) {
-						tarefa.setExecutor7("");
-						tarefa.setPorcento7(0);
-					} else {
-						tarefa.setExecutor7(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 23).toString());
-						tarefa.setPorcento7(
-								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 24).toString()));
-					}
-
-					// teste se existi executor 8
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 25) == null) {
-						tarefa.setExecutor8("");
-						tarefa.setPorcento8(0);
-					} else {
-						tarefa.setExecutor8(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 25).toString());
-						tarefa.setPorcento8(
-								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 26).toString()));
-					}
-
-					// teste se existi executor 9
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 27) == null) {
-						tarefa.setExecutor9("");
-						tarefa.setPorcento9(0);
-					} else {
-						tarefa.setExecutor9(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 27).toString());
-						tarefa.setPorcento9(
-								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 28).toString()));
-					}
-
-					// teste se existi executor 10
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 29) == null) {
-						tarefa.setExecutor10("");
-						tarefa.setPorcento10(0);
-					} else {
-						tarefa.setExecutor10(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 29).toString());
-						tarefa.setPorcento10(
-								Integer.parseInt(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 30).toString()));
-					}
-
-					// teste se pendente existir
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 31) == null) {
-						tarefa.setPendentePor("");
-					} else {
-						tarefa.setPendentePor(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 31).toString());
-					}
-					// teste se status pendencia eexistir
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 32) == null) {
-						tarefa.setStatusPendencia("");
-					} else {
-						tarefa.setStatusPendencia(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 32).toString());
-					}
-					// teste se existir historico
-					if (tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 33) == null) {
-						tarefa.setHistorico("");
-					} else {
-						tarefa.setHistorico(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 33).toString());
-					}
-					tarefa.setDepartamento(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 34).toString());
-					tarefa.setResponsavel(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 35).toString());
-					tarefa.setAutoridade(tabelaMult.getValueAt(tabelaMult.getSelectedRow(), 36).toString());
-				}
-			}
-		});
-
-	}// fim do metodo Multiplicar
-
-	public void listar() {
+	public String gerarSQL() {
 		String data1;
 		String data2;
 
@@ -976,16 +1037,11 @@ public class TarefaTela extends javax.swing.JFrame {
 				+ "dpto_correto,"
 				+ "(SELECT processos.processo FROM processos WHERE tarefa.processo_relacionado=processos.id_processo) AS processo_relacionado,"
 				+ "tarefa.predecessor_1, tarefa.predecessor_2, tarefa.predecessor_3, tarefa.last_update,  "
-				+ "(SELECT pessoa.nome FROM pessoa WHERE pessoa.id_pessoa = tarefa.id_update), "
-				+ "tarefa.checado \r\n" 
-				+ "FROM tarefa\r\n"
-				+ "INNER JOIN centro_custo\r\n" 
-				+ "ON tarefa.id_centro_custo=centro_custo.id_centro_custo\r\n"
-				+ "INNER JOIN tamanho\r\n" 
-				+ "ON tarefa.id_tamanho=tamanho.id_tamanho\r\n" 
-				+ "INNER JOIN executor\r\n"
-				+ "ON tarefa.id_tarefa=executor.id_tarefa\r\n" 
-				+ "INNER JOIN departamento\r\n"
+				+ "(SELECT pessoa.nome FROM pessoa WHERE pessoa.id_pessoa = tarefa.id_update), " + "tarefa.checado \r\n"
+				+ "FROM tarefa\r\n" + "INNER JOIN centro_custo\r\n"
+				+ "ON tarefa.id_centro_custo=centro_custo.id_centro_custo\r\n" + "INNER JOIN tamanho\r\n"
+				+ "ON tarefa.id_tamanho=tamanho.id_tamanho\r\n" + "INNER JOIN executor\r\n"
+				+ "ON tarefa.id_tarefa=executor.id_tarefa\r\n" + "INNER JOIN departamento\r\n"
 				+ "ON tarefa.id_departamento=departamento.id_departamento\r\n";
 
 		// Periodo de
@@ -1003,54 +1059,63 @@ public class TarefaTela extends javax.swing.JFrame {
 			data2 = DataParaoBanco(ateText.getText());
 
 		}
-		
 
-		if(Sessao.getInstance().getFuncao() == 0) {//Se a função for apenas usuario limitamos as tarefas apenas para qual o nome dele está envolvido
-			String eu = "'"+Sessao.getInstance().getNome()+"'";
-			
-			sql += "WHERE (tarefa.responsavel = "+ eu +" OR tarefa.autoridade = "+ eu +" OR tarefa.pendente_por = "+ eu +" OR tarefa.checado = "+ eu +" \r\n" 
-					+"OR (executor.executor1 = "+ eu +" OR executor.executor2 = "+ eu +" OR executor.executor3 = "+ eu +" \r\n" 
-					+"OR executor.executor4 = "+ eu +" OR executor.executor5 = "+ eu +" OR executor.executor6 = "+ eu +" \r\n" 
-					+"OR executor.executor7 = "+ eu +" OR executor.executor8 = "+ eu +" OR executor.executor9 = "+ eu +" \r\n" 
-					+"OR executor.executor10 = "+ eu +"))\r\n";
-			
+		if (Sessao.getInstance().getFuncao() == 0) {// Se a função for apenas usuario limitamos as tarefas apenas para
+													// qual o nome dele está envolvido
+			String eu = "'" + Sessao.getInstance().getNome() + "'";
+
+			sql += "WHERE (tarefa.responsavel = " + eu + " OR tarefa.autoridade = " + eu + " OR tarefa.pendente_por = "
+					+ eu + " OR tarefa.checado = " + eu + " \r\n" + "OR (executor.executor1 = " + eu
+					+ " OR executor.executor2 = " + eu + " OR executor.executor3 = " + eu + " \r\n"
+					+ "OR executor.executor4 = " + eu + " OR executor.executor5 = " + eu + " OR executor.executor6 = "
+					+ eu + " \r\n" + "OR executor.executor7 = " + eu + " OR executor.executor8 = " + eu
+					+ " OR executor.executor9 = " + eu + " \r\n" + "OR executor.executor10 = " + eu + "))\r\n";
+
 			sql += "AND tarefa.data_ini\r\n" + "BETWEEN IF(tarefa.stat = 'Feito' OR tarefa.stat = 'Cancelado'," + "'"
-					+ data1 + "'" + ",'2014-01-01') AND " + "'" + data2 + "'";	
+					+ data1 + "'" + ",'2014-01-01') AND " + "'" + data2 + "'";
 		}
-		
-		else if(Sessao.getInstance().getFuncao() == 2) {//Se a função for lider limitamos as tarefas apenas para qual o nome dele está envolvido e qual o departamento dele aparece
-			String eu = "'"+Sessao.getInstance().getNome()+"'";
-			String dpto = "'"+Sessao.getInstance().getDpto()+"'";
-			
-			sql += "WHERE (tarefa.responsavel = "+ eu +" OR tarefa.autoridade = "+ eu +" OR tarefa.pendente_por = "+ eu +" OR tarefa.checado = "+ eu +" \r\n" 
-					+"OR (executor.executor1 = "+ eu +" OR executor.executor2 = "+ eu +" OR executor.executor3 = "+ eu +" \r\n" 
-					+"OR executor.executor4 = "+ eu +" OR executor.executor5 = "+ eu +" OR executor.executor6 = "+ eu +" \r\n" 
-					+"OR executor.executor7 = "+ eu +" OR executor.executor8 = "+ eu +" OR executor.executor9 = "+ eu +" \r\n" 
-					+"OR executor.executor10 = "+ eu +" OR \r\n"
-					+ "(tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + ") AND \r\n"
-					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + "))))\r\n";
-					
+
+		else if (Sessao.getInstance().getFuncao() == 2) {// Se a função for lider limitamos as tarefas apenas para qual
+															// o nome dele está envolvido e qual o departamento dele
+															// aparece
+			String eu = "'" + Sessao.getInstance().getNome() + "'";
+			String dpto = "'" + Sessao.getInstance().getDpto() + "'";
+
+			sql += "WHERE (tarefa.responsavel = " + eu + " OR tarefa.autoridade = " + eu + " OR tarefa.pendente_por = "
+					+ eu + " OR tarefa.checado = " + eu + " \r\n" + "OR (executor.executor1 = " + eu
+					+ " OR executor.executor2 = " + eu + " OR executor.executor3 = " + eu + " \r\n"
+					+ "OR executor.executor4 = " + eu + " OR executor.executor5 = " + eu + " OR executor.executor6 = "
+					+ eu + " \r\n" + "OR executor.executor7 = " + eu + " OR executor.executor8 = " + eu
+					+ " OR executor.executor9 = " + eu + " \r\n" + "OR executor.executor10 = " + eu + " OR \r\n"
+					+ "(tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = "
+					+ Sessao.getInstance().getId() + ") AND \r\n"
+					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = "
+					+ Sessao.getInstance().getId() + "))))\r\n";
+
 			sql += "AND tarefa.data_ini\r\n" + "BETWEEN IF(tarefa.stat = 'Feito' OR tarefa.stat = 'Cancelado'," + "'"
-					+ data1 + "'" + ",'2014-01-01') AND " + "'" + data2 + "'";	
+					+ data1 + "'" + ",'2014-01-01') AND " + "'" + data2 + "'";
 		}
-		
-		else if(Sessao.getInstance().getFuncao() == 3) {//Se a função for  limitamos as tarefas apenas para qual o nome dele está envolvido e qual o departamento dele aparece
-			String eu = "'"+Sessao.getInstance().getNome()+"'";
-			String cc = "'"+Sessao.getInstance().getCC()+"'";
-			
-			sql += "WHERE (tarefa.responsavel = "+ eu +" OR tarefa.autoridade = "+ eu +" OR tarefa.pendente_por = "+ eu +" OR tarefa.checado = "+ eu +" \r\n" 
-					+"OR (executor.executor1 = "+ eu +" OR executor.executor2 = "+ eu +" OR executor.executor3 = "+ eu +" \r\n" 
-					+"OR executor.executor4 = "+ eu +" OR executor.executor5 = "+ eu +" OR executor.executor6 = "+ eu +" \r\n" 
-					+"OR executor.executor7 = "+ eu +" OR executor.executor8 = "+ eu +" OR executor.executor9 = "+ eu +" \r\n" 
-					+"OR executor.executor10 = "+ eu +" OR \r\n"
-					+ "(tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + ") AND \r\n"
-					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + "))))\r\n";
-					
+
+		else if (Sessao.getInstance().getFuncao() == 3) {// Se a função for limitamos as tarefas apenas para qual o nome
+															// dele está envolvido e qual o departamento dele aparece
+			String eu = "'" + Sessao.getInstance().getNome() + "'";
+			String cc = "'" + Sessao.getInstance().getCC() + "'";
+
+			sql += "WHERE (tarefa.responsavel = " + eu + " OR tarefa.autoridade = " + eu + " OR tarefa.pendente_por = "
+					+ eu + " OR tarefa.checado = " + eu + " \r\n" + "OR (executor.executor1 = " + eu
+					+ " OR executor.executor2 = " + eu + " OR executor.executor3 = " + eu + " \r\n"
+					+ "OR executor.executor4 = " + eu + " OR executor.executor5 = " + eu + " OR executor.executor6 = "
+					+ eu + " \r\n" + "OR executor.executor7 = " + eu + " OR executor.executor8 = " + eu
+					+ " OR executor.executor9 = " + eu + " \r\n" + "OR executor.executor10 = " + eu + " OR \r\n"
+					+ "(tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = "
+					+ Sessao.getInstance().getId() + ") AND \r\n"
+					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = "
+					+ Sessao.getInstance().getId() + "))))\r\n";
+
 			sql += "AND tarefa.data_ini\r\n" + "BETWEEN IF(tarefa.stat = 'Feito' OR tarefa.stat = 'Cancelado'," + "'"
-					+ data1 + "'" + ",'2014-01-01') AND " + "'" + data2 + "'";	
+					+ data1 + "'" + ",'2014-01-01') AND " + "'" + data2 + "'";
 		}
-		
-		
+
 		else {
 			sql += "WHERE tarefa.data_ini\r\n" + "BETWEEN IF(tarefa.stat = 'Feito' OR tarefa.stat = 'Cancelado'," + "'"
 					+ data1 + "'" + ",'2014-01-01') AND " + "'" + data2 + "'";
@@ -1184,338 +1249,7 @@ public class TarefaTela extends javax.swing.JFrame {
 		}
 
 		sql += "\r\nORDER BY tarefa.id_tarefa DESC";
-		
-		try {
-			bd.st = bd.con.prepareStatement(sql);
-			bd.rs = bd.st.executeQuery();
-			if (bd.rs.next()) {// se haver tarefas continue
-				if (tabela != null) {// se existir outra tabela montada apaga
-
-					sp.setVisible(false);
-					sp.remove(tabela);
-					sp = null;
-					tabela.setVisible(false);
-					tabela = null;
-
-				}
-
-				Vector<String> cabecalhoPersonalizado = new Vector<>();
-
-				cabecalhoPersonalizado.addElement("ID");// 0
-				cabecalhoPersonalizado.addElement("Descrição");// 1
-				cabecalhoPersonalizado.addElement("Prioridade");// 2
-				cabecalhoPersonalizado.addElement("C.C");// 3
-				cabecalhoPersonalizado.addElement("Status");// 4
-				cabecalhoPersonalizado.addElement("Tamanho");// 5
-				cabecalhoPersonalizado.addElement("Porcentagem");// 6
-				cabecalhoPersonalizado.addElement("Prazo");// 7
-				cabecalhoPersonalizado.addElement("Data Inicial");// 8
-				cabecalhoPersonalizado.addElement("Data Real");// 9
-				cabecalhoPersonalizado.addElement("Data Fim");// 10
-				cabecalhoPersonalizado.addElement("1º Executor");// 11
-				cabecalhoPersonalizado.addElement("%");// 12
-				cabecalhoPersonalizado.addElement("2º Executor");// 13
-				cabecalhoPersonalizado.addElement("%");// 14
-				cabecalhoPersonalizado.addElement("3º Executor");// 15
-				cabecalhoPersonalizado.addElement("%");// 16
-				cabecalhoPersonalizado.addElement("4º Executor");// 17
-				cabecalhoPersonalizado.addElement("%");// 18
-				cabecalhoPersonalizado.addElement("5º Executor");// 19
-				cabecalhoPersonalizado.addElement("%");// 20
-				cabecalhoPersonalizado.addElement("6º Executor");// 21
-				cabecalhoPersonalizado.addElement("%");// 22
-				cabecalhoPersonalizado.addElement("7º Executor");// 23
-				cabecalhoPersonalizado.addElement("%");// 24
-				cabecalhoPersonalizado.addElement("8º Executor");// 25
-				cabecalhoPersonalizado.addElement("%");// 26
-				cabecalhoPersonalizado.addElement("9º Executor");// 27
-				cabecalhoPersonalizado.addElement("%");// 28
-				cabecalhoPersonalizado.addElement("10º Executor");// 29
-				cabecalhoPersonalizado.addElement("%");// 30
-				cabecalhoPersonalizado.addElement("Pendente");// 31
-				cabecalhoPersonalizado.addElement("Status pendência");// 32
-				cabecalhoPersonalizado.addElement("Historico");// 33
-				cabecalhoPersonalizado.addElement("Departamento");// 34
-				cabecalhoPersonalizado.addElement("Responsavel");// 35
-				cabecalhoPersonalizado.addElement("Autoridade");// 36
-				cabecalhoPersonalizado.addElement("Etapa");//37
-				cabecalhoPersonalizado.addElement("Sub Etapa");//38
-				cabecalhoPersonalizado.addElement("Departamento Correto");// Obsoletos //39
-				cabecalhoPersonalizado.addElement("Processo Relacionado");//40
-				cabecalhoPersonalizado.addElement("Predecessor 1");//41
-				cabecalhoPersonalizado.addElement("Predecessor 2");//42
-				cabecalhoPersonalizado.addElement("Predecessor 3");;//43
-				cabecalhoPersonalizado.addElement("Ultima Atualização");// 44
-				cabecalhoPersonalizado.addElement("Atualizado por");// 45
-				cabecalhoPersonalizado.addElement("Checado");//46
-
-				tabela = TableGrade.getTable(sql, cabecalhoPersonalizado);
-
-				tabela.getColumnModel().getColumn(0).setPreferredWidth(30);
-				tabela.getColumnModel().getColumn(1).setPreferredWidth(400);
-				tabela.getColumnModel().getColumn(2).setPreferredWidth(80);
-				tabela.getColumnModel().getColumn(4).setPreferredWidth(65);
-				tabela.getColumnModel().getColumn(5).setPreferredWidth(80);
-				tabela.getColumnModel().getColumn(6).setPreferredWidth(100);
-				tabela.getColumnModel().getColumn(7).setPreferredWidth(50);
-				tabela.getColumnModel().getColumn(11).setPreferredWidth(100);
-				tabela.getColumnModel().getColumn(12).setPreferredWidth(30);
-				tabela.getColumnModel().getColumn(13).setPreferredWidth(100);
-				tabela.getColumnModel().getColumn(14).setPreferredWidth(30);
-				tabela.getColumnModel().getColumn(15).setPreferredWidth(100);
-				tabela.getColumnModel().getColumn(16).setPreferredWidth(30);
-				tabela.getColumnModel().getColumn(17).setPreferredWidth(100);
-				tabela.getColumnModel().getColumn(18).setPreferredWidth(30);
-				tabela.getColumnModel().getColumn(19).setPreferredWidth(100);
-				tabela.getColumnModel().getColumn(20).setPreferredWidth(30);
-				tabela.getColumnModel().getColumn(21).setPreferredWidth(100);
-				tabela.getColumnModel().getColumn(22).setPreferredWidth(30);
-				tabela.getColumnModel().getColumn(23).setPreferredWidth(100);
-				tabela.getColumnModel().getColumn(24).setPreferredWidth(30);
-				tabela.getColumnModel().getColumn(25).setPreferredWidth(100);
-				tabela.getColumnModel().getColumn(26).setPreferredWidth(30);
-				tabela.getColumnModel().getColumn(27).setPreferredWidth(100);
-				tabela.getColumnModel().getColumn(28).setPreferredWidth(30);
-				tabela.getColumnModel().getColumn(29).setPreferredWidth(100);
-				tabela.getColumnModel().getColumn(30).setPreferredWidth(30);
-
-				sp = new JScrollPane(tabela);
-
-				// adiciona Scroll ao frame
-				centro.add(sp);
-
-				centro.updateUI(); // atualiza tela
-
-				tabela.setEditingRow(1);
-				tabela.setEditingColumn(1);
-				tabela.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-				tabela.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-				
-				sorter = new TableRowSorter<TableModel>(tabela.getModel());
-				tabela.setRowSorter(sorter);
-
-				sorter.setRowFilter(RowFilter.regexFilter(searchText.getText()));
-
-				tabela.addMouseListener(new AdicionarTarefaMouseListener(this));// Adicionando a clase de abrir tela
-				tabela.addMouseListener(new MouseAdapter() {
-					public void mouseReleased(MouseEvent a) {
-						if (a.getClickCount() == 2) {
-							tarefa = new Tarefa();
-							
-							tarefa.setIDTarefa(
-									Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 0).toString()));
-							tarefa.setDescricao(tabela.getValueAt(tabela.getSelectedRow(), 1).toString());
-							tarefa.setPrioridade(
-									Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 2).toString()));
-							tarefa.setCentroCusto(tabela.getValueAt(tabela.getSelectedRow(), 3).toString());
-							tarefa.setStatus(tabela.getValueAt(tabela.getSelectedRow(), 4).toString());
-							tarefa.setTamanho(tabela.getValueAt(tabela.getSelectedRow(), 5).toString());
-							tarefa.setPorcentagem(
-									Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 6).toString()));
-							tarefa.setPrazo(
-									Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 7).toString()));
-							tarefa.setDataInicio(tabela.getValueAt(tabela.getSelectedRow(), 8).toString());
-							tarefa.setDataReal(tabela.getValueAt(tabela.getSelectedRow(), 9).toString());
-							tarefa.setDataFim(tabela.getValueAt(tabela.getSelectedRow(), 10).toString());
-
-							// teste se existi executor 1
-							if (tabela.getValueAt(tabela.getSelectedRow(), 11) == null) {
-								tarefa.setExecutor1("");
-								tarefa.setPorcento2(0);
-							} else {
-								tarefa.setExecutor1(tabela.getValueAt(tabela.getSelectedRow(), 11).toString());
-								tarefa.setPorcento1(
-										Integer.parseInt((tabela.getValueAt(tabela.getSelectedRow(), 12).toString())));
-							}
-
-							// teste se existi executor 2
-							if (tabela.getValueAt(tabela.getSelectedRow(), 13) == null) {
-								tarefa.setExecutor2("");
-								tarefa.setPorcento2(0);
-							} else {
-								tarefa.setExecutor2(tabela.getValueAt(tabela.getSelectedRow(), 13).toString());
-								tarefa.setPorcento2(
-										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 14).toString()));
-							}
-
-							// teste se existi executor 3
-							if (tabela.getValueAt(tabela.getSelectedRow(), 15) == null) {
-								tarefa.setExecutor3("");
-								tarefa.setPorcento3(0);
-							} else {
-								tarefa.setExecutor3(tabela.getValueAt(tabela.getSelectedRow(), 15).toString());
-								tarefa.setPorcento3(
-										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 16).toString()));
-							}
-
-							// teste se existi executor 4
-							if (tabela.getValueAt(tabela.getSelectedRow(), 17) == null) {
-								tarefa.setExecutor4("");
-								tarefa.setPorcento4(0);
-							} else {
-								tarefa.setExecutor4(tabela.getValueAt(tabela.getSelectedRow(), 17).toString());
-								tarefa.setPorcento4(
-										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 18).toString()));
-							}
-
-							// teste se existi executor 5
-							if (tabela.getValueAt(tabela.getSelectedRow(), 19) == null) {
-								tarefa.setExecutor5("");
-								tarefa.setPorcento5(0);
-							} else {
-								tarefa.setExecutor5(tabela.getValueAt(tabela.getSelectedRow(), 19).toString());
-								tarefa.setPorcento5(
-										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 20).toString()));
-							}
-
-							// teste se existi executor 6
-							if (tabela.getValueAt(tabela.getSelectedRow(), 21) == null) {
-								tarefa.setExecutor6("");
-								tarefa.setPorcento6(0);
-							} else {
-								tarefa.setExecutor6(tabela.getValueAt(tabela.getSelectedRow(), 21).toString());
-								tarefa.setPorcento6(
-										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 22).toString()));
-							}
-
-							// teste se existi executor 7
-							if (tabela.getValueAt(tabela.getSelectedRow(), 23) == null) {
-								tarefa.setExecutor7("");
-								tarefa.setPorcento7(0);
-							} else {
-								tarefa.setExecutor7(tabela.getValueAt(tabela.getSelectedRow(), 23).toString());
-								tarefa.setPorcento7(
-										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 24).toString()));
-							}
-
-							// teste se existi executor 8
-							if (tabela.getValueAt(tabela.getSelectedRow(), 25) == null) {
-								tarefa.setExecutor8("");
-								tarefa.setPorcento8(0);
-							} else {
-								tarefa.setExecutor8(tabela.getValueAt(tabela.getSelectedRow(), 25).toString());
-								tarefa.setPorcento8(
-										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 26).toString()));
-							}
-
-							// teste se existi executor 9
-							if (tabela.getValueAt(tabela.getSelectedRow(), 27) == null) {
-								tarefa.setExecutor9("");
-								tarefa.setPorcento9(0);
-							} else {
-								tarefa.setExecutor9(tabela.getValueAt(tabela.getSelectedRow(), 27).toString());
-								tarefa.setPorcento9(
-										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 28).toString()));
-							}
-
-							// teste se existi executor 10
-							if (tabela.getValueAt(tabela.getSelectedRow(), 29) == null) {
-								tarefa.setExecutor10("");
-								tarefa.setPorcento10(0);
-							} else {
-								tarefa.setExecutor10(tabela.getValueAt(tabela.getSelectedRow(), 29).toString());
-								tarefa.setPorcento10(
-										Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 30).toString()));
-							}
-
-							// teste se pendente existir
-							if (tabela.getValueAt(tabela.getSelectedRow(), 31) == null) {
-								tarefa.setPendentePor("");
-							} else {
-								tarefa.setPendentePor(tabela.getValueAt(tabela.getSelectedRow(), 31).toString());
-							}
-							// teste se status pendencia eexistir
-							if (tabela.getValueAt(tabela.getSelectedRow(), 32) == null) {
-								tarefa.setStatusPendencia("");
-							} else {
-								tarefa.setStatusPendencia(tabela.getValueAt(tabela.getSelectedRow(), 32).toString());
-							}
-							// teste se existir historico
-							if (tabela.getValueAt(tabela.getSelectedRow(), 33) == null) {
-								tarefa.setHistorico("");
-							} else {
-								tarefa.setHistorico(tabela.getValueAt(tabela.getSelectedRow(), 33).toString());
-							}
-							tarefa.setDepartamento(tabela.getValueAt(tabela.getSelectedRow(), 34).toString());
-							tarefa.setResponsavel(tabela.getValueAt(tabela.getSelectedRow(), 35).toString());
-							tarefa.setAutoridade(tabela.getValueAt(tabela.getSelectedRow(), 36).toString());
-							
-							
-							if(tabela.getValueAt(tabela.getSelectedRow(), 37) == null) {
-								tarefa.setEtapa("");
-							}else {
-								tarefa.setEtapa(tabela.getValueAt(tabela.getSelectedRow(), 37).toString());
-							}
-							
-							if(tabela.getValueAt(tabela.getSelectedRow(), 38) == null) {
-								tarefa.setSubEtapa("");
-							}else {
-								tarefa.setSubEtapa(tabela.getValueAt(tabela.getSelectedRow(), 38).toString());
-							}
-							
-							if (tabela.getValueAt(tabela.getSelectedRow(), 40) == null) {//Se existir processo carrega a tarefa
-								tarefa.setProcesso("");
-							}else {
-								tarefa.setProcesso(tabela.getValueAt(tabela.getSelectedRow(), 40).toString());
-							}
-							
-							if(tabela.getValueAt(tabela.getSelectedRow(), 41) == "" || tabela.getValueAt(tabela.getSelectedRow(), 41) == null) {
-								tarefa.setPredecessor1(0);
-							} else {
-								tarefa.setPredecessor1(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 41).toString()));
-							}
-							
-							if(tabela.getValueAt(tabela.getSelectedRow(), 42) == "" || tabela.getValueAt(tabela.getSelectedRow(), 42) == null) {
-								tarefa.setPredecessor2(0);
-							} else {
-								tarefa.setPredecessor2(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 42).toString()));
-							}
-							
-							if(tabela.getValueAt(tabela.getSelectedRow(), 43) == "" || tabela.getValueAt(tabela.getSelectedRow(), 43) == null) {
-								tarefa.setPredecessor3(0);
-							} else {
-								tarefa.setPredecessor3(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 43).toString()));
-							}
-							
-							if (tabela.getValueAt(tabela.getSelectedRow(), 44) == null) {
-								tarefa.setAtualizacao("");
-							} else {
-								tarefa.setAtualizacao("Atualizado " + tabela.getValueAt(tabela.getSelectedRow(), 45)
-										+ " Por " + tabela.getValueAt(tabela.getSelectedRow(), 44));
-							}
-							
-							if(tabela.getValueAt(tabela.getSelectedRow(), 46) == "" || tabela.getValueAt(tabela.getSelectedRow(), 46) == null ) {
-								tarefa.setChecado("");
-							} else {
-								tarefa.setChecado(tabela.getValueAt(tabela.getSelectedRow(), 46).toString());
-							}
-						}
-					}
-				});
-
-				tabela.addMouseListener(new MouseAdapter() {
-					public void mouseReleased(MouseEvent a) {
-						if(a.getClickCount() == 1 && a.getModifiersEx() == InputEvent.ALT_DOWN_MASK){
-							try {
-								predecessora.setText((tabela.getValueAt(tabela.getSelectedRow(), 0).toString()));
-								tela.toFront();
-							} catch (Exception e) {
-								
-							}
-
-						}
-					}
-				});
-				
-			} else {
-
-				JOptionPane.showMessageDialog(null, "Sem registro de tarefas");
-			}
-
-		} catch (SQLException erro) {
-			JOptionPane.showMessageDialog(null, erro.toString());
-		}
-
+		return sql;
 	}
 
 	public String DataParaoBanco(String data) {
@@ -1533,7 +1267,6 @@ public class TarefaTela extends javax.swing.JFrame {
 		return data_correta;
 	}
 
-	// metodo que carrega as datas iniciais
 	public void CarregaDatas() {
 		// PRIMEIRO DIA DO MÉS
 		Calendar PrimeiroDiaDoMés = Calendar.getInstance();
@@ -1597,7 +1330,6 @@ public class TarefaTela extends javax.swing.JFrame {
 		}
 	}
 
-// carrega combo box CC
 	public void CarregarComboBoxCC() {
 		String sql = "SELECT centrocusto FROM centro_custo ORDER BY centrocusto ASC";
 
@@ -1615,7 +1347,6 @@ public class TarefaTela extends javax.swing.JFrame {
 		}
 	}
 
-	// movimento do panel
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 		int posicion = panelLateral.getX();
 		if (posicion > -1) {
@@ -1694,13 +1425,12 @@ public class TarefaTela extends javax.swing.JFrame {
 	Dimension d = r.getScreenSize();
 
 	Tarefa tarefa = new Tarefa();
-	
+
 	private CalendarView deText;
 	private javax.swing.JButton jButton1;
 	private app.bolivia.swing.JCTextField searchText;
 	private app.bolivia.swing.JCTextField descText;
-	private app.bolivia.swing.JCTextField statusText;
-	private app.bolivia.swing.JCTextField historicoText;
+
 	private javax.swing.JCheckBox ExecCheck;
 	private javax.swing.JCheckBox RespCheck;
 	private javax.swing.JCheckBox AutoCheck;
@@ -1733,9 +1463,4 @@ public class TarefaTela extends javax.swing.JFrame {
 	private GridBagConstraints gbc_panelMain;
 	private JCheckBox checkCancelado;
 	private JButton button;
-	private JInternalFrame internalFrame;
-	private JPanel southPanel;
-	private JButton multButton;
-	private JButton cancelarButton;
-	private JPanel centerPanel;
 }
