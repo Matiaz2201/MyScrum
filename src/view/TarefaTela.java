@@ -13,6 +13,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,6 +27,7 @@ import javax.swing.JButton;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.GroupLayout.Alignment;
@@ -628,14 +630,27 @@ public class TarefaTela extends javax.swing.JFrame {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String sql = gerarSQL();
-				JOptionPane.showMessageDialog(null, sql);
+				System.out.println(sql);
 				if (Banco.conexao()) {
 					try {
 						Banco.st = Banco.con.prepareStatement(sql);
 						Banco.rs = Banco.st.executeQuery();
-						
-						ExportarTarefasXLS.exportar(Banco.rs, "");
-						
+
+						if (Banco.rs.next()) {
+							ResultSet tarefas = Banco.rs;
+							String caminho = "";
+
+							JFileChooser jc = new JFileChooser();
+							jc.setDialogTitle("Selecione o caminho e nome do arquivo");
+							int opJc = jc.showOpenDialog(null);
+
+							if (opJc == JFileChooser.APPROVE_OPTION) {
+								caminho = jc.getSelectedFile().getAbsolutePath();
+								ExportarTarefasXLS.exportar(tarefas, caminho);
+
+							}
+						}
+
 					} catch (SQLException erro) {
 						JOptionPane.showMessageDialog(null, erro.toString());
 					}
