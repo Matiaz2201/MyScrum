@@ -25,6 +25,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -40,6 +41,7 @@ import com.myscrum.banco.Banco;
 import com.myscrum.controller.Controle;
 import com.myscrum.model.Sessao;
 import com.myscrum.model.kamban;
+import com.myscrum.model.ExportarTarefasXLS;
 import com.myscrum.model.KambanDAO;
 import com.towel.swing.calendar.CalendarView;
 
@@ -149,6 +151,7 @@ public class KambanTela extends JFrame {
 
 	private ResultSet subEtapas;
 	private ResultSet etapas;
+	private JButton exportarTarefasButton;
 
 	/**
 	 * Launch the application.
@@ -938,6 +941,40 @@ public class KambanTela extends JFrame {
 		qtdTarefasAfazerLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		qtdTarefasAfazerLabel.setBounds(142, 15, 55, 23);
 		Painel7.add(qtdTarefasAfazerLabel);
+
+		JButton exportarTarefasButton = new JButton("Exportar tarefas");
+		exportarTarefasButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String sql = gerarSQL();
+				System.out.println(sql);
+				if (Banco.conexao()) {
+					try {
+						Banco.st = Banco.con.prepareStatement(sql);
+						Banco.rs = Banco.st.executeQuery();
+
+						if (Banco.rs.next()) {
+							ResultSet tarefas = Banco.rs;
+							String caminho = "";
+
+							JFileChooser jc = new JFileChooser();
+							jc.setDialogTitle("Selecione o caminho e nome do arquivo");
+							int opJc = jc.showOpenDialog(null);
+
+							if (opJc == JFileChooser.APPROVE_OPTION) {
+								caminho = jc.getSelectedFile().getAbsolutePath();
+								ExportarTarefasXLS.exportar(tarefas, caminho);
+
+							}
+						}
+
+					} catch (SQLException erro) {
+						JOptionPane.showMessageDialog(null, erro.toString());
+					}
+				}
+			}
+		});
+		exportarTarefasButton.setBounds(989, 117, 113, 23);
+		PainelSuperior.add(exportarTarefasButton);
 		limparButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				limpar();
@@ -1707,6 +1744,40 @@ public class KambanTela extends JFrame {
 		qtdTarefasAfazerLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		qtdTarefasAfazerLabel.setBounds(142, 15, 55, 23);
 		Painel7.add(qtdTarefasAfazerLabel);
+
+		exportarTarefasButton = new JButton("Exportar tarefas");
+		exportarTarefasButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String sql = gerarSQL();
+				System.out.println(sql);
+				if (Banco.conexao()) {
+					try {
+						Banco.st = Banco.con.prepareStatement(sql);
+						Banco.rs = Banco.st.executeQuery();
+
+						if (Banco.rs.next()) {
+							ResultSet tarefas = Banco.rs;
+							String caminho = "";
+
+							JFileChooser jc = new JFileChooser();
+							jc.setDialogTitle("Selecione o caminho e nome do arquivo");
+							int opJc = jc.showOpenDialog(null);
+
+							if (opJc == JFileChooser.APPROVE_OPTION) {
+								caminho = jc.getSelectedFile().getAbsolutePath();
+								ExportarTarefasXLS.exportar(tarefas, caminho);
+
+							}
+						}
+
+					} catch (SQLException erro) {
+						JOptionPane.showMessageDialog(null, erro.toString());
+					}
+				}
+			}
+		});
+		exportarTarefasButton.setBounds(1235, 117, 121, 23);
+		PainelSuperior.add(exportarTarefasButton);
 		limparButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				limpar();
@@ -2141,7 +2212,7 @@ public class KambanTela extends JFrame {
 		String sql = "SELECT nome FROM pessoa ORDER BY nome ASC";
 
 		try {
-		Banco.st = Banco.con.prepareStatement(sql);
+			Banco.st = Banco.con.prepareStatement(sql);
 
 			Banco.rs = Banco.st.executeQuery();
 
@@ -2237,10 +2308,10 @@ public class KambanTela extends JFrame {
 		kamban.pendenteText.setText(pendente);
 		if (pendente == "" || pendente == null || pendente == " ") {
 			kamban.pendenteText.setBackground(Color.WHITE);
-		}else {
+		} else {
 			kamban.pendenteText.setBackground(Color.ORANGE);
 		}
-		
+
 		if (anexo == true) {
 			kamban.anexoLabel.setVisible(true);
 		} else {
@@ -2302,10 +2373,11 @@ public class KambanTela extends JFrame {
 					+ " OR executor.executor2 = " + eu + " OR executor.executor3 = " + eu + " \r\n"
 					+ "OR executor.executor4 = " + eu + " OR executor.executor5 = " + eu + " OR executor.executor6 = "
 					+ eu + " \r\n" + "OR executor.executor7 = " + eu + " OR executor.executor8 = " + eu
-					+ " OR executor.executor9 = " + eu + " \r\n" + "OR executor.executor10 = " + eu
-					+ " OR \r\n"
-					+ "(tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + ") AND \r\n"
-					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + ")))) AND\r\n";
+					+ " OR executor.executor9 = " + eu + " \r\n" + "OR executor.executor10 = " + eu + " OR \r\n"
+					+ "(tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = "
+					+ Sessao.getInstance().getId() + ") AND \r\n"
+					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = "
+					+ Sessao.getInstance().getId() + ")))) AND\r\n";
 		}
 
 		if (Sessao.getInstance().getFuncao() == 3) {// Se a função for lider limitamos as tarefas apenas para qual o
@@ -2318,10 +2390,11 @@ public class KambanTela extends JFrame {
 					+ " OR executor.executor2 = " + eu + " OR executor.executor3 = " + eu + " \r\n"
 					+ "OR executor.executor4 = " + eu + " OR executor.executor5 = " + eu + " OR executor.executor6 = "
 					+ eu + " \r\n" + "OR executor.executor7 = " + eu + " OR executor.executor8 = " + eu
-					+ " OR executor.executor9 = " + eu + " \r\n" + "OR executor.executor10 = " + eu
-					+ " OR \r\n"
-					+ "(tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + ") AND \r\n"
-					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = " + Sessao.getInstance().getId() + ")))) AND\r\n";
+					+ " OR executor.executor9 = " + eu + " \r\n" + "OR executor.executor10 = " + eu + " OR \r\n"
+					+ "(tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = "
+					+ Sessao.getInstance().getId() + ") AND \r\n"
+					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = "
+					+ Sessao.getInstance().getId() + ")))) AND\r\n";
 		}
 
 		String Executor = "'" + ExeRespAutComboBox.getSelectedItem().toString() + "'";
@@ -2366,8 +2439,7 @@ public class KambanTela extends JFrame {
 		}
 		String etapa = "'" + etapaCombo.getSelectedItem().toString() + "'";
 		if (etapaCombo.getSelectedIndex() != 0) {
-			filtro += "(SELECT etapas.etapa FROM etapas WHERE etapas.id_etapa=tarefa.etapa) = "
-					+ etapa + "AND \r\n ";
+			filtro += "(SELECT etapas.etapa FROM etapas WHERE etapas.id_etapa=tarefa.etapa) = " + etapa + "AND \r\n ";
 		}
 		String subetapa = "'" + subEtapaCombo.getSelectedItem().toString() + "'";
 		if (subEtapaCombo.getSelectedIndex() != 0) {
@@ -2408,6 +2480,131 @@ public class KambanTela extends JFrame {
 					+ "tarefa.stat= '" + Status_Tarefa + "'" + "ORDER BY tarefa.prioridade, Atraso DESC";
 
 		}
+		return sql;
+	}
+
+	public String gerarSQL() {
+		String filtro = "";
+		String sql = "";
+
+		if (Sessao.getInstance().getFuncao() == 0) {// Se a função for apenas usuario limitamos as tarefas apenas para
+													// qual o nome dele está envolvido
+			String eu = "'" + Sessao.getInstance().getNome() + "'";
+
+			filtro += "(tarefa.responsavel = " + eu + " OR tarefa.autoridade = " + eu + " OR tarefa.pendente_por = "
+					+ eu + " OR tarefa.checado = " + eu + " \r\n" + "OR (executor.executor1 = " + eu
+					+ " OR executor.executor2 = " + eu + " OR executor.executor3 = " + eu + " \r\n"
+					+ "OR executor.executor4 = " + eu + " OR executor.executor5 = " + eu + " OR executor.executor6 = "
+					+ eu + " \r\n" + "OR executor.executor7 = " + eu + " OR executor.executor8 = " + eu
+					+ " OR executor.executor9 = " + eu + " \r\n" + "OR executor.executor10 = " + eu + ")) AND\r\n";
+		}
+
+		if (Sessao.getInstance().getFuncao() == 2) {// Se a função for lider limitamos as tarefas apenas para qual o
+													// nome dele está envolvido e qual o departamento dele aparece
+			String eu = "'" + Sessao.getInstance().getNome() + "'";
+			String dpto = "'" + Sessao.getInstance().getDpto() + "'";
+
+			filtro += "(tarefa.responsavel = " + eu + " OR tarefa.autoridade = " + eu + " OR tarefa.pendente_por = "
+					+ eu + " OR tarefa.checado = " + eu + " \r\n" + "OR (executor.executor1 = " + eu
+					+ " OR executor.executor2 = " + eu + " OR executor.executor3 = " + eu + " \r\n"
+					+ "OR executor.executor4 = " + eu + " OR executor.executor5 = " + eu + " OR executor.executor6 = "
+					+ eu + " \r\n" + "OR executor.executor7 = " + eu + " OR executor.executor8 = " + eu
+					+ " OR executor.executor9 = " + eu + " \r\n" + "OR executor.executor10 = " + eu + " OR \r\n"
+					+ "(tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = "
+					+ Sessao.getInstance().getId() + ") AND \r\n"
+					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = "
+					+ Sessao.getInstance().getId() + ")))) AND\r\n";
+		}
+
+		if (Sessao.getInstance().getFuncao() == 3) {// Se a função for lider limitamos as tarefas apenas para qual o
+													// nome dele está envolvido e qual o departamento dele aparece
+			String eu = "'" + Sessao.getInstance().getNome() + "'";
+			String cc = "'" + Sessao.getInstance().getCC() + "'";
+
+			filtro += "(tarefa.responsavel = " + eu + " OR tarefa.autoridade = " + eu + " OR tarefa.pendente_por = "
+					+ eu + " OR tarefa.checado = " + eu + " \r\n" + "OR (executor.executor1 = " + eu
+					+ " OR executor.executor2 = " + eu + " OR executor.executor3 = " + eu + " \r\n"
+					+ "OR executor.executor4 = " + eu + " OR executor.executor5 = " + eu + " OR executor.executor6 = "
+					+ eu + " \r\n" + "OR executor.executor7 = " + eu + " OR executor.executor8 = " + eu
+					+ " OR executor.executor9 = " + eu + " \r\n" + "OR executor.executor10 = " + eu + " OR \r\n"
+					+ "(tarefa.id_centro_custo in (SELECT vinculos.id_cc FROM vinculos WHERE vinculos.id_usuario = "
+					+ Sessao.getInstance().getId() + ") AND \r\n"
+					+ "tarefa.id_departamento in (SELECT vinculos.id_dpto FROM vinculos WHERE vinculos.id_usuario = "
+					+ Sessao.getInstance().getId() + ")))) AND\r\n";
+		}
+
+		String Executor = "'" + ExeRespAutComboBox.getSelectedItem().toString() + "'";
+		if (ExeRespAutComboBox.getSelectedIndex() != 0) {
+			filtro += "(tarefa.autoridade = " + Executor + " OR\r\n" + "tarefa.responsavel = " + Executor + " OR\r\n"
+					+ "(SELECT executor.executor1 FROM executor WHERE executor.id_tarefa=tarefa.id_tarefa) = "
+					+ Executor + " OR\r\n"
+					+ "(SELECT executor.executor2 FROM executor WHERE executor.id_tarefa=tarefa.id_tarefa) = "
+					+ Executor + " OR\r\n"
+					+ "(SELECT executor.executor3 FROM executor WHERE executor.id_tarefa=tarefa.id_tarefa) = "
+					+ Executor + " OR\r\n"
+					+ "(SELECT executor.executor4 FROM executor WHERE executor.id_tarefa=tarefa.id_tarefa) = "
+					+ Executor + " OR\r\n"
+					+ "(SELECT executor.executor5 FROM executor WHERE executor.id_tarefa=tarefa.id_tarefa) = "
+					+ Executor + " OR\r\n"
+					+ "(SELECT executor.executor6 FROM executor WHERE executor.id_tarefa=tarefa.id_tarefa) = "
+					+ Executor + " OR\r\n"
+					+ "(SELECT executor.executor7 FROM executor WHERE executor.id_tarefa=tarefa.id_tarefa) = "
+					+ Executor + " OR\r\n"
+					+ "(SELECT executor.executor8 FROM executor WHERE executor.id_tarefa=tarefa.id_tarefa) = "
+					+ Executor + " OR\r\n"
+					+ "(SELECT executor.executor9 FROM executor WHERE executor.id_tarefa=tarefa.id_tarefa) = "
+					+ Executor + " OR\r\n"
+					+ "(SELECT executor.executor10 FROM executor WHERE executor.id_tarefa=tarefa.id_tarefa) = "
+					+ Executor + ") AND\r\n";
+
+		}
+		String CC = "'" + ccComboBox.getSelectedItem().toString() + "'";
+		if (ccComboBox.getSelectedIndex() != 0) {
+			filtro += "(SELECT centro_custo.centrocusto FROM centro_custo WHERE centro_custo.id_centro_custo=tarefa.id_centro_custo) = "
+					+ CC + " AND \r\n ";
+		}
+		String Pendente = "'" + dptoComboBox.getSelectedItem().toString() + "'";
+		if (dptoComboBox.getSelectedIndex() != 0) {
+			filtro += "((SELECT departamento.departamento FROM departamento WHERE departamento.id_departamento=tarefa.id_departamento) = "
+					+ Pendente + " OR  (tarefa.pendente_por = " + Pendente + ")) AND\r\n ";
+		}
+		String processo = "'" + processoCombo.getSelectedItem().toString() + "'";
+		if (processoCombo.getSelectedIndex() != 0) {
+			filtro += "(SELECT processos.processo FROM processos WHERE processos.id_processo=tarefa.processo_relacionado) = "
+					+ processo + "AND \r\n ";
+		}
+		String etapa = "'" + etapaCombo.getSelectedItem().toString() + "'";
+		if (etapaCombo.getSelectedIndex() != 0) {
+			filtro += "(SELECT etapas.etapa FROM etapas WHERE etapas.id_etapa=tarefa.etapa) = " + etapa + "AND \r\n ";
+		}
+		String subetapa = "'" + subEtapaCombo.getSelectedItem().toString() + "'";
+		if (subEtapaCombo.getSelectedIndex() != 0) {
+			filtro += "(SELECT sub_etapas.sub_etapa FROM sub_etapas WHERE sub_etapas.id_sub_etapas=tarefa.subetapa) = "
+					+ subetapa + "AND \r\n ";
+		}
+
+		sql = "SELECT tarefa.id_tarefa,tarefa.descri,tarefa.prioridade,centro_custo.centrocusto,tarefa.stat,"
+				+ "tamanho.descricao,tarefa.porcentagem,tarefa.prazo,tarefa.data_ini,tarefa.data_real,tarefa.data_fim,"
+				+ "executor.executor1,executor.porcento1,executor.executor2,executor.porcento2,executor.executor3,executor.porcento3,executor.executor4,executor.porcento4,"
+				+ "executor.executor5, executor.porcento5, executor.executor6, executor.porcento6, executor.executor7, executor.porcento7, executor.executor8, executor.porcento8,"
+				+ "executor.executor9, executor.porcento9, executor.executor10, executor.porcento10,"
+				+ "tarefa.pendente_por,tarefa.status_pendencia,tarefa.historico,departamento.departamento,"
+				+ "tarefa.responsavel,tarefa.autoridade,"
+				+ "(SELECT etapas.etapa FROM etapas WHERE etapas.id_etapa = tarefa.etapa) AS etapa,"
+				+ "(SELECT sub_etapas.sub_etapa FROM sub_etapas WHERE sub_etapas.id_sub_etapas = tarefa.subetapa) AS subetapa,"
+				+ "dpto_correto,"
+				+ "(SELECT processos.processo FROM processos WHERE tarefa.processo_relacionado=processos.id_processo) AS processo_relacionado,"
+				+ "tarefa.predecessor_1, tarefa.predecessor_2, tarefa.predecessor_3, tarefa.last_update,  "
+				+ "(SELECT pessoa.nome FROM pessoa WHERE pessoa.id_pessoa = tarefa.id_update), " + "tarefa.checado \r\n"
+				+ "FROM tarefa\r\n" + "INNER JOIN centro_custo\r\n"
+				+ "ON tarefa.id_centro_custo=centro_custo.id_centro_custo\r\n" + "INNER JOIN tamanho\r\n"
+				+ "ON tarefa.id_tamanho=tamanho.id_tamanho\r\n" + "INNER JOIN executor\r\n"
+				+ "ON tarefa.id_tarefa=executor.id_tarefa\r\n" + "INNER JOIN departamento\r\n"
+				+ "ON tarefa.id_departamento=departamento.id_departamento\r\n" + "WHERE " + filtro
+				+ "IF(tarefa.stat= 'Feito', tarefa.data_fim BETWEEN '" + DataParaoBanco(dataDeHoje(7)) + "' AND '"
+				+ DataParaoBanco(dataDeHoje(0)) + "', tarefa.data_fim != '')" + "AND tarefa.stat != 'Cancelado'"
+				+ "ORDER BY tarefa.data_fim DESC, tarefa.prioridade ";
+
 		return sql;
 	}
 

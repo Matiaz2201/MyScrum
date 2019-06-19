@@ -3,6 +3,7 @@ package com.myscrum.model;
 import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 import jxl.*;
 import java.util.*;
@@ -244,13 +245,13 @@ public class ExportarTarefasXLS {
 					valor = new Label(6, linha, tarefas.getString("prazo"));
 					planilha.addCell(valor);
 					
-					valor = new Label(7, linha, tarefas.getString("data_ini"));
+					valor = new Label(7, linha, new SimpleDateFormat("dd/MM/yyyy").format(tarefas.getDate("data_ini")));
 					planilha.addCell(valor);
 					
-					valor = new Label(8, linha, tarefas.getString("data_real"));
+					valor = new Label(8, linha, new SimpleDateFormat("dd/MM/yyyy").format(tarefas.getDate("data_real")));
 					planilha.addCell(valor);
 					
-					valor = new Label(9, linha, tarefas.getString("data_fim"));
+					valor = new Label(9, linha, new SimpleDateFormat("dd/MM/yyyy").format(tarefas.getDate("data_fim")));
 					planilha.addCell(valor);
 					
 					valor = new Label(10, linha, tarefas.getString("porcentagem"));
@@ -359,7 +360,7 @@ public class ExportarTarefasXLS {
 			
 			}
 			
-			JOptionPane.showMessageDialog(null, linhasExportadas + " Tarefas(s) importada(s) com sucesso");
+			JOptionPane.showMessageDialog(null, linhasExportadas + " Tarefas(s) exportada(s) com sucesso");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
