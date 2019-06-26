@@ -96,6 +96,7 @@ public class HhtDAO extends Hht {
 				bd.st.setString(19, getPessoas(a));
 				bd.st.setString(20, getPessoas(a));
 
+				System.out.println(sql);
 				bd.rs = bd.st.executeQuery();
 
 				while (bd.rs.next() == true) {
@@ -308,13 +309,15 @@ public class HhtDAO extends Hht {
 		// System.out.println("Dias da tarefa: " + diasTarefaCalc);
 
 		double resultado;
+		
 		if(diasTarefaCalc == 0) {
 			resultado = 0;
 		}else {
-			resultado = Double.parseDouble(String.valueOf(dias)) / Double.parseDouble(String.valueOf(diasTarefaCalc))* peso; // (pontos da tarefa e porcentagem padrão do executor
+			resultado = Double.parseDouble(String.valueOf(dias)) / Double.parseDouble(String.valueOf(diasTarefaCalc)) * peso; // (pontos da tarefa e porcentagem padrão do executor
 							// 80%)
 		}
-		double resultFinal = (resultado * 0.80); // 80%
+		
+		double resultFinal = (resultado * 0.80) * (porcentagemExec/100); // 80%
 		executor = resultFinal;
 
 		return executor;
@@ -508,7 +511,7 @@ public class HhtDAO extends Hht {
 				bd.rs = bd.st.executeQuery();
 
 				while (bd.rs.next() == true) {
-					executorR += CalcularExecutorR(bd.rs.getDouble("peso"), bd.rs.getDouble("Porcentagem_tarefa"),
+					executorR += CalcularExecutorR(bd.rs.getDouble("peso"), bd.rs.getDouble("Porcentagem_tarefa"), bd.rs.getDouble("Porcentagem_executor"),
 							bd.rs.getDate("Data_Real"), bd.rs.getDate("Data_Final"), Data_ini_periodo,
 							Data_fim_periodo);
 					System.out.println("calculando Executor R " + getPessoas(a));
@@ -651,7 +654,7 @@ public class HhtDAO extends Hht {
 
 	// --OK-------------------------------------------- CALCULO COMO EXECUTOR
 	// -----------------------------------------------------------------------
-	public double CalcularExecutorR(double peso, double porcentagemTarefa, Date Data_real, Date Data_fim,
+	public double CalcularExecutorR(double peso, double porcentagemTarefa, double porcentagem_executor, Date Data_real, Date Data_fim,
 			String Data_ini_periodo, String Data_fim_periodo) throws ParseException {
 
 		double executorR = 0;
@@ -718,7 +721,7 @@ public class HhtDAO extends Hht {
 		}else {
 			resultado = Double.parseDouble(String.valueOf(dias)) / Double.parseDouble(String.valueOf(diasTarefaCalc)) * peso; // (pontos da tarefa e porcentagem padrão do executor 80%)		
 		}
-		double resultFinal = ((resultado * 0.80) * (porcentagemTarefa / 100)); // 80%
+		double resultFinal = ((resultado * 0.80) * (porcentagemTarefa / 100)) * (porcentagem_executor/100); // 80%
 		executorR = resultFinal;
 
 		return executorR;

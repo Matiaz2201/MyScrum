@@ -619,7 +619,7 @@ public class HhtTela extends JFrame {
 			sql += "AND tarefa.id_centro_custo = (SELECT centro_custo.id_centro_custo FROM centro_custo WHERE centro_custo.centrocusto = '"
 					+ cc + "')";
 		}
-
+		
 		return sql;
 	}
 
@@ -696,7 +696,7 @@ public class HhtTela extends JFrame {
 				+ "IF(executor.executor7=?,executor.porcento7, \r\n"
 				+ "IF(executor.executor8=?,executor.porcento8, \r\n"
 				+ "IF(executor.executor9=?,executor.porcento9, \r\n"
-				+ "IF(executor.executor10=?,executor.porcento10,'0'))))))))))) AS Porcentagem_excutor,  \r\n"
+				+ "IF(executor.executor10=?,executor.porcento10,'0'))))))))))) AS Porcentagem_executor,  \r\n"
 				+ "tarefa.data_real AS Data_Real, tarefa.data_fim AS Data_Final  \r\n" + "FROM tamanho  \r\n"
 				+ "INNER JOIN tarefa  \r\n" + "ON tarefa.id_tamanho=tamanho.id_tamanho  \r\n"
 				+ "INNER JOIN executor  \r\n" + "ON executor.id_tarefa=tarefa.id_tarefa  \r\n"
