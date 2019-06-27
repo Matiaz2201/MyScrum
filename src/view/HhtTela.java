@@ -555,7 +555,7 @@ public class HhtTela extends JFrame {
 		String ini = DataParaoBanco(ini_periodo_text.getText());
 		String fim = DataParaoBanco(fim_periodo_text.getText());
 
-		String sql = "SELECT tamanho.peso AS Peso, tarefa.porcentagem AS Porcentagem_tarefa, \r\n"
+		String sql = "SELECT tarefa.stat, tamanho.peso AS Peso, tarefa.porcentagem AS Porcentagem_tarefa, \r\n"
 				+ "tarefa.data_real AS Data_Real, tarefa.data_fim AS Data_Final \r\n" + "FROM tamanho \r\n"
 				+ "INNER JOIN tarefa \r\n" + "ON tarefa.id_tamanho=tamanho.id_tamanho \r\n"
 				+ "WHERE tarefa.responsavel=? \r\n" + "AND IF(tarefa.stat = 'Feito',((tarefa.data_ini  < '" + ini
@@ -584,7 +584,7 @@ public class HhtTela extends JFrame {
 		String ini = DataParaoBanco(ini_periodo_text.getText());
 		String fim = DataParaoBanco(fim_periodo_text.getText());
 
-		String sql = "SELECT tamanho.peso AS peso, tarefa.porcentagem AS Porcentagem_tarefa, \r\n" + "(SELECT "
+		String sql = "SELECT tarefa.stat, tamanho.peso AS peso, tarefa.porcentagem AS Porcentagem_tarefa, \r\n" + "(SELECT "
 				+ "IF(executor.executor1=? ,executor.porcento1, \r\n"
 				+ "IF(executor.executor2=?,executor.porcento2, \r\n"
 				+ "IF(executor.executor3=?,executor.porcento3, \r\n"
@@ -628,7 +628,7 @@ public class HhtTela extends JFrame {
 		String ini = DataParaoBanco(ini_periodo_text.getText());
 		String fim = DataParaoBanco(fim_periodo_text.getText());
 
-		String sql = "SELECT tamanho.peso AS Peso, tarefa.porcentagem AS Porcentagem_tarefa, \r\n"
+		String sql = "SELECT tarefa.stat, tamanho.peso AS Peso, tarefa.porcentagem AS Porcentagem_tarefa, \r\n"
 				+ "tarefa.data_real AS Data_Real, tarefa.data_fim AS Data_Final \r\n" + "FROM tamanho \r\n"
 				+ "INNER JOIN tarefa \r\n" + "ON tarefa.id_tamanho=tamanho.id_tamanho \r\n"
 				+ "WHERE tarefa.autoridade=?\r\n" + "AND IF(tarefa.stat = 'Feito',((tarefa.data_ini  < '" + ini
@@ -658,7 +658,7 @@ public class HhtTela extends JFrame {
 		String ini = DataParaoBanco(ini_periodo_text.getText());
 		String fim = DataParaoBanco(fim_periodo_text.getText());
 
-		String sql = "SELECT tamanho.peso AS Peso, tarefa.porcentagem AS Porcentagem_tarefa, tarefa.data_real AS Data_Real, tarefa.data_fim AS Data_Final \r\n"
+		String sql = "SELECT tarefa.stat, tamanho.peso AS Peso, tarefa.porcentagem AS Porcentagem_tarefa, tarefa.data_real AS Data_Real, tarefa.data_fim AS Data_Final \r\n"
 				+ "FROM tamanho\r\n" + "INNER JOIN tarefa\r\n" + "ON tarefa.id_tamanho=tamanho.id_tamanho\r\n"
 				+ "WHERE tarefa.responsavel=? " + "AND IF(tarefa.stat = 'Feito',((tarefa.data_ini  < '" + ini
 				+ "' AND tarefa.data_fim > '" + fim + "') OR (tarefa.data_ini BETWEEN '" + ini + "' AND '" + fim
@@ -686,7 +686,7 @@ public class HhtTela extends JFrame {
 		String ini = DataParaoBanco(ini_periodo_text.getText());
 		String fim = DataParaoBanco(fim_periodo_text.getText());
 
-		String sql = "SELECT tamanho.peso AS peso, tarefa.porcentagem AS Porcentagem_tarefa, \r\n" + "(SELECT "
+		String sql = "SELECT tarefa.stat, tamanho.peso AS peso, tarefa.porcentagem AS Porcentagem_tarefa, \r\n" + "(SELECT "
 				+ "IF(executor.executor1=? ,executor.porcento1, \r\n"
 				+ "IF(executor.executor2=?,executor.porcento2, \r\n"
 				+ "IF(executor.executor3=?,executor.porcento3, \r\n"
@@ -732,7 +732,7 @@ public class HhtTela extends JFrame {
 		String ini = DataParaoBanco(ini_periodo_text.getText());
 		String fim = DataParaoBanco(fim_periodo_text.getText());
 
-		String sql = "SELECT tamanho.peso AS Peso, tarefa.porcentagem AS Porcentagem_tarefa, \r\n"
+		String sql = "SELECT tarefa.stat, tamanho.peso AS Peso, tarefa.porcentagem AS Porcentagem_tarefa, \r\n"
 				+ "tarefa.data_real AS Data_Real, tarefa.data_fim AS Data_Final \r\n" + "FROM tamanho \r\n"
 				+ "INNER JOIN tarefa \r\n" + "ON tarefa.id_tamanho=tamanho.id_tamanho \r\n"
 				+ "WHERE (tarefa.stat = 'Feito' OR tarefa.stat = 'Fazendo') AND tarefa.autoridade=?"

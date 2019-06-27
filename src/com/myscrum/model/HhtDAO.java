@@ -100,7 +100,7 @@ public class HhtDAO extends Hht {
 				bd.rs = bd.st.executeQuery();
 
 				while (bd.rs.next() == true) {
-					executor += CalcularExecutor(bd.rs.getDouble("peso"), bd.rs.getDouble("Porcentagem_excutor"),
+					executor += CalcularExecutor(getPessoas(a), bd.rs.getString("stat"),bd.rs.getDouble("peso"), bd.rs.getDouble("Porcentagem_excutor"),
 							bd.rs.getDouble("Porcentagem_tarefa"), bd.rs.getDate("Data_Real"),
 							bd.rs.getDate("Data_Final"), Data_ini_periodo, Data_fim_periodo);
 					System.out.println("calculando Executor " + getPessoas(a));
@@ -169,6 +169,14 @@ public class HhtDAO extends Hht {
 		// condições de data
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		df.setLenient(false);
+		
+		if(Data_real.after(Data_fim)) {
+			Data_fim = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(new Date().getTime()));
+		}
+		
+		if(Data_real.after(Data_fim)) {
+			Data_fim = Data_real;
+		}
 
 		Date Data_Inicio_Tarefa = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(Data_real));
 		Date Data_Fim_Tarefa = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(Data_fim));
@@ -230,8 +238,11 @@ public class HhtDAO extends Hht {
 		double resultado;
 		if(diasTarefaCalc == 0) {//evitando divisão por zero
 			resultado  = 0;
+		}else if (dias > diasTarefaCalc) {
+			dias = diasTarefaCalc;
+			resultado =  (peso/Double.parseDouble(String.valueOf(diasTarefaCalc))) * Double.parseDouble(String.valueOf(dias));
 		}else {
-			resultado = Double.parseDouble(String.valueOf(dias)) / Double.parseDouble(String.valueOf(diasTarefaCalc)) * peso; // (pontos da tarefa e porcentagem padrão do executor
+			resultado = (peso/Double.parseDouble(String.valueOf(diasTarefaCalc))) * Double.parseDouble(String.valueOf(dias)); // (pontos da tarefa e porcentagem padrão do executor
 			// 80%)
 		} 
 		double resultFinal = (resultado * 0.15); // 15%
@@ -242,14 +253,26 @@ public class HhtDAO extends Hht {
 
 	// --OK-------------------------------------------- CALCULO COMO EXECUTOR
 	// -----------------------------------------------------------------------
-	public double CalcularExecutor(double peso, double porcentagemExec, double porcentagemTarefa, Date Data_real,
+	public double CalcularExecutor(String pessoa, String stat, double peso, double porcentagemExec, double porcentagemTarefa, Date Data_real,
 			Date Data_fim, String Data_ini_periodo, String Data_fim_periodo) throws ParseException {
+		
+		
 
 		double executor = 0;
 		// 80%
 		// condições de data
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		df.setLenient(false);
+		
+		Date hoje = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(new Date().getTime()));
+		
+		if(Data_real.after(Data_fim)) {
+			Data_fim = hoje;
+		}
+		
+		if(Data_real.after(Data_fim)) {
+			Data_fim = Data_real;
+		}
 
 		Date Data_Inicio_Tarefa = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(Data_real));
 		Date Data_Fim_Tarefa = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(Data_fim));
@@ -259,13 +282,8 @@ public class HhtDAO extends Hht {
 		Date Data_Inicio_Calculo = null;
 		Date Data_Fim_Calculo = null;
 
-		long diasTarefa = (Data_Fim_Tarefa.getTime() - Data_Inicio_Tarefa.getTime()) + 3600000; // 1
-																								// hora
-																								// para
-																								// compensar
-																								// horário
-																								// de
-																								// verão
+		long diasTarefa = (Data_Fim_Tarefa.getTime() - Data_Inicio_Tarefa.getTime()) + 3600000; 
+		
 		long diasTarefaCalc = (diasTarefa / 86400000L) + 1;
 
 		// Condição da Data de inicio
@@ -297,29 +315,26 @@ public class HhtDAO extends Hht {
 		}
 		// Condição da Data de fim
 
-		long dt = (Data_Fim_Calculo.getTime() - Data_Inicio_Calculo.getTime()) + 3600000; // 1
-																							// hora
-																							// para
-																							// compensar
-																							// horário
-																							// de
-																							// verão
+		long dt = (Data_Fim_Calculo.getTime() - Data_Inicio_Calculo.getTime()) + 3600000; 
+		
 		long dias = (dt / 86400000L) + 1;
-		// System.out.println("Dias da tarefa dentro do periodo: " + dias);
-		// System.out.println("Dias da tarefa: " + diasTarefaCalc);
+		
 
 		double resultado;
 		
 		if(diasTarefaCalc == 0) {
 			resultado = 0;
-		}else {
-			resultado = Double.parseDouble(String.valueOf(dias)) / Double.parseDouble(String.valueOf(diasTarefaCalc)) * peso; // (pontos da tarefa e porcentagem padrão do executor
-							// 80%)
+		}else if (dias > diasTarefaCalc) {
+			dias = diasTarefaCalc;
+			resultado =  (peso/Double.parseDouble(String.valueOf(diasTarefaCalc))) * Double.parseDouble(String.valueOf(dias));
+		} else {
+			resultado =  (peso/Double.parseDouble(String.valueOf(diasTarefaCalc))) * Double.parseDouble(String.valueOf(dias));
 		}
 		
 		double resultFinal = (resultado * 0.80) * (porcentagemExec/100); // 80%
 		executor = resultFinal;
 
+		
 		return executor;
 
 		// System.out.printf("Resultado é igual á: %.2f \n", resultado); //
@@ -339,6 +354,14 @@ public class HhtDAO extends Hht {
 		// condições de data
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		df.setLenient(false);
+		
+		if(Data_real.after(Data_fim)) {
+			Data_fim = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(new Date().getTime()));
+		}
+		
+		if(Data_real.after(Data_fim)) {
+			Data_fim = Data_real;
+		}
 
 		Date Data_Inicio_Tarefa = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(Data_real));
 		Date Data_Fim_Tarefa = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(Data_fim));
@@ -348,13 +371,7 @@ public class HhtDAO extends Hht {
 		Date Data_Inicio_Calculo = null;
 		Date Data_Fim_Calculo = null;
 
-		long diasTarefa = (Data_Fim_Tarefa.getTime() - Data_Inicio_Tarefa.getTime()) + 3600000; // 1
-																								// hora
-																								// para
-																								// compensar
-																								// horário
-																								// de
-																								// verão
+		long diasTarefa = (Data_Fim_Tarefa.getTime() - Data_Inicio_Tarefa.getTime()) + 3600000; 
 		long diasTarefaCalc = (diasTarefa / 86400000L) + 1;
 
 		// Condição da Data de inicio
@@ -386,13 +403,7 @@ public class HhtDAO extends Hht {
 		}
 		// Condição da Data de fim
 
-		long dt = (Data_Fim_Calculo.getTime() - Data_Inicio_Calculo.getTime()) + 3600000; // 1
-																							// hora
-																							// para
-																							// compensar
-																							// horário
-																							// de
-																							// verão
+		long dt = (Data_Fim_Calculo.getTime() - Data_Inicio_Calculo.getTime()) + 3600000; 
 		long dias = (dt / 86400000L) + 1;
 		// System.out.println("Dias da tarefa dentro do periodo: " + dias);
 		// System.out.println("Dias da tarefa: " + diasTarefaCalc);
@@ -400,8 +411,11 @@ public class HhtDAO extends Hht {
 		double resultado;
 		if(diasTarefaCalc == 0) {
 			resultado = 0;
-		}else {
-			resultado = Double.parseDouble(String.valueOf(dias)) / Double.parseDouble(String.valueOf(diasTarefaCalc)) * peso; // (pontos da tarefa e porcentagem padrão do executor					// 80%)
+		}else if (dias > diasTarefaCalc) {
+			dias = diasTarefaCalc;
+			resultado =  (peso/Double.parseDouble(String.valueOf(diasTarefaCalc))) * Double.parseDouble(String.valueOf(dias));
+		} else {
+			resultado =  (peso/Double.parseDouble(String.valueOf(diasTarefaCalc))) * Double.parseDouble(String.valueOf(dias));
 		}
 		
 		double resultFinal = (resultado * 0.05); // 5%
@@ -576,6 +590,10 @@ public class HhtDAO extends Hht {
 		// condições de data
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		df.setLenient(false);
+		
+		if(Data_real.after(Data_fim)) {
+			Data_fim = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(new Date().getTime()));
+		}
 
 		Date Data_Inicio_Tarefa = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(Data_real));
 		Date Data_Fim_Tarefa = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(Data_fim));
@@ -637,9 +655,11 @@ public class HhtDAO extends Hht {
 		double resultado;
 		if(diasTarefaCalc == 0) {
 			resultado = 0;
-		}else {
-			resultado = (Double.parseDouble(String.valueOf(dias))/ Double.parseDouble(String.valueOf(diasTarefaCalc))) * peso; // (ponto da tarefa e porcentagem padrão do executor 80%)
-			
+		}else if (dias > diasTarefaCalc) {
+			dias = diasTarefaCalc;
+			resultado =  (peso/Double.parseDouble(String.valueOf(diasTarefaCalc))) * Double.parseDouble(String.valueOf(dias));
+		} else {
+			resultado =  (peso/Double.parseDouble(String.valueOf(diasTarefaCalc))) * Double.parseDouble(String.valueOf(dias));
 		}
 		// convertando as casas decimais
 		double resultFinal = ((resultado * 0.15) * (porcentagemTarefa / 100)); // 15%
@@ -662,6 +682,10 @@ public class HhtDAO extends Hht {
 		// condições de data
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		df.setLenient(false);
+		
+		if(Data_real.after(Data_fim)) {
+			Data_fim = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(new Date().getTime()));
+		}
 
 		Date Data_Inicio_Tarefa = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(Data_real));
 		Date Data_Fim_Tarefa = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(Data_fim));
@@ -718,9 +742,13 @@ public class HhtDAO extends Hht {
 		double resultado;
 		if(diasTarefaCalc == 0) {
 			resultado = 0;
-		}else {
-			resultado = Double.parseDouble(String.valueOf(dias)) / Double.parseDouble(String.valueOf(diasTarefaCalc)) * peso; // (pontos da tarefa e porcentagem padrão do executor 80%)		
+		}else if (dias > diasTarefaCalc) {
+			dias = diasTarefaCalc;
+			resultado =  (peso/Double.parseDouble(String.valueOf(diasTarefaCalc))) * Double.parseDouble(String.valueOf(dias));
+		} else {
+			resultado =  (peso/Double.parseDouble(String.valueOf(diasTarefaCalc))) * Double.parseDouble(String.valueOf(dias));
 		}
+		
 		double resultFinal = ((resultado * 0.80) * (porcentagemTarefa / 100)) * (porcentagem_executor/100); // 80%
 		executorR = resultFinal;
 
@@ -741,6 +769,10 @@ public class HhtDAO extends Hht {
 		// condições de data
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		df.setLenient(false);
+		
+		if(Data_real.after(Data_fim)) {
+			Data_fim = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(new Date().getTime()));
+		}
 
 		Date Data_Inicio_Tarefa = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(Data_real));
 		Date Data_Fim_Tarefa = df.parse(new SimpleDateFormat("dd/MM/yyyy").format(Data_fim));
@@ -802,8 +834,11 @@ public class HhtDAO extends Hht {
 		double resultado;
 		if(diasTarefaCalc == 0) {
 			resultado = 0;
-		}else {
-			resultado = Double.parseDouble(String.valueOf(dias)) / Double.parseDouble(String.valueOf(diasTarefaCalc)) * peso; // (pontos da tarefa e porcentagem padrão do executor 80%)	
+		}else if (dias > diasTarefaCalc) {
+			dias = diasTarefaCalc;
+			resultado =  (peso/Double.parseDouble(String.valueOf(diasTarefaCalc))) * Double.parseDouble(String.valueOf(dias));
+		} else {
+			resultado =  (peso/Double.parseDouble(String.valueOf(diasTarefaCalc))) * Double.parseDouble(String.valueOf(dias));
 		}
 		
 		double resultFinal = ((resultado * 0.05)) * (porcentagemTarefa / 100); // 5%
