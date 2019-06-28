@@ -173,7 +173,7 @@ public class Controle extends Controlev {
 
 						telahht = new HhtTela();
 						while (getLoading() != true) {
-							System.out.println("Continua,.....");
+							
 						}
 
 						Loading.dispose();

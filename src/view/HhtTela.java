@@ -273,6 +273,7 @@ public class HhtTela extends JFrame {
 					
 						e.printStackTrace();
 					}
+					
 					JOptionPane.showMessageDialog(null, "HHT Atualizado com sucesso");
 				} // fim do else
 			}
@@ -298,9 +299,8 @@ public class HhtTela extends JFrame {
 			e1.printStackTrace();
 		}
 
-		Controlev.setLoading(true);// Pasa para variavel de controle de loading que a tela está totalmente
-		// carregada
-
+		Controlev.setLoading(true);
+		
 	} // fecha o main
 
 	public void CarregarComboBoxDpto() {
@@ -322,7 +322,7 @@ public class HhtTela extends JFrame {
 		dptoComboBox.setSelectedItem(Sessao.getInstance().getDpto());
 	}
 
-	// carrega combo box CC
+// carrega combo box CC
 	public void CarregarComboBoxCC() {
 		String sql = "SELECT centrocusto FROM centro_custo";
 
@@ -340,7 +340,7 @@ public class HhtTela extends JFrame {
 		}
 	}
 
-	// metodo que ajusta a posicão do panel com os componetes dentor dele
+// metodo que ajusta a posicão do panel com os componetes dentor dele
 	public int calcDimension(JPanel panel, int xComp, int varEspaço) {
 
 		int calc = (panel.getBounds().x) - (xComp + varEspaço);
@@ -467,32 +467,10 @@ public class HhtTela extends JFrame {
 
 		Dimension DimensionCabecalho = new Dimension(ColumnWidth, 55);
 		tabela.getTableHeader().setPreferredSize(DimensionCabecalho);
-
+		
 		metodos.setLoading(true);
 
 	}// fim do metodo listar
-
-//cria o gráfico
-//public Component Grafico(){
-
-	// cria um data set
-	// DefaultPieDataset pieDataSet = new DefaultPieDataset();
-
-	// Adicinando os dados ao data set
-
-	// pieDataSet.setValue("Abner", new Double(2.6));
-	// pieDataSet.setValue("Pedro", new Double(5.4));
-	// pieDataSet.setValue("João", new Double(52.6));
-
-	// cria um gráfico passando alguns paramentros
-	// org.jfree.chart.JFreeChart grafico = ChartFactory.createPieChart("Dados",
-	// pieDataSet, true, true, false);
-
-	// this.pack();
-	// this.setBounds(20, 511, 150, 150);
-	// return getContentPane().add( new ChartPanel(grafico));
-
-//}
 
 //metodo que carrega as datas iniciais
 	public void CarregaDatasDeVelocidade() {
@@ -512,7 +490,6 @@ public class HhtTela extends JFrame {
 
 //Executa os metodos de calculo
 	public void ExecutarMetodos() throws ParseException {
-
 		// metodos extras de inicio
 		metodos.LimparVariaveis();
 		metodos.ContarPessoas();
@@ -547,6 +524,7 @@ public class HhtTela extends JFrame {
 		// metodos finais
 		custoText.setText("R$:  " + String.valueOf(metodos.getCusto()).replace(".", ","));
 		listar();
+		
 	}
 
 //---------------------filtros para pontos previstos -------------------------
@@ -873,4 +851,5 @@ public class HhtTela extends JFrame {
 		}
 	}
 
+	
 } // fecha a class
