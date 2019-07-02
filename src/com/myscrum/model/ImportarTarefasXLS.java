@@ -100,51 +100,65 @@ public class ImportarTarefasXLS {
 				Cell a43 = sheet.getCell(42, i);
 				Cell a44 = sheet.getCell(43, i);
 
-				String descricao = a1.getContents();
-				String prioridade = a2.getContents();
-				String tamanho = a3.getContents();
-				String status = a4.getContents();
-				String centrocusto = a5.getContents();
-				String departamento = a6.getContents();
-				String prazo = a7.getContents();
-				String datainicio = a8.getContents();
-				String datareal = a9.getContents();
-				String datafim = a10.getContents();
-				String porcentagem = a11.getContents();
-				String predecessor1 = a12.getContents();
-				String predecessor2 = a13.getContents();
-				String predecessor3 = a14.getContents();
-				String etapa = a15.getContents();
-				String subetapa = a16.getContents();
-				String processo = a17.getContents();
-				String checado = a18.getContents();
-				String responsavel = a19.getContents();
-				String autoridade = a20.getContents();
-				String pendente_por = a21.getContents();
-				String porcento1 = a22.getContents();
-				String executor1 = a23.getContents();
-				String porcento2 = a24.getContents();
-				String executor2 = a25.getContents();
-				String porcento3 = a26.getContents();
-				String executor3 = a27.getContents();
-				String porcento4 = a28.getContents();
-				String executor4 = a29.getContents();
-				String porcento5 = a30.getContents();
-				String executor5 = a31.getContents();
-				String porcento6 = a32.getContents();
-				String executor6 = a33.getContents();
-				String porcento7 = a34.getContents();
-				String executor7 = a35.getContents();
-				String porcento8 = a36.getContents();
-				String executor8 = a37.getContents();
-				String porcento9 = a38.getContents();
-				String executor9 = a39.getContents();
-				String porcento10 = a40.getContents();
-				String executor10 = a41.getContents();
-				String status_pendencia = a42.getContents();
-				String historico = a43.getContents();
-				String id_tarefa = a44.getContents();
-
+				String id_tarefa = a1.getContents();
+				String descricao = a2.getContents();
+				String prioridade = a3.getContents();
+				String centrocusto = a4.getContents();
+				String status = a5.getContents();				
+				String tamanho = a6.getContents();
+				String porcentagem = a7.getContents();
+				String prazo = a8.getContents();
+				String datainicio = a9.getContents();
+				String datareal = a10.getContents();
+				String datafim = a11.getContents();
+				
+				String executor1 = a12.getContents();
+				String porcento1 = a13.getContents();
+				
+				String executor2 = a14.getContents();
+				String porcento2 = a15.getContents();
+				
+				String executor3 = a16.getContents();
+				String porcento3 = a17.getContents();
+				
+				String executor4 = a18.getContents();
+				String porcento4 = a19.getContents();
+				
+				String executor5 = a20.getContents();	
+			    String porcento5 = a21.getContents();
+				
+			    String executor6 = a22.getContents();
+			    String porcento6 = a23.getContents();
+			    
+			    String executor7 = a24.getContents();
+				String porcento7 = a25.getContents();
+				
+				String executor8 = a26.getContents();
+				String porcento8 = a27.getContents();
+			
+				String executor9 = a28.getContents();
+				String porcento9 = a29.getContents();
+				
+				String executor10 = a30.getContents();
+				String porcento10 = a31.getContents();
+				
+				String pendente_por = a32.getContents();
+				String status_pendencia = a33.getContents();
+				String historico = a34.getContents();
+				String departamento = a35.getContents();
+				String responsavel = a36.getContents();
+				String autoridade = a37.getContents();
+				String etapa = a38.getContents();
+				String subetapa = a39.getContents();
+				String processo = a40.getContents();
+				
+				String predecessor1 = a41.getContents();
+				String predecessor2 = a42.getContents();
+				String predecessor3 = a43.getContents();
+			
+				String checado = a44.getContents();
+				
+				
 				Tarefa tarefa = new Tarefa();
 				dao.zeraVariaveis();
 
