@@ -52,6 +52,7 @@ import com.myscrum.controller.Controle;
 
 import com.myscrum.model.Redimensionar;
 import com.myscrum.model.TratamentoDeAnexo;
+import com.myscrum.model.TratamentoDeAnexo2;
 import com.myscrum.model.Tarefa;
 import com.myscrum.model.TarefaDAO;
 import com.towel.swing.calendar.CalendarView;
@@ -311,7 +312,7 @@ public class TarefaEditTela extends JFrame {
 		internalFrame = new JInternalFrame("Tamanho");
 		internalFrame.setFrameIcon(new ImageIcon(TarefaEditTela.class.getResource("/com/myscrum/assets/setIcon1.png")));
 		internalFrame.setBackground(Color.WHITE);
-		internalFrame.setBounds(100, 125, 380, 298);
+		internalFrame.setBounds(191, 106, 380, 298);
 		leftPanel.add(internalFrame);
 
 		anexoButton = new JButton("Anexo");
@@ -724,7 +725,7 @@ public class TarefaEditTela extends JFrame {
 		etapaCombo = new JComboBox(Selecione);
 		etapaCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				carregarComboBoxSubEtapa(etapaCombo.getSelectedItem().toString());
+				carregarComboBoxSubEtapa(etapaCombo.getSelectedItem().toString(), centroCComboBox.getSelectedItem().toString());
 			}
 		});
 		etapaCombo.setForeground(Color.WHITE);
@@ -874,8 +875,8 @@ public class TarefaEditTela extends JFrame {
 				int option = anexo.showOpenDialog(null);
 
 				if (option == JFileChooser.APPROVE_OPTION) {
-					tratamento.salvarAnexo(anexo1Label, anexo.getSelectedFile(), "//server/REDE/10-TI/MYSCRUM-FTP", bd,
-							"anexo1", ID_tarefa.getText());
+					TratamentoDeAnexo2 teste = new TratamentoDeAnexo2();
+					teste.salvarAnexo(anexo.getSelectedFile());
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}
@@ -1978,7 +1979,7 @@ public class TarefaEditTela extends JFrame {
 		}
 	}
 
-	public void carregarComboBoxSubEtapa(String etapa) {
+	public void carregarComboBoxSubEtapa(String etapa,  String cc) {
 		String idEtapa = null;
 		String a;
 		int b = 1;
@@ -1991,7 +1992,7 @@ public class TarefaEditTela extends JFrame {
 		try {
 			etapas.beforeFirst();
 			while (etapas.next()) {
-				if (etapas.getString("etapa").equals(etapa)) {
+				if (etapas.getString("etapa").equals(etapa) && etapas.getString("centrocusto").equals(cc)) {
 					idEtapa = etapas.getString("id_etapa");
 				}
 			}
