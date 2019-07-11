@@ -153,6 +153,7 @@ public class TarefaEditTela extends JFrame {
 	Controle control = new Controle();
 	TarefaDAO metodos = new TarefaDAO();
 	TratamentoDeAnexo tratamento = new TratamentoDeAnexo();
+	TratamentoDeAnexo2 teste = new TratamentoDeAnexo2();
 	JPanel leftPanel = new JPanel();
 	JPanelSlider contentePanel = new JPanelSlider();
 	BD bd = new BD();
@@ -170,10 +171,14 @@ public class TarefaEditTela extends JFrame {
 	private JButton anexoButton;
 	private JPanel rightPanel;
 	private JButton tarefaButton;
-	private JLabel anexo1Label;
-	private JLabel anexo2Label;
-	private JLabel anexo3Label;
-	private JLabel anexo4Label;
+	public JLabel anexo1Label;
+	public JLabel anexo2Label;
+	public JLabel anexo3Label;
+	public JLabel anexo4Label;
+	public File anexo1File;
+	public File anexo2File;
+	public File anexo3File;
+	public File anexo4File;
 	private JButton anexoButton1;
 	private JButton anexoButton2;
 	private JButton anexoButton3;
@@ -318,10 +323,7 @@ public class TarefaEditTela extends JFrame {
 		anexoButton = new JButton("Anexo");
 		anexoButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tratamento.carregarAnexo(bd, anexo1Label, "anexo1", ID_tarefa.getText());
-				tratamento.carregarAnexo(bd, anexo2Label, "anexo2", ID_tarefa.getText());
-				tratamento.carregarAnexo(bd, anexo3Label, "anexo3", ID_tarefa.getText());
-				tratamento.carregarAnexo(bd, anexo4Label, "anexo4", ID_tarefa.getText());
+				carregarAnexos();
 				contentePanel.nextPanel(15, rightPanel, contentePanel.left);
 
 			}
@@ -725,7 +727,8 @@ public class TarefaEditTela extends JFrame {
 		etapaCombo = new JComboBox(Selecione);
 		etapaCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				carregarComboBoxSubEtapa(etapaCombo.getSelectedItem().toString(), centroCComboBox.getSelectedItem().toString());
+				carregarComboBoxSubEtapa(etapaCombo.getSelectedItem().toString(),
+						centroCComboBox.getSelectedItem().toString());
 			}
 		});
 		etapaCombo.setForeground(Color.WHITE);
@@ -752,7 +755,7 @@ public class TarefaEditTela extends JFrame {
 				if (e.getClickCount() == 2) {
 					if (anexo1Label.getIcon() != null) {
 						try {
-							tratamento.abrirAnexo(bd, "anexo1", ID_tarefa.getText());
+							JOptionPane.showMessageDialog(null, anexo1File.getPath());
 						} catch (Exception e1) {
 							JOptionPane.showMessageDialog(null,
 									"Por favor verique seu software padrão para a visualização do arquvio desejado");
@@ -761,11 +764,14 @@ public class TarefaEditTela extends JFrame {
 						int option = anexo.showOpenDialog(null);
 
 						if (option == JFileChooser.APPROVE_OPTION) {
-							tratamento.salvarAnexo(anexo1Label, anexo.getSelectedFile(),
-									"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo1", ID_tarefa.getText());
+							if (teste.salvarAnexo(anexo.getSelectedFile(), 1, ID_tarefa.getText().toString())) {
+								teste.mudarIcone(anexo1Label, anexo.getSelectedFile());
+								JOptionPane.showMessageDialog(null, "Arquvio salvo com sucesso");
+							}
 						} else {
 							JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 						}
+
 					}
 				}
 			}
@@ -875,8 +881,10 @@ public class TarefaEditTela extends JFrame {
 				int option = anexo.showOpenDialog(null);
 
 				if (option == JFileChooser.APPROVE_OPTION) {
-					TratamentoDeAnexo2 teste = new TratamentoDeAnexo2();
-					teste.salvarAnexo(anexo.getSelectedFile());
+					if (teste.salvarAnexo(anexo.getSelectedFile(), 1, ID_tarefa.getText().toString())) {
+						teste.mudarIcone(anexo1Label, anexo.getSelectedFile());
+						JOptionPane.showMessageDialog(null, "Arquvio salvo com sucesso");
+					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}
@@ -1345,6 +1353,7 @@ public class TarefaEditTela extends JFrame {
 				}
 			}
 		});
+
 		datafimText.getEditor().addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getModifiersEx() == 128 && e.getKeyCode() == 59) {
@@ -1352,6 +1361,7 @@ public class TarefaEditTela extends JFrame {
 				}
 			}
 		});
+
 		// Ação combobox prazo
 		prazDiaComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1979,7 +1989,7 @@ public class TarefaEditTela extends JFrame {
 		}
 	}
 
-	public void carregarComboBoxSubEtapa(String etapa,  String cc) {
+	public void carregarComboBoxSubEtapa(String etapa, String cc) {
 		String idEtapa = null;
 		String a;
 		int b = 1;
@@ -2048,4 +2058,7 @@ public class TarefaEditTela extends JFrame {
 		}
 	}
 
+	public void carregarAnexos() {
+		teste.carregarAnexo(ID_tarefa.getText(), this);
+	}
 }// Fim da classe

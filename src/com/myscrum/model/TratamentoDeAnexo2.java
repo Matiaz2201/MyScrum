@@ -3,6 +3,12 @@ package com.myscrum.model;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
@@ -16,7 +22,7 @@ import view.TarefaEditTela;
 
 public class TratamentoDeAnexo2 {
 
-	public boolean salvarAnexo(File arquivo) {
+	public boolean salvarAnexo(File arquivo, int nAnexo, String idTarefa) {
 		byte[] arquivoEmBytes = new byte[(int) arquivo.length()];
 		String sql = "INSERT INTO arquivos (nome, arquivo) VALUES (?,?)";
 		if (Banco.conexao()) {
@@ -28,7 +34,19 @@ public class TratamentoDeAnexo2 {
 
 				if (Banco.st.executeUpdate() == 1) {
 					Banco.rs = Banco.st.getGeneratedKeys();
-					return true;
+					Banco.rs.next();
+					int idArquivos = Banco.rs.getInt(1);
+
+					sql = "UPDATE tarefa \r\n" + "SET anexo" + nAnexo + " = " + idArquivos + "\r\n"
+							+ "WHERE id_tarefa = " + idTarefa;
+
+					Banco.st = Banco.con.prepareStatement(sql);
+					if (Banco.st.executeUpdate() == 1) {
+						return true;
+					} else {
+						return false;
+					}
+
 				} else {
 					return false;
 				}
@@ -51,7 +69,37 @@ public class TratamentoDeAnexo2 {
 		return false;
 
 	}
-	
+
+	public void carregarAnexo(String idTarefa, TarefaEditTela tela) {
+		String sql = "SELECT \r\n "
+				+ "(SELECT arquivo FROM arquivos WHERE idarquivos = anexo1) AS Anexo1,\r\n"
+				+ "(SELECT nome FROM arquivos WHERE idarquivos = anexo1) AS NomeAnexo1,\r\n"
+				+ "(SELECT arquivo FROM arquivos WHERE idarquivos = anexo2) AS Anexo2,\r\n"
+				+ "(SELECT nome FROM arquivos WHERE idarquivos = anexo2) AS NomeAnexo2,\r\n"
+				+ "(SELECT arquivo FROM arquivos WHERE idarquivos = anexo3) AS Anexo3,\r\n"
+				+ "(SELECT nome FROM arquivos WHERE idarquivos = anexo3) AS NomeAnexo3,\r\n"
+				+ "(SELECT arquivo FROM arquivos WHERE idarquivos = anexo4) AS Anexo4,\r\n"
+				+ "(SELECT nome FROM arquivos WHERE idarquivos = anexo4) AS NomeAnexo4\r\n"
+				+ "FROM tarefa WHERE id_tarefa = " + idTarefa;
+
+		try {
+			Banco.st = Banco.con.prepareStatement(sql);
+			JOptionPane.showMessageDialog(null, sql);
+			Banco.rs = Banco.st.executeQuery();
+			
+			Banco.rs.next();
+
+			if (Banco.rs.getBlob(1) != null) {
+				tela.anexo1File = criarArquivo(Banco.rs.getBlob("Anexo1"), Banco.rs.getString("NomeAnexo1"));
+				mudarIcone(tela.anexo1Label, tela.anexo1File);
+			}
+
+		} catch (SQLException erro) {
+			JOptionPane.showMessageDialog(null, erro.toString());
+		}
+
+	}
+
 	public void mudarIcone(JLabel label, File Arquivo) {
 
 		String extensao = Arquivo.toString().substring(Arquivo.toString().lastIndexOf("."),
@@ -108,7 +156,7 @@ public class TratamentoDeAnexo2 {
 			label.setToolTipText(Arquivo.getName());
 
 			break;
-			
+
 		case ".xlsm":
 
 			label.setText("");
@@ -162,4 +210,29 @@ public class TratamentoDeAnexo2 {
 		}
 
 	}
+
+	public File criarArquivo(Blob arquivoBlob, String nomeArquivo) {
+		File arquivo = null;
+
+		InputStream bin = null;
+		FileOutputStream bout = null;
+		byte[] bbuf = new byte[1024];
+		int bytesRead = 0;
+
+		try {
+
+			bin = arquivoBlob.getBinaryStream();
+			bout = new FileOutputStream(nomeArquivo);
+
+			while ((bytesRead = bin.read(bbuf)) != -1) {
+				bout.write(bbuf, 0, bytesRead);
+			}
+
+			arquivo = new File(nomeArquivo);
+		} catch (SQLException | IOException erro) {
+
+		}
+		return arquivo;
+	}
+
 }
