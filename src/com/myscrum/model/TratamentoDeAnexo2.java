@@ -2,7 +2,9 @@ package com.myscrum.model;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,20 +19,28 @@ import javax.swing.JOptionPane;
 
 import com.myscrum.banco.Banco;
 import com.mysql.jdbc.PreparedStatement;
+import com.sun.mail.iap.ByteArray;
 
 import view.TarefaEditTela;
 
 public class TratamentoDeAnexo2 {
 
 	public boolean salvarAnexo(File arquivo, int nAnexo, String idTarefa) {
-		byte[] arquivoEmBytes = new byte[(int) arquivo.length()];
+		FileInputStream io = null;
+		try {
+			io = new FileInputStream(arquivo);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		String sql = "INSERT INTO arquivos (nome, arquivo) VALUES (?,?)";
 		if (Banco.conexao()) {
 
 			try {
 				Banco.st = Banco.con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 				Banco.st.setString(1, arquivo.getName().toString());
-				Banco.st.setBytes(2, arquivoEmBytes);
+				Banco.st.setBinaryStream(2, (InputStream) io, (int) arquivo.length());
 
 				if (Banco.st.executeUpdate() == 1) {
 					Banco.rs = Banco.st.getGeneratedKeys();
@@ -60,19 +70,48 @@ public class TratamentoDeAnexo2 {
 		}
 	}
 
-	public boolean excluirAnexo() {
-		return false;
+	public boolean excluirAnexo(int nAnexo, String idTarefa) {
+		String sql = "SELECT anexo" + nAnexo + " FROM tarefa WHERE id_tarefa = " + idTarefa;
+		int idArquivo = 0;
+		if (Banco.conexao()) {
+			try {
+				Banco.st = Banco.con.prepareStatement(sql);
+				Banco.rs = Banco.st.executeQuery();
 
-	}
+				if (Banco.rs.next()) {
+					idArquivo = Banco.rs.getInt(1);
 
-	public boolean abrirAnexo() {
-		return false;
+					sql = "UPDATE tarefa SET anexo" + nAnexo + " = null WHERE id_tarefa = " + idTarefa;
+
+					Banco.st = Banco.con.prepareStatement(sql);
+					if (Banco.st.executeUpdate(sql) == 1) {
+						sql = "DELETE FROM arquivos WHERE idarquivos = " + idArquivo;
+
+						Banco.st = Banco.con.prepareStatement(sql);
+						if (Banco.st.executeUpdate(sql) == 1) {
+							return true;
+						} else {
+							return false;
+						}
+					} else {
+						return false;
+					}
+
+				} else {
+					return false;
+				}
+			} catch (SQLException erro) {
+				JOptionPane.showMessageDialog(null, "Falha na exlcusão do arquivo \r\n " + erro.toString());
+				return false;
+			}
+		} else {
+			return false;
+		}
 
 	}
 
 	public void carregarAnexo(String idTarefa, TarefaEditTela tela) {
-		String sql = "SELECT \r\n "
-				+ "(SELECT arquivo FROM arquivos WHERE idarquivos = anexo1) AS Anexo1,\r\n"
+		String sql = "SELECT \r\n " + "(SELECT arquivo FROM arquivos WHERE idarquivos = anexo1) AS Anexo1,\r\n"
 				+ "(SELECT nome FROM arquivos WHERE idarquivos = anexo1) AS NomeAnexo1,\r\n"
 				+ "(SELECT arquivo FROM arquivos WHERE idarquivos = anexo2) AS Anexo2,\r\n"
 				+ "(SELECT nome FROM arquivos WHERE idarquivos = anexo2) AS NomeAnexo2,\r\n"
@@ -84,14 +123,28 @@ public class TratamentoDeAnexo2 {
 
 		try {
 			Banco.st = Banco.con.prepareStatement(sql);
-			JOptionPane.showMessageDialog(null, sql);
 			Banco.rs = Banco.st.executeQuery();
-			
+
 			Banco.rs.next();
 
 			if (Banco.rs.getBlob(1) != null) {
-				tela.anexo1File = criarArquivo(Banco.rs.getBlob("Anexo1"), Banco.rs.getString("NomeAnexo1"));
+				tela.anexo1File = criarArquivo(Banco.rs.getBinaryStream("Anexo1"), Banco.rs.getString("NomeAnexo1"));
 				mudarIcone(tela.anexo1Label, tela.anexo1File);
+			}
+
+			if (Banco.rs.getBlob(3) != null) {
+				tela.anexo2File = criarArquivo(Banco.rs.getBinaryStream("Anexo2"), Banco.rs.getString("NomeAnexo2"));
+				mudarIcone(tela.anexo2Label, tela.anexo2File);
+			}
+
+			if (Banco.rs.getBlob(5) != null) {
+				tela.anexo3File = criarArquivo(Banco.rs.getBinaryStream("Anexo3"), Banco.rs.getString("NomeAnexo3"));
+				mudarIcone(tela.anexo3Label, tela.anexo3File);
+			}
+
+			if (Banco.rs.getBlob(7) != null) {
+				tela.anexo4File = criarArquivo(Banco.rs.getBinaryStream("Anexo4"), Banco.rs.getString("NomeAnexo4"));
+				mudarIcone(tela.anexo4Label, tela.anexo4File);
 			}
 
 		} catch (SQLException erro) {
@@ -211,28 +264,51 @@ public class TratamentoDeAnexo2 {
 
 	}
 
-	public File criarArquivo(Blob arquivoBlob, String nomeArquivo) {
-		File arquivo = null;
+	public File criarArquivo(InputStream teste, String nomeArquivo) {
+		InputStream input = teste;
+		File f = null;
 
-		InputStream bin = null;
-		FileOutputStream bout = null;
-		byte[] bbuf = new byte[1024];
-		int bytesRead = 0;
+		if (input != null) {
 
-		try {
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			byte[] bytes = null;
 
-			bin = arquivoBlob.getBinaryStream();
-			bout = new FileOutputStream(nomeArquivo);
+			byte[] rb = new byte[1024];
+			int ch = 0;
 
-			while ((bytesRead = bin.read(bbuf)) != -1) {
-				bout.write(bbuf, 0, bytesRead);
+			try {
+				while ((ch = input.read(rb)) != -1) {
+					output.write(rb, 0, ch);
+
+					bytes = output.toByteArray();
+					input.close();
+					output.close();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
-			arquivo = new File(nomeArquivo);
-		} catch (SQLException | IOException erro) {
-
+			f = new File(nomeArquivo);
+			FileOutputStream fos = null;
+			try {
+				fos = new FileOutputStream(f);
+				fos.write(bytes);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				if (fos != null)
+					try {
+						fos.flush();
+						fos.close();
+					} catch (IOException ex) {
+					}
+			}
 		}
-		return arquivo;
+		return f;
 	}
-
 }

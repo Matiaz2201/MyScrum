@@ -152,8 +152,7 @@ public class TarefaEditTela extends JFrame {
 	Tarefa tarefaDuplicar = new Tarefa();
 	Controle control = new Controle();
 	TarefaDAO metodos = new TarefaDAO();
-	TratamentoDeAnexo tratamento = new TratamentoDeAnexo();
-	TratamentoDeAnexo2 teste = new TratamentoDeAnexo2();
+	TratamentoDeAnexo2 tratamentoAnexo = new TratamentoDeAnexo2();
 	JPanel leftPanel = new JPanel();
 	JPanelSlider contentePanel = new JPanelSlider();
 	BD bd = new BD();
@@ -208,6 +207,7 @@ public class TarefaEditTela extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
+				deletarAnexosNoDisco();
 				bd.close();
 				dispose();
 			}
@@ -755,7 +755,8 @@ public class TarefaEditTela extends JFrame {
 				if (e.getClickCount() == 2) {
 					if (anexo1Label.getIcon() != null) {
 						try {
-							JOptionPane.showMessageDialog(null, anexo1File.getPath());
+							carregarAnexos();
+							Desktop.getDesktop().open(anexo1File);
 						} catch (Exception e1) {
 							JOptionPane.showMessageDialog(null,
 									"Por favor verique seu software padrão para a visualização do arquvio desejado");
@@ -764,14 +765,13 @@ public class TarefaEditTela extends JFrame {
 						int option = anexo.showOpenDialog(null);
 
 						if (option == JFileChooser.APPROVE_OPTION) {
-							if (teste.salvarAnexo(anexo.getSelectedFile(), 1, ID_tarefa.getText().toString())) {
-								teste.mudarIcone(anexo1Label, anexo.getSelectedFile());
+							if (tratamentoAnexo.salvarAnexo(anexo.getSelectedFile(), 1, ID_tarefa.getText().toString())) {
+								tratamentoAnexo.mudarIcone(anexo1Label, anexo.getSelectedFile());
 								JOptionPane.showMessageDialog(null, "Arquvio salvo com sucesso");
 							}
 						} else {
 							JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 						}
-
 					}
 				}
 			}
@@ -789,7 +789,8 @@ public class TarefaEditTela extends JFrame {
 				if (e.getClickCount() == 2) {
 					if (anexo2Label.getIcon() != null) {
 						try {
-							tratamento.abrirAnexo(bd, "anexo2", ID_tarefa.getText());
+							carregarAnexos();
+							Desktop.getDesktop().open(anexo2File);
 						} catch (Exception e1) {
 							JOptionPane.showMessageDialog(null,
 									"Por favor verique seu software padrão para a visualização do arquvio desejado");
@@ -798,8 +799,10 @@ public class TarefaEditTela extends JFrame {
 						int option = anexo.showOpenDialog(null);
 
 						if (option == JFileChooser.APPROVE_OPTION) {
-							tratamento.salvarAnexo(anexo2Label, anexo.getSelectedFile(),
-									"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo2", ID_tarefa.getText());
+							if (tratamentoAnexo.salvarAnexo(anexo.getSelectedFile(), 2, ID_tarefa.getText().toString())) {
+								tratamentoAnexo.mudarIcone(anexo2Label, anexo.getSelectedFile());
+								JOptionPane.showMessageDialog(null, "Arquvio salvo com sucesso");
+							}
 						} else {
 							JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 						}
@@ -820,7 +823,8 @@ public class TarefaEditTela extends JFrame {
 				if (e.getClickCount() == 2) {
 					if (anexo3Label.getIcon() != null) {
 						try {
-							tratamento.abrirAnexo(bd, "anexo3", ID_tarefa.getText());
+							carregarAnexos();
+							Desktop.getDesktop().open(anexo3File);
 						} catch (Exception e1) {
 							JOptionPane.showMessageDialog(null,
 									"Por favor verique seu software padrão para a visualização do arquvio desejado");
@@ -829,8 +833,10 @@ public class TarefaEditTela extends JFrame {
 						int option = anexo.showOpenDialog(null);
 
 						if (option == JFileChooser.APPROVE_OPTION) {
-							tratamento.salvarAnexo(anexo3Label, anexo.getSelectedFile(),
-									"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo3", ID_tarefa.getText());
+							if (tratamentoAnexo.salvarAnexo(anexo.getSelectedFile(), 3, ID_tarefa.getText().toString())) {
+								tratamentoAnexo.mudarIcone(anexo3Label, anexo.getSelectedFile());
+								JOptionPane.showMessageDialog(null, "Arquvio salvo com sucesso");
+							}
 						} else {
 							JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 						}
@@ -851,7 +857,8 @@ public class TarefaEditTela extends JFrame {
 				if (e.getClickCount() == 2) {
 					if (anexo4Label.getIcon() != null) {
 						try {
-							tratamento.abrirAnexo(bd, "anexo4", ID_tarefa.getText());
+							carregarAnexos();
+							Desktop.getDesktop().open(anexo4File);
 						} catch (Exception e1) {
 							JOptionPane.showMessageDialog(null,
 									"Por favor verique seu software padrão para a visualização do arquvio desejado");
@@ -860,8 +867,10 @@ public class TarefaEditTela extends JFrame {
 						int option = anexo.showOpenDialog(null);
 
 						if (option == JFileChooser.APPROVE_OPTION) {
-							tratamento.salvarAnexo(anexo4Label, anexo.getSelectedFile(),
-									"//server/REDE/10-TI/MYSCRUM-FTP", bd, "anexo4", ID_tarefa.getText());
+							if (tratamentoAnexo.salvarAnexo(anexo.getSelectedFile(), 4, ID_tarefa.getText().toString())) {
+								tratamentoAnexo.mudarIcone(anexo4Label, anexo.getSelectedFile());
+								JOptionPane.showMessageDialog(null, "Arquvio salvo com sucesso");
+							}
 						} else {
 							JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 						}
@@ -881,8 +890,8 @@ public class TarefaEditTela extends JFrame {
 				int option = anexo.showOpenDialog(null);
 
 				if (option == JFileChooser.APPROVE_OPTION) {
-					if (teste.salvarAnexo(anexo.getSelectedFile(), 1, ID_tarefa.getText().toString())) {
-						teste.mudarIcone(anexo1Label, anexo.getSelectedFile());
+					if (tratamentoAnexo.salvarAnexo(anexo.getSelectedFile(), 1, ID_tarefa.getText().toString())) {
+						tratamentoAnexo.mudarIcone(anexo1Label, anexo.getSelectedFile());
 						JOptionPane.showMessageDialog(null, "Arquvio salvo com sucesso");
 					}
 				} else {
@@ -899,8 +908,10 @@ public class TarefaEditTela extends JFrame {
 				int option = anexo.showOpenDialog(null);
 
 				if (option == JFileChooser.APPROVE_OPTION) {
-					tratamento.salvarAnexo(anexo2Label, anexo.getSelectedFile(), "//server/REDE/10-TI/MYSCRUM-FTP", bd,
-							"anexo2", ID_tarefa.getText());
+					if (tratamentoAnexo.salvarAnexo(anexo.getSelectedFile(), 2, ID_tarefa.getText().toString())) {
+						tratamentoAnexo.mudarIcone(anexo2Label, anexo.getSelectedFile());
+						JOptionPane.showMessageDialog(null, "Arquvio salvo com sucesso");
+					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}
@@ -915,8 +926,10 @@ public class TarefaEditTela extends JFrame {
 				int option = anexo.showOpenDialog(null);
 
 				if (option == JFileChooser.APPROVE_OPTION) {
-					tratamento.salvarAnexo(anexo3Label, anexo.getSelectedFile(), "//server/REDE/10-TI/MYSCRUM-FTP", bd,
-							"anexo3", ID_tarefa.getText());
+					if (tratamentoAnexo.salvarAnexo(anexo.getSelectedFile(), 3, ID_tarefa.getText().toString())) {
+						tratamentoAnexo.mudarIcone(anexo3Label, anexo.getSelectedFile());
+						JOptionPane.showMessageDialog(null, "Arquvio salvo com sucesso");
+					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}
@@ -931,8 +944,10 @@ public class TarefaEditTela extends JFrame {
 				int option = anexo.showOpenDialog(null);
 
 				if (option == JFileChooser.APPROVE_OPTION) {
-					tratamento.salvarAnexo(anexo4Label, anexo.getSelectedFile(), "//server/REDE/10-TI/MYSCRUM-FTP", bd,
-							"anexo4", ID_tarefa.getText());
+					if (tratamentoAnexo.salvarAnexo(anexo.getSelectedFile(), 4, ID_tarefa.getText().toString())) {
+						tratamentoAnexo.mudarIcone(anexo4Label, anexo.getSelectedFile());
+						JOptionPane.showMessageDialog(null, "Arquvio salvo com sucesso");
+					}
 				} else {
 					JOptionPane.showMessageDialog(null, "Nenhum arquivo selecionado");
 				}
@@ -952,10 +967,16 @@ public class TarefaEditTela extends JFrame {
 
 		deletarButton1 = new JButton("Deletar");
 		deletarButton1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				tratamento.excluirAnexo(anexo1Label, bd, "anexo1", ID_tarefa.getText());
-
+			public void actionPerformed(ActionEvent e)
+			{
+				if(tratamentoAnexo.excluirAnexo(1, ID_tarefa.getText())) 
+				{	
+					anexo1Label.setText("+");
+					anexo1Label.setIcon(null);
+					anexo1File.delete();
+					
+					JOptionPane.showMessageDialog(null, "Anexo deletado com sucesso !!!");
+				}
 			}
 		});
 		deletarButton1.setBounds(98, 299, 86, 20);
@@ -963,10 +984,16 @@ public class TarefaEditTela extends JFrame {
 
 		deletarButton2 = new JButton("Deletar");
 		deletarButton2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				tratamento.excluirAnexo(anexo2Label, bd, "anexo2", ID_tarefa.getText());
-
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(tratamentoAnexo.excluirAnexo(2, ID_tarefa.getText()))
+				{
+					anexo2Label.setText("+");
+					anexo2Label.setIcon(null);
+					anexo2File.delete();
+					
+					JOptionPane.showMessageDialog(null, "Anexo deletado com sucesso !!!");
+				}
 			}
 		});
 		deletarButton2.setBounds(392, 300, 86, 20);
@@ -974,10 +1001,16 @@ public class TarefaEditTela extends JFrame {
 
 		deletarButton3 = new JButton("Deletar");
 		deletarButton3.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				tratamento.excluirAnexo(anexo3Label, bd, "anexo3", ID_tarefa.getText());
-
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(tratamentoAnexo.excluirAnexo(3, ID_tarefa.getText()))
+				{
+					anexo3Label.setText("+");
+					anexo3Label.setIcon(null);
+					anexo3File.delete();
+					
+					JOptionPane.showMessageDialog(null, "Anexo deletado com sucesso !!!");
+				}
 			}
 		});
 		deletarButton3.setBounds(98, 619, 86, 20);
@@ -985,8 +1018,16 @@ public class TarefaEditTela extends JFrame {
 
 		deletarButton4 = new JButton("Deletar");
 		deletarButton4.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tratamento.excluirAnexo(anexo4Label, bd, "anexo4", ID_tarefa.getText());
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(tratamentoAnexo.excluirAnexo(4, ID_tarefa.getText())) 
+				{
+					anexo4Label.setText("+");
+					anexo4Label.setIcon(null);
+					anexo4File.delete();
+					
+					JOptionPane.showMessageDialog(null, "Anexo deletado com sucesso !!!");
+				}
 			}
 		});
 		deletarButton4.setBounds(392, 619, 86, 20);
@@ -2059,6 +2100,29 @@ public class TarefaEditTela extends JFrame {
 	}
 
 	public void carregarAnexos() {
-		teste.carregarAnexo(ID_tarefa.getText(), this);
+		tratamentoAnexo.carregarAnexo(ID_tarefa.getText(), this);
+	}
+
+	public void deletarAnexosNoDisco() {
+		if(anexo1File != null) 
+		{
+			anexo1File.delete();
+		}
+		
+		if(anexo2File != null)
+		{
+			anexo2File.delete();	
+		}
+		
+		if(anexo3File != null)
+		{
+			anexo3File.delete();
+		}
+		
+		if(anexo4File != null) 
+		{
+			anexo4File.delete();
+		}
+		
 	}
 }// Fim da classe
