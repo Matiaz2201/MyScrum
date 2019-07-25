@@ -120,6 +120,107 @@ public class TarefaDAO extends Tarefa {
 		bd.close();
 	}
 
+	public String cadastrar(Tarefa tarefa, boolean importar) {
+		bd = new BD();
+		String sql = "INSERT INTO tarefa(id_centro_custo,id_tamanho,id_departamento,processo_relacionado,descri,prioridade,stat,porcentagem,prazo,predecessor_1,predecessor_2,predecessor_3,checado,data_ini,data_real,data_fim,pendente_por,status_pendencia,historico,responsavel,autoridade,dpto_correto,id_pessoa,id_update,etapa,subetapa)"
+				+ "SELECT"
+				+ "(SELECT centro_custo.id_centro_custo FROM centro_custo WHERE centro_custo.centrocusto= ?),"
+				+ "(SELECT tamanho.id_tamanho FROM tamanho WHERE tamanho.descricao= ?),"
+				+ "(SELECT departamento.id_departamento FROM departamento WHERE departamento.departamento = ? ),"
+				+ "(SELECT processos.id_processo FROM processos WHERE processos.processo = ? )," 
+				+ " ? AS descri,"
+				+ " ? AS prioridade," 
+				+ " ? AS stat," 
+				+ " ? AS porcentagem," 
+				+ " ? AS prazo," 
+				+ " ? AS predecessor1, "
+				+ " ? AS predecessor2, " 
+				+ " ? AS predecessor3, " 
+				+ " ? AS checado, " 
+				+ " ? AS data_ini,"
+				+ " ? AS data_real," 
+				+ " ? AS data_fim," 
+				+ " ? AS pendente_por," 
+				+ " ? AS status_pendencia,"
+				+ " ? AS historico," 
+				+ " ? AS responsavel," 
+				+ " ? AS autoridade," 
+				+ " ? AS dpto_correto,"
+				+ " ? AS id_pessoa," 
+				+ " ? AS id_update,"
+				+ " ? AS etapa,"
+				+ " ? AS subetapa";
+
+		if (bd.getConnection()) {// se conectar com o bd continua...
+
+			try {
+				bd.st = bd.con.prepareStatement(sql);
+
+				bd.st.setString(1, tarefa.getCentroCusto());
+				bd.st.setString(2, tarefa.getTamanho());
+				bd.st.setString(3, tarefa.getDepartamento());
+				bd.st.setString(4, tarefa.getProcesso());/// Processo relacionado
+				bd.st.setString(5, tarefa.getDescricao());
+				bd.st.setInt(6, tarefa.getPrioridade());
+				bd.st.setString(7, tarefa.getStatus());
+				bd.st.setInt(8, tarefa.getPorcentagem());
+				bd.st.setInt(9, tarefa.getPrazo());
+				if (tarefa.getPredecessor1() == 0) {
+					bd.st.setNull(10, 1);
+				} else {
+					bd.st.setInt(10, tarefa.getPredecessor1());
+				}
+				if (tarefa.getPredecessor2() == 0) {
+					bd.st.setNull(11, 0);
+				} else {
+					bd.st.setInt(11, tarefa.getPredecessor2());
+				}
+
+				if (tarefa.getPredecessor3() == 0) {
+					bd.st.setNull(12, 0);
+				} else {
+					bd.st.setInt(12, tarefa.getPredecessor3());
+				}
+				bd.st.setString(13, tarefa.getChecado());
+				bd.st.setString(14, DataParaoBanco(tarefa.getDataInicio()));
+				bd.st.setString(15, DataParaoBanco(tarefa.getDataReal()));
+				bd.st.setString(16, DataParaoBanco(tarefa.getDataFim()));
+				bd.st.setString(17, tarefa.getPendentePor());
+				bd.st.setString(18, tarefa.getStatusPendencia());
+				bd.st.setString(19, tarefa.getHistorico());
+				bd.st.setString(20, tarefa.getResponsavel());
+				bd.st.setString(21, tarefa.getAutoridade());
+				bd.st.setString(22, "");// Departamento correto
+				bd.st.setInt(23, sessao.getId());
+				bd.st.setInt(24, sessao.getId());
+				bd.st.setString(25, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "Etapa"));
+				bd.st.setString(26, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "SubEtapa"));
+
+				int ok = bd.st.executeUpdate();
+
+				// Pegando o id maior (ultimo id inserido)
+				sql = "SELECT MAX(id_tarefa) FROM tarefa";
+				bd.st = bd.con.prepareStatement(sql);
+				bd.rs = bd.st.executeQuery(sql);
+
+				if (bd.rs.next()) {
+					ID_TAREFA = bd.rs.getInt(1);
+				}
+
+				if (ok == 1) {
+					cadastrarExe(tarefa);
+					return tarefa.getDescricao() + " - (" + ID_TAREFA + ") | Cadastrada com sucesso"; 
+				} else {
+					return tarefa.getDescricao() + " - (" + ID_TAREFA + ") | Falha no cadastro";
+				}
+			} catch (SQLException erro) {
+				return tarefa.getDescricao() + " - (" + ID_TAREFA + ") | Falha no cadastro  - " + erro.toString();
+			}
+		} else {
+			return tarefa.getDescricao() + " - (" + ID_TAREFA + ") | Falha no cadastro - Falha na conexão com o bd";
+		}
+	}
+	
 	public boolean cadastrarExe(Tarefa tarefa) {
 		boolean executor = false;
 
@@ -263,6 +364,104 @@ public class TarefaDAO extends Tarefa {
 		}
 		bd.close();
 	}
+
+	public String atualizar(Tarefa tarefa, boolean importar) {
+		bd = new BD();
+		String sql = "UPDATE tarefa \n\r" + "INNER JOIN executor ON tarefa.id_tarefa = executor.id_tarefa \n\r"
+				+ "SET \n\r "
+				+ "tarefa.id_centro_custo = (SELECT centro_custo.id_centro_custo FROM centro_custo WHERE centro_custo.centrocusto = ?), \n\r"
+				+ "tarefa.id_tamanho = (SELECT tamanho.id_tamanho FROM tamanho WHERE tamanho.descricao = ? ),"
+				+ "tarefa.id_departamento = (SELECT departamento.id_departamento FROM departamento WHERE departamento.departamento = ?),"
+				+ "tarefa.descri = ?," + "tarefa.prioridade=?," + "tarefa.stat=?," + "tarefa.porcentagem=?,"
+				+ "tarefa.prazo=?," + "tarefa.predecessor_1=?, " + "tarefa.predecessor_2=?, "
+				+ "tarefa.predecessor_3=?, " + "tarefa.checado=?, " + "tarefa.data_ini=?, " + "tarefa.data_real=?, "
+				+ "tarefa.data_fim=?, " + "tarefa.pendente_por=?," + "tarefa.status_pendencia=?,"
+				+ "tarefa.historico=?," + "tarefa.responsavel=?," + "tarefa.autoridade=?," + "tarefa.dpto_correto=?,"
+				+ "tarefa.processo_relacionado = (SELECT processos.id_processo FROM processos WHERE processos.processo = ?),"
+				+ "tarefa.etapa = ?," + "tarefa.subetapa = ?," + "tarefa.id_update=?," + "executor.executor1=?,"
+				+ "executor.porcento1=?," + "executor.executor2=?," + "executor.porcento2=?," + "executor.executor3=?,"
+				+ "executor.porcento3=?," + "executor.executor4=?," + "executor.porcento4=?," + "executor.executor5=?,"
+				+ "executor.porcento5=?," + "executor.executor6=?," + "executor.porcento6=?," + "executor.executor7=?,"
+				+ "executor.porcento7=?," + "executor.executor8=?," + "executor.porcento8=?," + "executor.executor9=?,"
+				+ "executor.porcento9=?," + "executor.executor10=?," + "executor.porcento10=? \r\n"
+				+ "WHERE executor.id_tarefa=?";
+		if (bd.getConnection()) {
+			try {
+				bd.st = bd.con.prepareStatement(sql);
+
+				bd.st.setString(1, tarefa.getCentroCusto());
+				bd.st.setString(2, tarefa.getTamanho());
+				bd.st.setString(3, tarefa.getDepartamento());
+				bd.st.setString(4, tarefa.getDescricao());
+				bd.st.setInt(5, tarefa.getPrioridade());
+				bd.st.setString(6, tarefa.getStatus());
+				bd.st.setInt(7, tarefa.getPorcentagem());
+				bd.st.setInt(8, tarefa.getPrazo());
+				if (tarefa.getPredecessor1() == 0) {
+					bd.st.setNull(9, 1);
+				} else {
+					bd.st.setInt(9, tarefa.getPredecessor1());
+				}
+				if (tarefa.getPredecessor2() == 0) {
+					bd.st.setNull(10, 0);
+				} else {
+					bd.st.setInt(10, tarefa.getPredecessor2());
+				}
+
+				if (tarefa.getPredecessor3() == 0) {
+					bd.st.setNull(11, 0);
+				} else {
+					bd.st.setInt(11, tarefa.getPredecessor3());
+				}
+				bd.st.setString(12, tarefa.getChecado());
+				bd.st.setString(13, DataParaoBanco(tarefa.getDataInicio()));
+				bd.st.setString(14, DataParaoBanco(tarefa.getDataReal()));
+				bd.st.setString(15, DataParaoBanco(tarefa.getDataFim()));
+				bd.st.setString(16, tarefa.getPendentePor());
+				bd.st.setString(17, tarefa.getStatusPendencia());
+				bd.st.setString(18, tarefa.getHistorico());
+				bd.st.setString(19, tarefa.getResponsavel());
+				bd.st.setString(20, tarefa.getAutoridade());
+				bd.st.setString(21, "");// Departamento correto
+				bd.st.setString(22, tarefa.getProcesso());/// Processo relacionado
+				bd.st.setString(23, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "Etapa"));
+				bd.st.setString(24, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "SubEtapa"));
+				bd.st.setInt(25, sessao.getId());
+				bd.st.setString(26, tarefa.getExecutor1());
+				bd.st.setInt(27, tarefa.getPorcento1());
+				bd.st.setString(28, tarefa.getExecutor2());
+				bd.st.setInt(29, tarefa.getPorcento2());
+				bd.st.setString(30, tarefa.getExecutor3());
+				bd.st.setInt(31, tarefa.getPorcento3());
+				bd.st.setString(32, tarefa.getExecutor4());
+				bd.st.setInt(33, tarefa.getPorcento4());
+				bd.st.setString(34, tarefa.getExecutor5());
+				bd.st.setInt(35, tarefa.getPorcento5());
+				bd.st.setString(36, tarefa.getExecutor6());
+				bd.st.setInt(37, tarefa.getPorcento6());
+				bd.st.setString(38, tarefa.getExecutor7());
+				bd.st.setInt(39, tarefa.getPorcento7());
+				bd.st.setString(40, tarefa.getExecutor8());
+				bd.st.setInt(41, tarefa.getPorcento8());
+				bd.st.setString(42, tarefa.getExecutor9());
+				bd.st.setInt(43, tarefa.getPorcento9());
+				bd.st.setString(44, tarefa.getExecutor10());
+				bd.st.setInt(45, tarefa.getPorcento10());
+				bd.st.setInt(46, tarefa.getIDTarefa());
+
+				int ok = bd.st.executeUpdate();
+				if (ok == 2) {
+					return tarefa.getDescricao() + " - (" + tarefa.getIDTarefa() + ") | Atualizada com sucesso"; 
+				} else {
+					return tarefa.getDescricao() + " - (" + tarefa.getIDTarefa() + ") | Falha ao atualizar"; 
+				}
+			} catch (SQLException erro) {
+				return tarefa.getDescricao() + " - (" + tarefa.getIDTarefa() + ") | Falha ao atualizar - " + erro.toString(); 
+			}
+		} else {
+			return tarefa.getDescricao() + " - (" + tarefa.getIDTarefa() + ") | Falha ao atualizar - Falha ao conectar com o bd"; 
+		}
+	}
 	
 	public void zeraVariaveis() {
 		setAutoridade("");
@@ -364,4 +563,7 @@ public class TarefaDAO extends Tarefa {
 
 		return id;
 	}
+
+	
+
 }

@@ -1,5 +1,7 @@
 package com.myscrum.model;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -33,6 +35,7 @@ public class ImportarTarefasXLS {
 						inserirTarefa(tarefas.get(x));
 					}
 				}
+				JOptionPane.showMessageDialog(null, "Processo de importação finalizado, LOG gerado na pasta do projeto");
 			}
 		}
 	}
@@ -163,6 +166,7 @@ public class ImportarTarefasXLS {
 				dao.zeraVariaveis();
 
 				tarefa.setDescricao(descricao);
+				JOptionPane.showMessageDialog(null, prioridade);
 				tarefa.setPrioridade(Integer.parseInt(prioridade));
 				tarefa.setTamanho(tamanho);
 				tarefa.setStatus(status);
@@ -177,7 +181,6 @@ public class ImportarTarefasXLS {
 				if (predecessor1 != "") {
 					tarefa.setPredecessor1(Integer.parseInt(predecessor1));
 				}
-
 				if (predecessor2 != "") {
 					tarefa.setPredecessor2(Integer.parseInt(predecessor2));
 				}
@@ -259,14 +262,26 @@ public class ImportarTarefasXLS {
 	}
 
 	public void inserirTarefa(Tarefa tarefa) {
-		dao.cadastrar(tarefa);
+		relatorio(dao.cadastrar(tarefa,true));
 	}
 
 	public void atualizarTarefa(Tarefa tarefa) {
-		dao.atualizar(tarefa);
+		relatorio(dao.atualizar(tarefa,true));
 	}
 
 	public static void main(String[] args) throws BiffException, IOException {
 		ImportarTarefasXLS importar = new ImportarTarefasXLS();
+	}
+	
+	public void relatorio(String conteudo) {
+		try {
+			FileWriter log = new FileWriter("ImportaçãoLOG.txt",true);
+			log.append(conteudo + "\n\r");
+			log.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }
