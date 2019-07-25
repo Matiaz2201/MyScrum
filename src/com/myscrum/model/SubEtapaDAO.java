@@ -47,7 +47,7 @@ public class SubEtapaDAO {
 		bd = new BD();
 		String sql = "UPDATE sub_etapas \r\n"
 				+ "SET sub_etapa = '" + subetapa.getSubetapaAtualiza() + "'\r\n"
-				+ "WHERE id_sub_etapas = '"+ buscaidSubEtapa(subetapa.getSubetapa()) + "'";
+				+ "WHERE id_sub_etapas = '"+ buscaidSubEtapa(subetapa.getSubetapa(), buscaidEtapa(subetapa.getEtapa(), subetapa.getCc())) + "'";
 		
 			
 		if (verificar(subetapa.getSubetapaAtualiza(), subetapa.getEtapa(), subetapa.getCc()) == false) {
@@ -105,9 +105,9 @@ public class SubEtapaDAO {
 		return verificar;
 	}
 
-	public int buscaidSubEtapa(String subetapa) {
+	public int buscaidSubEtapa(String subetapa, int id_etapa) {
 		bd = new BD();
-		String sql = "SELECT id_sub_etapas FROM sub_etapas WHERE sub_etapa = '"+subetapa+"'";
+		String sql = "SELECT id_sub_etapas FROM sub_etapas WHERE sub_etapa = '"+subetapa+"' AND id_etapa = '" + id_etapa + "'";
 		int ID = 0;
 		if(bd.getConnection()) {//se conectar com o banco continua...
 			try {
@@ -137,7 +137,7 @@ public class SubEtapaDAO {
 			try {
 
 				bd.st = bd.con.prepareStatement(sql);
-
+				
 				bd.rs = bd.st.executeQuery();
 
 				if (bd.rs.next()) {

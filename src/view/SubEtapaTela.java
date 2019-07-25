@@ -128,7 +128,7 @@ public class SubEtapaTela extends JPanel {
 					if (escolha == JOptionPane.YES_OPTION) {
 						String[] etapa = { "" };
 
-						etapa = etapaCombo.getSelectedItem().toString().split("_");
+						etapa = etapaCombo.getSelectedItem().toString().split("@");
 
 						SubEtapa subetapa = new SubEtapa(subEtapaText.getText(), etapa[1], etapa[0]);
 
@@ -159,7 +159,8 @@ public class SubEtapaTela extends JPanel {
 					if (escolha == JOptionPane.YES_OPTION) {
 						String[] etapa = { "" };
 
-						etapa = etapaCombo.getSelectedItem().toString().split("_");
+						etapa = etapaCombo.getSelectedItem().toString().split("@");
+						
 
 						SubEtapa subetapa = new SubEtapa(subEtapaCombo.getSelectedItem().toString(),
 								subEtapaText.getText(), etapa[1], etapa[0]);
@@ -240,7 +241,7 @@ public class SubEtapaTela extends JPanel {
 	public void criarListEtapa() {
 
 		try {
-			sql = " SELECT CONCAT (centro_custo.centrocusto,'_',etapas.etapa) AS etapa, id_etapa, centro_custo.id_centro_custo \r\n"
+			sql = " SELECT CONCAT (centro_custo.centrocusto,'@',etapas.etapa) AS etapa, id_etapa, centro_custo.id_centro_custo \r\n"
 					+ " FROM etapas \r\n" + "	INNER JOIN centro_custo \r\n"
 					+ "	ON centro_custo.id_centro_custo = etapas.id_cc \r\n" + "	ORDER BY etapa ASC \r\n";
 
