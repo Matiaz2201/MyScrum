@@ -3,7 +3,9 @@ package com.myscrum.model;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import jxl.Cell;
 import jxl.Sheet;
@@ -12,10 +14,12 @@ import jxl.read.biff.BiffException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileSystemView;
 
 public class ImportarTarefasXLS {
 	TarefaDAO dao = new TarefaDAO();
-
+	Date data = new Date();
+	
 	public ImportarTarefasXLS() {
 		JFileChooser arquivo = new JFileChooser();
 		arquivo.addChoosableFileFilter(new Filtro());
@@ -35,7 +39,7 @@ public class ImportarTarefasXLS {
 						inserirTarefa(tarefas.get(x));
 					}
 				}
-				JOptionPane.showMessageDialog(null, "Processo de importação finalizado, LOG gerado na pasta do projeto");
+				JOptionPane.showMessageDialog(null, "Processo de importação finalizado, LOG gerado na área de trabalho");
 			}
 		}
 	}
@@ -166,7 +170,6 @@ public class ImportarTarefasXLS {
 				dao.zeraVariaveis();
 
 				tarefa.setDescricao(descricao);
-				JOptionPane.showMessageDialog(null, prioridade);
 				tarefa.setPrioridade(Integer.parseInt(prioridade));
 				tarefa.setTamanho(tamanho);
 				tarefa.setStatus(status);
@@ -262,20 +265,23 @@ public class ImportarTarefasXLS {
 	}
 
 	public void inserirTarefa(Tarefa tarefa) {
-		relatorio(dao.cadastrar(tarefa,true));
+		relatorio(dao.cadastrar(tarefa,true), data);
 	}
 
 	public void atualizarTarefa(Tarefa tarefa) {
-		relatorio(dao.atualizar(tarefa,true));
+		relatorio(dao.atualizar(tarefa,true), data);
 	}
 
-	public static void main(String[] args) throws BiffException, IOException {
-		ImportarTarefasXLS importar = new ImportarTarefasXLS();
-	}
-	
-	public void relatorio(String conteudo) {
+	public void relatorio(String conteudo, Date data) {
 		try {
-			FileWriter log = new FileWriter("ImportaçãoLOG.txt",true);
+			
+			SimpleDateFormat formatador = new SimpleDateFormat("(dd-MM-yyyy HH mm ss)");
+			
+			FileSystemView system = FileSystemView.getFileSystemView();
+			
+
+		
+			FileWriter log = new FileWriter(system.getHomeDirectory().getPath() + File.separator + "ImportaçãoLOG - " + formatador.format(data) + ".txt",true);
 			log.append(conteudo + "\n\r");
 			log.close();
 		} catch (IOException e) {
@@ -284,4 +290,10 @@ public class ImportarTarefasXLS {
 		}
 
 	}
+	
+	public static void main(String[] args) throws BiffException, IOException {
+		ImportarTarefasXLS importar = new ImportarTarefasXLS();
+	}
+	
+
 }

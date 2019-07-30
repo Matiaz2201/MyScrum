@@ -40,6 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JInternalFrame;
 
 
 public class TelaPrincipal extends JFrame {
@@ -358,7 +359,7 @@ public class TelaPrincipal extends JFrame {
                     	 tempo.setSeconds(tempo.getSeconds()+1);
                     	 rodapeText.setText("User: "+ s.getNome()+"               "
                     	 		+ "      "+"Tempo de sessão: "+format.format(tempo)
-                    	 +"                " + " (Versão 1.5.3)");
+                    	 +"                " + " (Versão 1.5.4)");
                            
                    } catch (Exception e) {      
                          e.printStackTrace();      

@@ -1,26 +1,0 @@
-Criação do Quadro de Sprint sugerido pelo Rodrigo Iben - (0) | Atualizada com sucesso
-Elaborar escopo para app mobile.	 - (0) | Atualizada com sucesso
-Criar campo e banco para classificação de Retrospectiva - (0) | Atualizada com sucesso
-Executar cálculos e apresentação no Quadro Kambam: Velocidade e Pontos	 - (0) | Atualizada com sucesso
-Alterar sistema de filtro do Kanbam, para aperecer apenas itens (caixa de seleção) que tenham tarefas	 - (0) | Atualizada com sucesso
-Criação do FTP na AWS para liberar função de anexo e atualização do software. - (0) | Atualizada com sucesso
-Criação de filtros com caixas de seleção para selecionar um ou mais departamentos, centro de custos, impedimentos e etc. - (0) | Atualizada com sucesso
-Criaçao de tela para analise grafica envolvendo etapas e subetapas - (0) | Atualizada com sucesso
-Criar gráficos de visualização no HHT - (0) | Atualizada com sucesso
-Verificar o tamanho das atividades de manutenção em relação a obra - (0) | Atualizada com sucesso
-Criação da tela para analise gráficas envolvendo processos - (0) | Atualizada com sucesso
-Inserir coluna Impedimento no Quadro Kanban e alterar coluna feito para 1 semana - (0) | Atualizada com sucesso
-Criação do Quadro de Sprint sugerido pelo Rodrigo Iben - (42706) | Atualizada com sucesso
-Elaborar escopo para app mobile.	 - (50064) | Atualizada com sucesso
-Criar campo e banco para classificação de Retrospectiva - (42524) | Atualizada com sucesso
-Executar cálculos e apresentação no Quadro Kambam: Velocidade e Pontos	 - (42515) | Atualizada com sucesso
-Alterar sistema de filtro do Kanbam, para aperecer apenas itens (caixa de seleção) que tenham tarefas	 - (42748) | Atualizada com sucesso
-Criação do FTP na AWS para liberar função de anexo e atualização do software. - (49044) | Atualizada com sucesso
-Criação de filtros com caixas de seleção para selecionar um ou mais departamentos, centro de custos, impedimentos e etc. - (47905) | Atualizada com sucesso
-Criaçao de tela para analise grafica envolvendo etapas e subetapas - (43116) | Atualizada com sucesso
-Criar gráficos de visualização no HHT - (42532) | Atualizada com sucesso
-Verificar o tamanho das atividades de manutenção em relação a obra - (45624) | Atualizada com sucesso
-Criação da tela para analise gráficas envolvendo processos - (42996) | Atualizada com sucesso
-Inserir coluna Impedimento no Quadro Kanban e alterar coluna feito para 1 semana - (42997) | Atualizada com sucesso
-Teste de importação com relatorio - (50485) | Cadastrada com sucesso
-
