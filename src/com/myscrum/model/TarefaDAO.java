@@ -366,90 +366,123 @@ public class TarefaDAO extends Tarefa {
 	}
 
 	public String atualizar(Tarefa tarefa, boolean importar) {
-		bd = new BD();
-		String sql = "UPDATE tarefa \n\r" + "INNER JOIN executor ON tarefa.id_tarefa = executor.id_tarefa \n\r"
+		
+		String sql = "UPDATE tarefa \n\r" 
+				+ "INNER JOIN executor ON tarefa.id_tarefa = executor.id_tarefa \n\r"
 				+ "SET \n\r "
-				+ "tarefa.id_centro_custo = (SELECT centro_custo.id_centro_custo FROM centro_custo WHERE centro_custo.centrocusto = ?), \n\r"
-				+ "tarefa.id_tamanho = (SELECT tamanho.id_tamanho FROM tamanho WHERE tamanho.descricao = ? ),"
-				+ "tarefa.id_departamento = (SELECT departamento.id_departamento FROM departamento WHERE departamento.departamento = ?),"
-				+ "tarefa.descri = ?," + "tarefa.prioridade=?," + "tarefa.stat=?," + "tarefa.porcentagem=?,"
-				+ "tarefa.prazo=?," + "tarefa.predecessor_1=?, " + "tarefa.predecessor_2=?, "
-				+ "tarefa.predecessor_3=?, " + "tarefa.checado=?, " + "tarefa.data_ini=?, " + "tarefa.data_real=?, "
-				+ "tarefa.data_fim=?, " + "tarefa.pendente_por=?," + "tarefa.status_pendencia=?,"
-				+ "tarefa.historico=?," + "tarefa.responsavel=?," + "tarefa.autoridade=?," + "tarefa.dpto_correto=?,"
+				+ "tarefa.id_centro_custo = (SELECT centro_custo.id_centro_custo FROM centro_custo WHERE centro_custo.centrocusto = " + tarefa.getCentroCusto() + " ), \n\r"
+				+ "tarefa.id_tamanho = (SELECT tamanho.id_tamanho FROM tamanho WHERE tamanho.descricao = " + tarefa.getTamanho() + " ),"
+				+ "tarefa.id_departamento = (SELECT departamento.id_departamento FROM departamento WHERE departamento.departamento = " + tarefa.getDepartamento() + "),"
+				+ "tarefa.descri = " + tarefa.getDescricao() + ","
+				+ "tarefa.prioridade= " + tarefa.getPrioridade() + "," 
+				+ "tarefa.stat= " + tarefa.getStatus() + "," 
+				+ "tarefa.porcentagem= " + tarefa.getPorcentagem() + ","
+				+ "tarefa.prazo= " + tarefa.getPrazo() + ","
+				+ "tarefa.predecessor_1=?, " 
+				+ "tarefa.predecessor_2=?, "
+				+ "tarefa.predecessor_3=?, "
+				+ "tarefa.checado=?, " 
+				+ "tarefa.data_ini=?, "
+				+ "tarefa.data_real=?, "
+				+ "tarefa.data_fim=?, " 
+				+ "tarefa.pendente_por=?," 
+				+ "tarefa.status_pendencia=?,"
+				+ "tarefa.historico=?," 
+				+ "tarefa.responsavel=?,"
+				+ "tarefa.autoridade=?," 
+				+ "tarefa.dpto_correto=?,"
 				+ "tarefa.processo_relacionado = (SELECT processos.id_processo FROM processos WHERE processos.processo = ?),"
-				+ "tarefa.etapa = ?," + "tarefa.subetapa = ?," + "tarefa.id_update=?," + "executor.executor1=?,"
-				+ "executor.porcento1=?," + "executor.executor2=?," + "executor.porcento2=?," + "executor.executor3=?,"
-				+ "executor.porcento3=?," + "executor.executor4=?," + "executor.porcento4=?," + "executor.executor5=?,"
-				+ "executor.porcento5=?," + "executor.executor6=?," + "executor.porcento6=?," + "executor.executor7=?,"
-				+ "executor.porcento7=?," + "executor.executor8=?," + "executor.porcento8=?," + "executor.executor9=?,"
-				+ "executor.porcento9=?," + "executor.executor10=?," + "executor.porcento10=? \r\n"
+				+ "tarefa.etapa = ?," 
+				+ "tarefa.subetapa = ?," 
+				+ "tarefa.id_update=?," 
+				+ "executor.executor1=?,"
+				+ "executor.porcento1=?,"
+				+ "executor.executor2=?,"
+				+ "executor.porcento2=?,"
+				+ "executor.executor3=?,"
+				+ "executor.porcento3=?,"
+				+ "executor.executor4=?,"
+				+ "executor.porcento4=?,"
+				+ "executor.executor5=?,"
+				+ "executor.porcento5=?," 
+				+ "executor.executor6=?,"
+				+ "executor.porcento6=?," 
+				+ "executor.executor7=?,"
+				+ "executor.porcento7=?,"
+				+ "executor.executor8=?," 
+				+ "executor.porcento8=?," 
+				+ "executor.executor9=?,"
+				+ "executor.porcento9=?," 
+				+ "executor.executor10=?,"
+				+ "executor.porcento10=? \r\n"
 				+ "WHERE executor.id_tarefa=?";
-		if (bd.getConnection()) {
+		if (Banco.conexao()) {
 			try {
-				bd.st = bd.con.prepareStatement(sql);
+				Banco.st = Banco.con.prepareStatement(sql);
 
-				bd.st.setString(1, tarefa.getCentroCusto());
-				bd.st.setString(2, tarefa.getTamanho());
-				bd.st.setString(3, tarefa.getDepartamento());
-				bd.st.setString(4, tarefa.getDescricao());
-				bd.st.setInt(5, tarefa.getPrioridade());
-				bd.st.setString(6, tarefa.getStatus());
-				bd.st.setInt(7, tarefa.getPorcentagem());
-				bd.st.setInt(8, tarefa.getPrazo());
+				JOptionPane.showMessageDialog(null, sql);
+				
+				Banco.st.setString(1, tarefa.getCentroCusto());
+				Banco.st.setString(2, tarefa.getTamanho());
+				Banco.st.setString(3, tarefa.getDepartamento());
+				Banco.st.setString(4, tarefa.getDescricao());
+				Banco.st.setInt(5, tarefa.getPrioridade());
+				Banco.st.setString(6, tarefa.getStatus());
+				Banco.st.setInt(7, tarefa.getPorcentagem());
+				Banco.st.setInt(8, tarefa.getPrazo());
 				if (tarefa.getPredecessor1() == 0) {
-					bd.st.setNull(9, 1);
+					Banco.st.setNull(9, 1);
 				} else {
-					bd.st.setInt(9, tarefa.getPredecessor1());
+					Banco.st.setInt(9, tarefa.getPredecessor1());
 				}
 				if (tarefa.getPredecessor2() == 0) {
-					bd.st.setNull(10, 0);
+					Banco.st.setNull(10, 0);
 				} else {
-					bd.st.setInt(10, tarefa.getPredecessor2());
+					Banco.st.setInt(10, tarefa.getPredecessor2());
 				}
 
 				if (tarefa.getPredecessor3() == 0) {
-					bd.st.setNull(11, 0);
+					Banco.st.setNull(11, 0);
 				} else {
-					bd.st.setInt(11, tarefa.getPredecessor3());
+					Banco.st.setInt(11, tarefa.getPredecessor3());
 				}
-				bd.st.setString(12, tarefa.getChecado());
-				bd.st.setString(13, DataParaoBanco(tarefa.getDataInicio()));
-				bd.st.setString(14, DataParaoBanco(tarefa.getDataReal()));
-				bd.st.setString(15, DataParaoBanco(tarefa.getDataFim()));
-				bd.st.setString(16, tarefa.getPendentePor());
-				bd.st.setString(17, tarefa.getStatusPendencia());
-				bd.st.setString(18, tarefa.getHistorico());
-				bd.st.setString(19, tarefa.getResponsavel());
-				bd.st.setString(20, tarefa.getAutoridade());
-				bd.st.setString(21, "");// Departamento correto
-				bd.st.setString(22, tarefa.getProcesso());/// Processo relacionado
-				bd.st.setString(23, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "Etapa"));
-				bd.st.setString(24, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "SubEtapa"));
-				bd.st.setInt(25, sessao.getId());
-				bd.st.setString(26, tarefa.getExecutor1());
-				bd.st.setInt(27, tarefa.getPorcento1());
-				bd.st.setString(28, tarefa.getExecutor2());
-				bd.st.setInt(29, tarefa.getPorcento2());
-				bd.st.setString(30, tarefa.getExecutor3());
-				bd.st.setInt(31, tarefa.getPorcento3());
-				bd.st.setString(32, tarefa.getExecutor4());
-				bd.st.setInt(33, tarefa.getPorcento4());
-				bd.st.setString(34, tarefa.getExecutor5());
-				bd.st.setInt(35, tarefa.getPorcento5());
-				bd.st.setString(36, tarefa.getExecutor6());
-				bd.st.setInt(37, tarefa.getPorcento6());
-				bd.st.setString(38, tarefa.getExecutor7());
-				bd.st.setInt(39, tarefa.getPorcento7());
-				bd.st.setString(40, tarefa.getExecutor8());
-				bd.st.setInt(41, tarefa.getPorcento8());
-				bd.st.setString(42, tarefa.getExecutor9());
-				bd.st.setInt(43, tarefa.getPorcento9());
-				bd.st.setString(44, tarefa.getExecutor10());
-				bd.st.setInt(45, tarefa.getPorcento10());
-				bd.st.setInt(46, tarefa.getIDTarefa());
+				Banco.st.setString(12, tarefa.getChecado());
+				Banco.st.setString(13, DataParaoBanco(tarefa.getDataInicio()));
+				Banco.st.setString(14, DataParaoBanco(tarefa.getDataReal()));
+				Banco.st.setString(15, DataParaoBanco(tarefa.getDataFim()));
+				Banco.st.setString(16, tarefa.getPendentePor());
+				Banco.st.setString(17, tarefa.getStatusPendencia());
+				Banco.st.setString(18, tarefa.getHistorico());
+				Banco.st.setString(19, tarefa.getResponsavel());
+				Banco.st.setString(20, tarefa.getAutoridade());
+				Banco.st.setString(21, "");// Departamento correto
+				Banco.st.setString(22, tarefa.getProcesso());/// Processo relacionado
+				Banco.st.setString(23, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "Etapa"));
+				Banco.st.setString(24, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "SubEtapa"));
+				Banco.st.setInt(25, sessao.getId());
+				Banco.st.setString(26, tarefa.getExecutor1());
+				Banco.st.setInt(27, tarefa.getPorcento1());
+				Banco.st.setString(28, tarefa.getExecutor2());
+				Banco.st.setInt(29, tarefa.getPorcento2());
+				Banco.st.setString(30, tarefa.getExecutor3());
+				Banco.st.setInt(31, tarefa.getPorcento3());
+				Banco.st.setString(32, tarefa.getExecutor4());
+				Banco.st.setInt(33, tarefa.getPorcento4());
+				Banco.st.setString(34, tarefa.getExecutor5());
+				Banco.st.setInt(35, tarefa.getPorcento5());
+				Banco.st.setString(36, tarefa.getExecutor6());
+				Banco.st.setInt(37, tarefa.getPorcento6());
+				Banco.st.setString(38, tarefa.getExecutor7());
+				Banco.st.setInt(39, tarefa.getPorcento7());
+				Banco.st.setString(40, tarefa.getExecutor8());
+				Banco.st.setInt(41, tarefa.getPorcento8());
+				Banco.st.setString(42, tarefa.getExecutor9());
+				Banco.st.setInt(43, tarefa.getPorcento9());
+				Banco.st.setString(44, tarefa.getExecutor10());
+				Banco.st.setInt(45, tarefa.getPorcento10());
+				Banco.st.setInt(46, tarefa.getIDTarefa());
 
-				int ok = bd.st.executeUpdate();
+				int ok = Banco.st.executeUpdate();
 				if (ok == 2) {
 					return tarefa.getDescricao() + " - (" + tarefa.getIDTarefa() + ") | Atualizada com sucesso"; 
 				} else {
