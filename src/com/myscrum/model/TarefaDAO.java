@@ -367,121 +367,102 @@ public class TarefaDAO extends Tarefa {
 
 	public String atualizar(Tarefa tarefa, boolean importar) {
 		
-		String sql = "UPDATE tarefa \n\r" 
-				+ "INNER JOIN executor ON tarefa.id_tarefa = executor.id_tarefa \n\r"
-				+ "SET \n\r "
-				+ "tarefa.id_centro_custo = (SELECT centro_custo.id_centro_custo FROM centro_custo WHERE centro_custo.centrocusto = " + tarefa.getCentroCusto() + " ), \n\r"
-				+ "tarefa.id_tamanho = (SELECT tamanho.id_tamanho FROM tamanho WHERE tamanho.descricao = " + tarefa.getTamanho() + " ),"
-				+ "tarefa.id_departamento = (SELECT departamento.id_departamento FROM departamento WHERE departamento.departamento = " + tarefa.getDepartamento() + "),"
-				+ "tarefa.descri = " + tarefa.getDescricao() + ","
-				+ "tarefa.prioridade= " + tarefa.getPrioridade() + "," 
-				+ "tarefa.stat= " + tarefa.getStatus() + "," 
-				+ "tarefa.porcentagem= " + tarefa.getPorcentagem() + ","
-				+ "tarefa.prazo= " + tarefa.getPrazo() + ","
-				+ "tarefa.predecessor_1=?, " 
-				+ "tarefa.predecessor_2=?, "
-				+ "tarefa.predecessor_3=?, "
-				+ "tarefa.checado=?, " 
-				+ "tarefa.data_ini=?, "
-				+ "tarefa.data_real=?, "
-				+ "tarefa.data_fim=?, " 
-				+ "tarefa.pendente_por=?," 
-				+ "tarefa.status_pendencia=?,"
-				+ "tarefa.historico=?," 
-				+ "tarefa.responsavel=?,"
-				+ "tarefa.autoridade=?," 
-				+ "tarefa.dpto_correto=?,"
-				+ "tarefa.processo_relacionado = (SELECT processos.id_processo FROM processos WHERE processos.processo = ?),"
-				+ "tarefa.etapa = ?," 
-				+ "tarefa.subetapa = ?," 
-				+ "tarefa.id_update=?," 
-				+ "executor.executor1=?,"
-				+ "executor.porcento1=?,"
-				+ "executor.executor2=?,"
-				+ "executor.porcento2=?,"
-				+ "executor.executor3=?,"
-				+ "executor.porcento3=?,"
-				+ "executor.executor4=?,"
-				+ "executor.porcento4=?,"
-				+ "executor.executor5=?,"
-				+ "executor.porcento5=?," 
-				+ "executor.executor6=?,"
-				+ "executor.porcento6=?," 
-				+ "executor.executor7=?,"
-				+ "executor.porcento7=?,"
-				+ "executor.executor8=?," 
-				+ "executor.porcento8=?," 
-				+ "executor.executor9=?,"
-				+ "executor.porcento9=?," 
-				+ "executor.executor10=?,"
-				+ "executor.porcento10=? \r\n"
-				+ "WHERE executor.id_tarefa=?";
+		
 		if (Banco.conexao()) {
 			try {
-				Banco.st = Banco.con.prepareStatement(sql);
-
-				JOptionPane.showMessageDialog(null, sql);
+					
+				String sql = "UPDATE tarefa \n\r" 
+						+ "INNER JOIN executor ON tarefa.id_tarefa = executor.id_tarefa \n\r"
+						+ "SET \n\r "
+						+ "tarefa.id_centro_custo = (SELECT centro_custo.id_centro_custo FROM centro_custo WHERE centro_custo.centrocusto = '" + tarefa.getCentroCusto() + "'), "
+						+ "tarefa.id_tamanho = (SELECT tamanho.id_tamanho FROM tamanho WHERE tamanho.descricao = '" + tarefa.getTamanho() + "'), "
+						+ "tarefa.id_departamento = (SELECT departamento.id_departamento FROM departamento WHERE departamento.departamento = '" + tarefa.getDepartamento() + "'), "
+						+ "tarefa.descri= '" + tarefa.getDescricao() + "', "
+						+ "tarefa.prioridade= '" + tarefa.getPrioridade() + "', " 
+						+ "tarefa.stat= '" + tarefa.getStatus() + "', " 
+						+ "tarefa.porcentagem= '" + tarefa.getPorcentagem() + "', "
+						+ "tarefa.prazo= '" + tarefa.getPrazo() + "', ";
 				
-				Banco.st.setString(1, tarefa.getCentroCusto());
-				Banco.st.setString(2, tarefa.getTamanho());
-				Banco.st.setString(3, tarefa.getDepartamento());
-				Banco.st.setString(4, tarefa.getDescricao());
-				Banco.st.setInt(5, tarefa.getPrioridade());
-				Banco.st.setString(6, tarefa.getStatus());
-				Banco.st.setInt(7, tarefa.getPorcentagem());
-				Banco.st.setInt(8, tarefa.getPrazo());
-				if (tarefa.getPredecessor1() == 0) {
-					Banco.st.setNull(9, 1);
-				} else {
-					Banco.st.setInt(9, tarefa.getPredecessor1());
-				}
-				if (tarefa.getPredecessor2() == 0) {
-					Banco.st.setNull(10, 0);
-				} else {
-					Banco.st.setInt(10, tarefa.getPredecessor2());
-				}
-
-				if (tarefa.getPredecessor3() == 0) {
-					Banco.st.setNull(11, 0);
-				} else {
-					Banco.st.setInt(11, tarefa.getPredecessor3());
-				}
-				Banco.st.setString(12, tarefa.getChecado());
-				Banco.st.setString(13, DataParaoBanco(tarefa.getDataInicio()));
-				Banco.st.setString(14, DataParaoBanco(tarefa.getDataReal()));
-				Banco.st.setString(15, DataParaoBanco(tarefa.getDataFim()));
-				Banco.st.setString(16, tarefa.getPendentePor());
-				Banco.st.setString(17, tarefa.getStatusPendencia());
-				Banco.st.setString(18, tarefa.getHistorico());
-				Banco.st.setString(19, tarefa.getResponsavel());
-				Banco.st.setString(20, tarefa.getAutoridade());
-				Banco.st.setString(21, "");// Departamento correto
-				Banco.st.setString(22, tarefa.getProcesso());/// Processo relacionado
-				Banco.st.setString(23, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "Etapa"));
-				Banco.st.setString(24, BuscaIDEtapaESubEtapa(tarefa.getCentroCusto(), tarefa.getEtapa(), tarefa.getSubEtapa(), "SubEtapa"));
-				Banco.st.setInt(25, sessao.getId());
-				Banco.st.setString(26, tarefa.getExecutor1());
-				Banco.st.setInt(27, tarefa.getPorcento1());
-				Banco.st.setString(28, tarefa.getExecutor2());
-				Banco.st.setInt(29, tarefa.getPorcento2());
-				Banco.st.setString(30, tarefa.getExecutor3());
-				Banco.st.setInt(31, tarefa.getPorcento3());
-				Banco.st.setString(32, tarefa.getExecutor4());
-				Banco.st.setInt(33, tarefa.getPorcento4());
-				Banco.st.setString(34, tarefa.getExecutor5());
-				Banco.st.setInt(35, tarefa.getPorcento5());
-				Banco.st.setString(36, tarefa.getExecutor6());
-				Banco.st.setInt(37, tarefa.getPorcento6());
-				Banco.st.setString(38, tarefa.getExecutor7());
-				Banco.st.setInt(39, tarefa.getPorcento7());
-				Banco.st.setString(40, tarefa.getExecutor8());
-				Banco.st.setInt(41, tarefa.getPorcento8());
-				Banco.st.setString(42, tarefa.getExecutor9());
-				Banco.st.setInt(43, tarefa.getPorcento9());
-				Banco.st.setString(44, tarefa.getExecutor10());
-				Banco.st.setInt(45, tarefa.getPorcento10());
-				Banco.st.setInt(46, tarefa.getIDTarefa());
-
+						if (tarefa.getPredecessor1() != 0) {
+							sql += "tarefa.predecessor_1= '" + tarefa.getPredecessor1() + "', ";
+						}
+						
+						if (tarefa.getPredecessor2() != 0) {
+							sql += "tarefa.predecessor_2= '" + tarefa.getPredecessor2() + "', ";
+						}
+						
+						if (tarefa.getPredecessor3() != 0) {
+							sql += "tarefa.predecessor_3= '" + tarefa.getPredecessor3() + "', ";
+						}
+						
+						sql +=  "tarefa.checado= '" + tarefa.getChecado() + "', " 
+						+ "tarefa.data_ini= '" + DataParaoBanco(tarefa.getDataInicio()) + "', "
+						+ "tarefa.data_real= '" + DataParaoBanco(tarefa.getDataReal()) + "', "
+						+ "tarefa.data_fim= '" + DataParaoBanco(tarefa.getDataFim()) + "', " 
+						+ "tarefa.pendente_por= '" + tarefa.getPendentePor() + "'," 
+						+ "tarefa.status_pendencia= '" + tarefa.getStatusPendencia() + "',"
+						+ "tarefa.historico= '" + tarefa.getHistorico() + "'," 
+						+ "tarefa.responsavel= '" + tarefa.getResponsavel() + "',"
+						+ "tarefa.autoridade= '" + tarefa.getAutoridade() + "'," 
+					//	+ "tarefa.dpto_correto= " + "" + ","
+						+ "tarefa.processo_relacionado = (SELECT processos.id_processo FROM processos WHERE processos.processo = '" + tarefa.getProcesso() + "'),"
+						+ "tarefa.etapa= (SELECT id_etapa FROM etapas INNER JOIN centro_custo ON centro_custo.id_centro_custo = etapas.id_cc WHERE etapa = '" + tarefa.getEtapa() + "' AND centrocusto = '" + tarefa.getCentroCusto() + "'), " 
+						+ "tarefa.subetapa= (SELECT id_sub_etapas FROM sub_etapas INNER JOIN etapas ON etapas.id_etapa = sub_etapas.id_etapa INNER JOIN centro_custo ON centro_custo.id_centro_custo = etapas.id_cc WHERE sub_etapa = '" + tarefa.getSubEtapa() + "' AND etapa = '" + tarefa.getEtapa() + "' AND centrocusto = '" + tarefa.getCentroCusto() + "'), " 
+						+ "tarefa.id_update= " + sessao.getId() + "," 
+						+ "executor.executor1= '" + tarefa.getExecutor1() + "',"
+						+ "executor.porcento1= " + tarefa.getPorcento1() + " \n\r";
+						
+						if(tarefa.getExecutor2() != "" && tarefa.getExecutor2() != null) {
+							sql += ", executor.executor2= '" + tarefa.getExecutor2() + "',"
+								+ "executor.porcento2= " + tarefa.getPorcento2() + " \n\r ";
+						}
+						
+						if(tarefa.getExecutor3() != "" && tarefa.getExecutor3() != null) {
+							sql += ", executor.executor3= '" + tarefa.getExecutor3() + "',"
+								+ "executor.porcento3= " + tarefa.getPorcento3() + " \n\r ";
+						}
+						
+						if(tarefa.getExecutor4() != "" && tarefa.getExecutor4() != null) {
+							sql += ", executor.executor4= '" + tarefa.getExecutor4() + "',"
+								+ "executor.porcento4= " + tarefa.getPorcento4() + " \n\r ";
+						}
+						
+						if(tarefa.getExecutor5() != "" && tarefa.getExecutor5() != null) {
+							sql += ", executor.executor5= '" + tarefa.getExecutor5() + "',"
+								+ "executor.porcento5= " + tarefa.getPorcento5() + " \n\r ";
+						}
+						
+						if(tarefa.getExecutor6() != "" && tarefa.getExecutor6() != null) {
+							sql += ", executor.executor6= '" + tarefa.getExecutor6() + "',"
+								+ "executor.porcento6= " + tarefa.getPorcento6() + " \n\r ";
+						}
+						
+						if(tarefa.getExecutor7() != "" && tarefa.getExecutor7() != null) {
+							sql += ", executor.executor7= '" + tarefa.getExecutor7() + "',"
+								+ "executor.porcento7= " + tarefa.getPorcento7() + " \n\r ";
+						}
+						
+						if(tarefa.getExecutor8() != "" && tarefa.getExecutor8() != null) {
+							sql += ", executor.executor8= '" + tarefa.getExecutor8() + "',"
+								+ "executor.porcento8= " + tarefa.getPorcento8() + " \n\r ";
+						}
+						
+						if(tarefa.getExecutor9() != "" && tarefa.getExecutor9() != null) {
+							sql += ", executor.executor9= '" + tarefa.getExecutor9() + "',"
+								+ "executor.porcento9= " + tarefa.getPorcento9() + " \n\r ";
+						}
+						
+						if(tarefa.getExecutor10() != "" && tarefa.getExecutor10() != null) {
+							sql += ", executor.executor10= '" + tarefa.getExecutor10() + "',"
+								+ "executor.porcento10= " + tarefa.getPorcento10() + " \n\r ";
+						}
+						
+						sql += "WHERE executor.id_tarefa= '" + tarefa.getIDTarefa() + "'";
+				
+					
+						
+				Banco.st = Banco.con.prepareStatement(sql);
+				System.out.println(sql);
 				int ok = Banco.st.executeUpdate();
 				if (ok == 2) {
 					return tarefa.getDescricao() + " - (" + tarefa.getIDTarefa() + ") | Atualizada com sucesso"; 
@@ -567,15 +548,20 @@ public class TarefaDAO extends Tarefa {
 
 		if (etapaOuSubetapa.equals("Etapa")) {
 
-			sql = "SELECT id_etapa FROM etapas\r\n" + "INNER JOIN centro_custo\r\n"
-					+ "ON centro_custo.id_centro_custo = etapas.id_cc\r\n" + "WHERE etapa = '" + etapa
+			sql = "SELECT id_etapa FROM etapas\r\n" 
+					+ "INNER JOIN centro_custo\r\n"
+					+ "ON centro_custo.id_centro_custo = etapas.id_cc\r\n" 
+					+ "WHERE etapa = '" + etapa
 					+ "' AND centrocusto = '" + cc + "'";
 
 		} else if (etapaOuSubetapa.equals("SubEtapa")) {
 
-			sql = "SELECT id_sub_etapas FROM sub_etapas\r\n" + "INNER JOIN etapas\r\n"
-					+ "ON etapas.id_etapa = sub_etapas.id_etapa\r\n" + "INNER JOIN centro_custo\r\n"
-					+ "ON centro_custo.id_centro_custo = etapas.id_cc\r\n" + "WHERE sub_etapa = '" + subEtapa
+			sql = "SELECT id_sub_etapas FROM sub_etapas\r\n" 
+					+ "INNER JOIN etapas\r\n"
+					+ "ON etapas.id_etapa = sub_etapas.id_etapa\r\n" 
+					+ "INNER JOIN centro_custo\r\n"
+					+ "ON centro_custo.id_centro_custo = etapas.id_cc\r\n" 
+					+ "WHERE sub_etapa = '" + subEtapa
 					+ "' AND etapa = '" + etapa + "' AND centrocusto = '" + cc + "'";
 		}
 
