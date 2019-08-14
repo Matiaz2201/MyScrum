@@ -181,7 +181,7 @@ public class TarefaDAO extends Tarefa {
 				//Colentando o ID gerado pela operação de INSERT da tarefa
 				ResultSet result = Banco.st.getGeneratedKeys();
 				result.next();
-				ID_TAREFA = result.getInt(0);
+				ID_TAREFA = result.getInt(1);
 			
 				if (ok == 1) {
 					cadastrarExe(tarefa);
@@ -201,21 +201,69 @@ public class TarefaDAO extends Tarefa {
 		boolean executor = false;
 
 		String sql = "INSERT INTO executor (executor1,porcento1,executor2,porcento2,executor3,porcento3,executor4,porcento4,executor5,porcento5,executor6,porcento6,executor7,porcento7,executor8,porcento8,executor9,porcento9,executor10,porcento10,id_tarefa)"
-				+ "VALUES "
-				+ "('"+ tarefa.getExecutor1() +"'," + tarefa.getPorcento1() + ","
-				+ "'"+ tarefa.getExecutor2() +"'," + tarefa.getPorcento2() + ","
-				+ "'"+ tarefa.getExecutor3() +"'," + tarefa.getPorcento3() + ","
-				+ "'"+ tarefa.getExecutor4() +"'," + tarefa.getPorcento4() + ","
-				+ "'"+ tarefa.getExecutor5() +"'," + tarefa.getPorcento5() + ","
-				+ "'"+ tarefa.getExecutor6() +"'," + tarefa.getPorcento6() + ","
-				+ "'"+ tarefa.getExecutor7() +"'," + tarefa.getPorcento7() + ","
-				+ "'"+ tarefa.getExecutor8() +"'," + tarefa.getPorcento8() + ","
-				+ "'"+ tarefa.getExecutor9() +"'," + tarefa.getPorcento9() + ","
-				+ "'"+ tarefa.getExecutor10() +"'," + tarefa.getPorcento10() + ")";
+				+ "VALUES "				
+				+ "('"+ tarefa.getExecutor1() +"'," + tarefa.getPorcento1() + ",";
+		
+				if(tarefa.getExecutor2() == null) {
+					sql += "NULL, 0,";
+				} else {
+					sql +=  "'"+ tarefa.getExecutor2() +"'," + tarefa.getPorcento2() + ",";
+				}
+				
+				if(tarefa.getExecutor3() == null) {
+					sql += "NULL, 0,";
+				} else {
+					sql +=  "'"+ tarefa.getExecutor3() +"'," + tarefa.getPorcento3() + ",";
+				}
+				
+				if(tarefa.getExecutor4() == null) {
+					sql += "NULL, 0,";
+				} else {
+					sql +=  "'"+ tarefa.getExecutor4() +"'," + tarefa.getPorcento4() + ",";
+				}
+				
+				if(tarefa.getExecutor5() == null) {
+					sql += "NULL, 0,";
+				} else {
+					sql +=  "'"+ tarefa.getExecutor5() +"'," + tarefa.getPorcento5() + ",";
+				}
+				
+				if(tarefa.getExecutor6() == null) {
+					sql += "NULL, 0,";
+				} else {
+					sql +=  "'"+ tarefa.getExecutor6() +"'," + tarefa.getPorcento6() + ",";
+				}
+				
+				if(tarefa.getExecutor7() == null) {
+					sql += "NULL, 0,";
+				} else {
+					sql +=  "'"+ tarefa.getExecutor7() +"'," + tarefa.getPorcento7() + ",";
+				}
+				
+				if(tarefa.getExecutor8() == null) {
+					sql += "NULL, 0,";
+				} else {
+					sql +=  "'"+ tarefa.getExecutor8() +"'," + tarefa.getPorcento8() + ",";
+				}
+				
+				if(tarefa.getExecutor9() == null) {
+					sql += "NULL, 0,";
+				} else {
+					sql +=  "'"+ tarefa.getExecutor9() +"'," + tarefa.getPorcento9() + ",";
+				}
+				
+				if(tarefa.getExecutor10() == null) {
+					sql += "NULL, 0,";
+				} else {
+					sql +=  "'"+ tarefa.getExecutor10() +"'," + tarefa.getPorcento10() + ",";
+				}
+				
+				sql += ID_TAREFA + ")";
+				
 				
 		if (Banco.conexao()) {
 			try {
-				bd.st = bd.con.prepareStatement(sql);
+				Banco.st = Banco.con.prepareStatement(sql);
 
 				if(Banco.st.executeUpdate() == 1) {
 					executor = true;
@@ -229,8 +277,7 @@ public class TarefaDAO extends Tarefa {
 		}
 		return executor;
 	}
-	
-	
+		
 	public void atualizar(Tarefa tarefa) {
 		bd = new BD();
 		String sql = "UPDATE tarefa \n\r" + "INNER JOIN executor ON tarefa.id_tarefa = executor.id_tarefa \n\r"
@@ -506,7 +553,6 @@ public class TarefaDAO extends Tarefa {
 		return data_correta;
 	}
 
-	
 	public String BuscaIDEtapaESubEtapa(String cc, String etapa, String subEtapa, String etapaOuSubetapa) {
 		String id = null;
 		String sql = "";
