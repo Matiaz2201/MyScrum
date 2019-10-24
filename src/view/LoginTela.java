@@ -255,9 +255,9 @@ public class LoginTela extends JFrame {
 		String ppaswd = senhaText.getText(); // Alocando variavel senha
 
 		String sql = "SELECT id, username, password, first_name, last_name, is_staff, email, \n"
-				+ "(SELECT departamento.departamento FROM departamento WHERE departamento.id_departamento=pessoa.id_departamento) AS DPTO, \n "
-				+ "(SELECT centro_custo.centrocusto FROM centro_custo WHERE centro_custo.id_centro_custo=pessoa.id_centrocusto) AS CC \n "
-				+ "  FROM User WHERE username='" + puname;
+				+ "(SELECT departamento.departamento FROM departamento WHERE departamento.id_departamento=MyScrumAPP_user.id_departamento) AS DPTO, \n "
+				+ "(SELECT centro_custo.centrocusto FROM centro_custo WHERE centro_custo.id_centro_custo=MyScrumAPP_user.id_centrocusto) AS CC \n "
+				+ "  FROM MyScrumAPP_user WHERE username= '"+puname +"'";
 		try {
 			if (Banco.conexao()) {
 				Banco.st = Banco.con.prepareStatement(sql);
@@ -266,9 +266,9 @@ public class LoginTela extends JFrame {
 					if (HP.checkPassword(ppaswd, Banco.rs.getString("password"))) {// Se a senha estiver correta, guarda
 																					// os valores do usuario na sessão e
 																					// abre tela principal
-						JOptionPane.showMessageDialog(null, "Bem vindo(a) " + Banco.rs.getString(1), "My Scrum", 1);
 						Sessao sessao = Sessao.getInstance();
-						sessao.setNome(Banco.rs.getString("first_name") + Banco.rs.getString("last_name"));
+						sessao.setFirst_name(Banco.rs.getString("first_name"));
+						sessao.setLast_name(Banco.rs.getString("last_name"));
 						sessao.setFuncao(Banco.rs.getInt("is_staff"));
 						sessao.setUsuario(puname);
 						sessao.setSenha(Banco.rs.getString("password"));
@@ -276,7 +276,9 @@ public class LoginTela extends JFrame {
 						sessao.setEmail(Banco.rs.getString("email"));
 						sessao.setDpto(Banco.rs.getString("DPTO"));
 						sessao.setCC(Banco.rs.getString("CC"));
-
+						
+						JOptionPane.showMessageDialog(null, "Bem vindo(a) " + sessao.getFullname(), "My Scrum", 1);
+						
 						Controle.abrirframe("telaPrincipal");
 						dispose();// Fecha frame atual
 					}

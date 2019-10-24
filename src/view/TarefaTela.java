@@ -1077,7 +1077,7 @@ public class TarefaTela extends javax.swing.JFrame {
 
 		if (Sessao.getInstance().getFuncao() == 0) {// Se a função for apenas usuario limitamos as tarefas apenas para
 													// qual o nome dele está envolvido
-			String eu = "'" + Sessao.getInstance().getNome() + "'";
+			String eu = "'" + Sessao.getInstance().getFullname() + "'";
 
 			sql += "WHERE (tarefa.responsavel = " + eu + " OR tarefa.autoridade = " + eu + " OR tarefa.pendente_por = "
 					+ eu + " OR tarefa.checado = " + eu + " \r\n" + "OR (executor.executor1 = " + eu
@@ -1093,7 +1093,7 @@ public class TarefaTela extends javax.swing.JFrame {
 		else if (Sessao.getInstance().getFuncao() == 2) {// Se a função for lider limitamos as tarefas apenas para qual
 															// o nome dele está envolvido e qual o departamento dele
 															// aparece
-			String eu = "'" + Sessao.getInstance().getNome() + "'";
+			String eu = "'" + Sessao.getInstance().getFullname() + "'";
 			String dpto = "'" + Sessao.getInstance().getDpto() + "'";
 
 			sql += "WHERE (tarefa.responsavel = " + eu + " OR tarefa.autoridade = " + eu + " OR tarefa.pendente_por = "
@@ -1113,7 +1113,7 @@ public class TarefaTela extends javax.swing.JFrame {
 
 		else if (Sessao.getInstance().getFuncao() == 3) {// Se a função for limitamos as tarefas apenas para qual o nome
 															// dele está envolvido e qual o departamento dele aparece
-			String eu = "'" + Sessao.getInstance().getNome() + "'";
+			String eu = "'" + Sessao.getInstance().getFullname() + "'";
 			String cc = "'" + Sessao.getInstance().getCC() + "'";
 
 			sql += "WHERE (tarefa.responsavel = " + eu + " OR tarefa.autoridade = " + eu + " OR tarefa.pendente_por = "

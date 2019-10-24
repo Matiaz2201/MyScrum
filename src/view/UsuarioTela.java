@@ -64,7 +64,7 @@ public class UsuarioTela extends JFrame {
 	private JCheckBox usuarioCheckBox;
 	private JCheckBox ativoCheckBox;
 	private JCheckBox bloqueadoCheckBox;
-	private JTextField nomeText;
+	private JTextField primeiroNomeText;
 	private JPasswordField senhaText;
 	private JLabel senhaLabel;
 	private JComboBox dptoComboBox;
@@ -103,6 +103,8 @@ public class UsuarioTela extends JFrame {
 	private JPanel ccVinculoPanel;
 	private JLabel lblNewLabel;
 	private JPanel dptoVinculoPanel;
+	private JTextField utlimoNomeText;
+	private JLabel lblUltimoNome;
 
 	public UsuarioTela() {
 
@@ -127,14 +129,14 @@ public class UsuarioTela extends JFrame {
 		editarButton.addActionListener(new AdicionarUsuarioListener(this));
 		emailText = new JTextField(5);
 		emailLabel = new JLabel("Email:");
-		nomeLabel = new JLabel("Nome:");
+		nomeLabel = new JLabel("Primeiro nome:");
 		gestorCheckBox = new JCheckBox("Gestor");
 		liderCheckBox = new JCheckBox("Lider");
 		admCheckBox = new JCheckBox("ADM");
 		usuarioCheckBox = new JCheckBox("Usuário");
 		ativoCheckBox = new JCheckBox("Ativo");
 		bloqueadoCheckBox = new JCheckBox("Bloqueado");
-		nomeText = new JTextField(5);
+		primeiroNomeText = new JTextField(5);
 		senhaText = new JPasswordField();
 		senhaLabel = new JLabel("Senha:");
 		salarioText = new JTextField(5);
@@ -161,7 +163,7 @@ public class UsuarioTela extends JFrame {
 		panel.add(usuarioCheckBox);
 		panel.add(ativoCheckBox);
 		panel.add(bloqueadoCheckBox);
-		panel.add(nomeText);
+		panel.add(primeiroNomeText);
 		panel.add(senhaText);
 		panel.add(senhaLabel);
 		panel.add(salarioText);
@@ -188,10 +190,10 @@ public class UsuarioTela extends JFrame {
 		emailText.setBackground(new Color(41, 106, 158));
 		emailText.setForeground(Color.WHITE);
 		emailLabel.setBounds(5, 70, 45, 30);
-		nomeLabel.setBounds(5, 34, 45, 25);
-		nomeText.setBounds(52, 28, 200, 30);
-		nomeText.setBackground(new Color(41, 106, 158));
-		nomeText.setForeground(Color.WHITE);
+		nomeLabel.setBounds(5, 34, 75, 25);
+		primeiroNomeText.setBounds(90, 28, 162, 30);
+		primeiroNomeText.setBackground(new Color(41, 106, 158));
+		primeiroNomeText.setForeground(Color.WHITE);
 		loginLabel.setBounds(5, 111, 45, 25);
 		loginText.setBounds(52, 112, 200, 30);
 		loginText.setBackground(new Color(41, 106, 158));
@@ -204,27 +206,27 @@ public class UsuarioTela extends JFrame {
 		ativoCheckBox.setBackground(Color.WHITE);// setando cor do check
 		bloqueadoCheckBox.setBounds(585, 58, 100, 20);
 		bloqueadoCheckBox.setBackground(Color.WHITE);// setando cor do check
-		senhaText.setBounds(360, 31, 130, 30);
+		senhaText.setBounds(361, 70, 130, 30);
 		senhaText.setBackground(new Color(41, 106, 158));
 		senhaText.setForeground(Color.WHITE);
-		senhaLabel.setBounds(254, 34, 50, 25);
+		senhaLabel.setBounds(262, 70, 50, 25);
 		salarioText.setBounds(52, 148, 70, 30);
 		salarioText.setBackground(new Color(41, 106, 158));
 		salarioText.setForeground(Color.WHITE);
 		salarioLabel.setBounds(5, 156, 50, 14);
-		dptoComboBox.setBounds(360, 110, 175, 25);
+		dptoComboBox.setBounds(361, 148, 175, 25);
 		dptoComboBox.setBackground(new Color(41, 106, 158));
 		dptoComboBox.setForeground(Color.WHITE);
-		dptoLabel.setBounds(254, 110, 100, 20);
-		obsCampo.setBounds(5, 205, 247, 76);
+		dptoLabel.setBounds(262, 152, 100, 20);
+		obsCampo.setBounds(5, 206, 247, 76);
 		obsCampo.setBackground(new Color(41, 106, 158));
 		obsCampo.setForeground(Color.WHITE);
 		obsCampo.setLineWrap(true);// quebra de linha
 		obsLabel.setBounds(5, 185, 80, 25);
-		password.setBounds(360, 70, 130, 30);
+		password.setBounds(361, 112, 130, 30);
 		password.setBackground(new Color(41, 106, 158));
 		password.setForeground(Color.WHITE);
-		passwordLabel.setBounds(254, 73, 108, 25);
+		passwordLabel.setBounds(262, 111, 108, 25);
 
 		// Setando Icone do Frame
 		java.net.URL url = this.getClass().getResource("/com/myscrum/assets/setIcon1.png");
@@ -263,13 +265,13 @@ public class UsuarioTela extends JFrame {
 		panel.add(cHorarioLabel);
 
 		CentroDeCustoLabel = new JLabel("Centro de Custo:");
-		CentroDeCustoLabel.setBounds(254, 148, 100, 20);
+		CentroDeCustoLabel.setBounds(262, 185, 100, 20);
 		panel.add(CentroDeCustoLabel);
 
 		cc_comboBox = new JComboBox(CcComboBoxItems);
 		cc_comboBox.setForeground(Color.WHITE);
 		cc_comboBox.setBackground(new Color(41, 106, 158));
-		cc_comboBox.setBounds(360, 148, 175, 25);
+		cc_comboBox.setBounds(361, 185, 175, 25);
 		panel.add(cc_comboBox);
 
 		liderCheckBox.setBackground(Color.WHITE);
@@ -319,6 +321,16 @@ public class UsuarioTela extends JFrame {
 		quadroVinculoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		quadroVinculoLabel.setBounds(5, 318, 683, 237);
 		panel.add(quadroVinculoLabel);
+		
+		utlimoNomeText = new JTextField(5);
+		utlimoNomeText.setForeground(Color.WHITE);
+		utlimoNomeText.setBackground(new Color(41, 106, 158));
+		utlimoNomeText.setBounds(361, 28, 162, 30);
+		panel.add(utlimoNomeText);
+		
+		lblUltimoNome = new JLabel("Ultimo nome:");
+		lblUltimoNome.setBounds(262, 34, 75, 25);
+		panel.add(lblUltimoNome);
 
 		salarioText.addFocusListener(new FocusAdapter() {
 			public void focusLost(FocusEvent evt) {
@@ -353,7 +365,7 @@ public class UsuarioTela extends JFrame {
 
 				// verifica os campos se estão preenchidos
 				if (cc_comboBox.getSelectedIndex() == 0 || dptoComboBox.getSelectedIndex() == 0
-						|| nomeText.getText().equals("") || emailText.getText().equals("")
+						|| primeiroNomeText.getText().equals("") || emailText.getText().equals("")
 						|| senhaText.getText().equals("") || loginText.getText().equals("")
 						|| password.getText().equals("") || salarioText.getText().equals("")
 						|| cHorarioText.getText().equals("")
@@ -366,10 +378,11 @@ public class UsuarioTela extends JFrame {
 
 					if (password.getText().equals(senhaText.getText())) {
 						escolha = JOptionPane.showConfirmDialog(null,
-								"Deseja realmente cadastrar " + nomeText.getText() + "?", "Selecione uma opção",
+								"Deseja realmente cadastrar " + primeiroNomeText.getText() + "?", "Selecione uma opção",
 								JOptionPane.YES_NO_OPTION);
 						if (escolha == JOptionPane.YES_OPTION) {
-							variavel.setNome(nomeText.getText());
+							variavel.setFirst_name(primeiroNomeText.getText());
+							variavel.setLast_name(utlimoNomeText.getText());
 							variavel.setEmail(emailText.getText());
 							variavel.setSenha(senhaText.getText());
 							variavel.setLogin(loginText.getText());
@@ -425,18 +438,19 @@ public class UsuarioTela extends JFrame {
 							"Atualização usuario", 0);
 				} else {
 					if (cc_comboBox.getSelectedIndex() == 0 || dptoComboBox.getSelectedIndex() == 0
-							|| nomeText.getText().equals("") || emailText.getText().equals("")
+							|| primeiroNomeText.getText().equals("") || emailText.getText().equals("")
 							|| loginText.getText().equals("")) {
 						JOptionPane.showMessageDialog(null, "Por favor preencha ou selecione todos os dados", "ERRO",
 								0);
 					} else {
 						if (password.getText().equals(senhaText.getText())) {
 							escolha = JOptionPane.showConfirmDialog(null,
-									"Deseja realmente atualizar " + nomeText.getText() + "?", "Selecione uma opção",
+									"Deseja realmente atualizar " + primeiroNomeText.getText() + "?", "Selecione uma opção",
 									JOptionPane.YES_NO_OPTION);
 							if (escolha == JOptionPane.YES_OPTION) {
 								variavel.setID(Integer.parseInt(idLabel1.getText()));
-								variavel.setNome(nomeText.getText());
+								variavel.setFirst_name(primeiroNomeText.getText());
+								variavel.setLast_name(utlimoNomeText.getText());
 								variavel.setEmail(emailText.getText());
 								variavel.setSenha(senhaText.getText());
 								variavel.setLogin(loginText.getText());
@@ -514,7 +528,8 @@ public class UsuarioTela extends JFrame {
 	// METODO CARREGAR DADOS
 	public void carregarDados() {
 		idLabel1.setText("" + variavel.getID());
-		nomeText.setText(variavel.getNome());
+		primeiroNomeText.setText(variavel.getFirst_name());
+		utlimoNomeText.setText(variavel.getLast_name());
 		emailText.setText(variavel.getEmail());
 		loginText.setText(variavel.getLogin());
 		dptoComboBox.setSelectedItem(variavel.getDpto());
@@ -571,7 +586,7 @@ public class UsuarioTela extends JFrame {
 
 	// METODO LIMPAR VARIAVEIS
 	public void limpar() {
-		nomeText.setText("");
+		primeiroNomeText.setText("");
 		emailText.setText("");
 		loginText.setText("");
 		senhaText.setText("");

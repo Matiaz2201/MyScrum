@@ -2,7 +2,8 @@ package com.myscrum.model;
 
 public class Sessao {
 	private static Sessao instance = null;
-	private static String nome;
+	private static String first_name;
+	private static String last_name;
 	private static String usuario;
 	private static String senha;
 	private static int funcao; // 0 = usuario, 1= administraor, 2= lider, 3=gestor de obra;
@@ -42,12 +43,20 @@ public class Sessao {
 		
 	}
 	
-	public void setNome(String nome) {
-		Sessao.nome = nome;
+	public String getFirst_name() {
+		return first_name;
 	}
-	
-	public String getNome() {
-	    return nome;
+
+	public void setFirst_name(String first_name) {
+		Sessao.first_name = first_name;
+	}
+
+	public String getLast_name() {
+		return last_name;
+	}
+
+	public void setLast_name(String last_name) {
+		Sessao.last_name = last_name;
 	}
 
 	public void setUsuario(String usuario) {   // armazenamento de variaveis globais
@@ -80,6 +89,10 @@ public class Sessao {
 	
 	public int getId() {
 		return id;
+	}
+	
+	public String getFullname() {
+		return getFirst_name() + " " + getLast_name();
 	}
 	
 	public static Sessao getInstance() {
