@@ -117,28 +117,28 @@ public ListUsuarioTela(JFrame formularioPai) {
       setVisible(true);//habilita visualização do frame
       
       //carregando o select com o select padrão sem filtro
-      sql = "SELECT MyScrumAPP_user.id, MyScrumAPP_user.first_name, MyScrumAPP_user.last_name, MyScrumAPP_user.email, MyScrumAPP_user.username, MyScrumAPP_user.salario, MyScrumAPP_user.carga_horaria, \r\n"
-				+"CASE (MyScrumAPP_user.is_active) \r\n"
-				+"WHEN 1 THEN 'Sim' \r\n"
-				+"WHEN 0 THEN 'Não' \r\n"
-					+"ELSE 'CampoVazio' \r\n"
-					+"END AS ativo, \r\n"
-					+"CASE (MyScrumAPP_user.is_staff) \r\n"
-					+"WHEN 0 THEN 'Usuario' \r\n"
-					+"WHEN 1 THEN 'Administrador' \r\n"
-					+"WHEN 2 THEN 'Lider' \r\n"
-					+"WHEN 3 THEN 'Gestor' \r\n"
-					+"ELSE 'Campo Vazio' \r\n"
-					+"END AS adm, \r\n "
-				   +"departamento.departamento, \r\n"
-					+"centro_custo.centrocusto, \r\n"
-					+"MyScrumAPP_user.observacao \r\n"
-				+"FROM scrum.MyScrumAPP_user \r\n"
-					+"INNER JOIN departamento \r\n"
-				    +"ON MyScrumAPP_user.id_departamento=departamento.id_departamento \r\n"
-					+"INNER JOIN centro_custo \r\n"
-				    +"ON MyScrumAPP_user.id_centrocusto = centro_custo.id_centro_custo \r\n"
-				    +"ORDER BY MyScrumAPP_user.first_name ASC";
+      sql = "SELECT pessoa.id_pessoa,pessoa.nome, pessoa.email, pessoa.login, pessoa.salario, pessoa.carga_horaria, \r\n"
+			+"CASE (pessoa.ativo) \r\n"
+			+"WHEN 1 THEN 'Sim' \r\n"
+			+"WHEN 0 THEN 'Não' \r\n"
+				+"ELSE 'CampoVazio' \r\n"
+				+"END AS ativo, \r\n"
+			+"CASE (pessoa.adm) \r\n"
+			+"WHEN 0 THEN 'Usuario' \r\n"
+			+"WHEN 1 THEN 'Administrador' \r\n"
+			+"WHEN 2 THEN 'Lider' \r\n"
+			+"WHEN 3 THEN 'Gestor' \r\n"
+				+"ELSE 'Campo Vazio' \r\n"
+				+"END AS adm, \r\n "
+			   +"departamento.departamento, \r\n"
+				+"centro_custo.centrocusto, \r\n"
+				+"pessoa.observacao \r\n"
+			+"FROM scrum.pessoa \r\n"
+				+"INNER JOIN departamento \r\n"
+			    +"ON pessoa.id_departamento=departamento.id_departamento \r\n"
+				+"INNER JOIN centro_custo \r\n"
+			    +"ON pessoa.id_centrocusto = centro_custo.id_centro_custo \r\n"
+			   +"ORDER BY pessoa.nome ASC";
      
       listar(sql);
 
@@ -168,13 +168,13 @@ public ListUsuarioTela(JFrame formularioPai) {
       atualizarButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		  if(nomeCheckBox.isSelected() == true) {
-			  sql = "SELECT MyScrumAPP_user.id, MyScrumAPP_user.first_name, MyScrumAPP_user.last_name, MyScrumAPP_user.email, MyScrumAPP_user.username, MyScrumAPP_user.salario, MyScrumAPP_user.carga_horaria, \r\n"
-						+"CASE (MyScrumAPP_user.is_active) \r\n"
+			  sql = "SELECT pessoa.id_pessoa,pessoa.nome, pessoa.email, pessoa.login, pessoa.salario, pessoa.carga_horaria, \r\n"
+						+"CASE (pessoa.ativo) \r\n"
 						+"WHEN 1 THEN 'Sim' \r\n"
 						+"WHEN 0 THEN 'Não' \r\n"
 							+"ELSE 'CampoVazio' \r\n"
 							+"END AS ativo, \r\n"
-							+"CASE (MyScrumAPP_user.is_staff) \r\n"
+							+"CASE (pessoa.adm) \r\n"
 							+"WHEN 0 THEN 'Usuario' \r\n"
 							+"WHEN 1 THEN 'Administrador' \r\n"
 							+"WHEN 2 THEN 'Lider' \r\n"
@@ -183,23 +183,23 @@ public ListUsuarioTela(JFrame formularioPai) {
 							+"END AS adm, \r\n "
 						   +"departamento.departamento, \r\n"
 							+"centro_custo.centrocusto, \r\n"
-							+"MyScrumAPP_user.observacao \r\n"
-						+"FROM scrum.MyScrumAPP_user \r\n"
+							+"pessoa.observacao \r\n"
+						+"FROM scrum.pessoa \r\n"
 							+"INNER JOIN departamento \r\n"
-						    +"ON MyScrumAPP_user.id_departamento=departamento.id_departamento \r\n"
+						    +"ON pessoa.id_departamento=departamento.id_departamento \r\n"
 							+"INNER JOIN centro_custo \r\n"
-						    +"ON MyScrumAPP_user.id_centrocusto = centro_custo.id_centro_custo \r\n"
-						   +"WHERE first_name LIKE '%"+nomeText.getText()+"%' OR last_name LIKE '%\"+nomeText.getText()+\"%'\""
-						   +"ORDER BY MyScrumAPP_user.first_name ASC";
+						    +"ON pessoa.id_centrocusto = centro_custo.id_centro_custo \r\n"
+						   +"WHERE nome LIKE '%"+nomeText.getText()+"%'"
+						   +"ORDER BY pessoa.nome ASC";
 		  			
 		  		}else if(emailCheckBox.isSelected() == true) {
-		  			sql = "SELECT MyScrumAPP_user.id, MyScrumAPP_user.first_name, MyScrumAPP_user.last_name, MyScrumAPP_user.email, MyScrumAPP_user.username, MyScrumAPP_user.salario, MyScrumAPP_user.carga_horaria, \r\n"
-							+"CASE (MyScrumAPP_user.is_active) \r\n"
+				  sql = "SELECT pessoa.id_pessoa,pessoa.nome, pessoa.email, pessoa.login, pessoa.salario, pessoa.carga_horaria, \r\n"
+							+"CASE (pessoa.ativo) \r\n"
 							+"WHEN 1 THEN 'Sim' \r\n"
 							+"WHEN 0 THEN 'Não' \r\n"
 								+"ELSE 'CampoVazio' \r\n"
 								+"END AS ativo, \r\n"
-								+"CASE (MyScrumAPP_user.is_staff) \r\n"
+								+"CASE (pessoa.adm) \r\n"
 								+"WHEN 0 THEN 'Usuario' \r\n"
 								+"WHEN 1 THEN 'Administrador' \r\n"
 								+"WHEN 2 THEN 'Lider' \r\n"
@@ -208,39 +208,39 @@ public ListUsuarioTela(JFrame formularioPai) {
 								+"END AS adm, \r\n "
 							   +"departamento.departamento, \r\n"
 								+"centro_custo.centrocusto, \r\n"
-								+"MyScrumAPP_user.observacao \r\n"
-							+"FROM scrum.MyScrumAPP_user \r\n"
+								+"pessoa.observacao \r\n"
+							+"FROM scrum.pessoa \r\n"
 								+"INNER JOIN departamento \r\n"
-							    +"ON MyScrumAPP_user.id_departamento=departamento.id_departamento \r\n"
+							    +"ON pessoa.id_departamento=departamento.id_departamento \r\n"
 								+"INNER JOIN centro_custo \r\n"
-							    +"ON MyScrumAPP_user.id_centrocusto = centro_custo.id_centro_custo \r\n"
-							   +"WHERE email '%"+emailText.getText()+"%'"
-							   +"ORDER BY MyScrumAPP_user.first_name ASC";
+							    +"ON pessoa.id_centrocusto = centro_custo.id_centro_custo \r\n"
+							    +"WHERE email LIKE '%"+emailText.getText()+"%'"
+				  				+"ORDER BY pessoa.nome ASC";
 			  
 		  			}else if(loginCheckBox.isSelected() == true) {
-		  				sql = "SELECT MyScrumAPP_user.id, MyScrumAPP_user.first_name, MyScrumAPP_user.last_name, MyScrumAPP_user.email, MyScrumAPP_user.username, MyScrumAPP_user.salario, MyScrumAPP_user.carga_horaria, \r\n"
-								+"CASE (MyScrumAPP_user.is_active) \r\n"
-								+"WHEN 1 THEN 'Sim' \r\n"
-								+"WHEN 0 THEN 'Não' \r\n"
-									+"ELSE 'CampoVazio' \r\n"
-									+"END AS ativo, \r\n"
-									+"CASE (MyScrumAPP_user.is_staff) \r\n"
-									+"WHEN 0 THEN 'Usuario' \r\n"
-									+"WHEN 1 THEN 'Administrador' \r\n"
-									+"WHEN 2 THEN 'Lider' \r\n"
-									+"WHEN 3 THEN 'Gestor' \r\n"
-									+"ELSE 'Campo Vazio' \r\n"
-									+"END AS adm, \r\n "
-								   +"departamento.departamento, \r\n"
-									+"centro_custo.centrocusto, \r\n"
-									+"MyScrumAPP_user.observacao \r\n"
-								+"FROM scrum.MyScrumAPP_user \r\n"
-									+"INNER JOIN departamento \r\n"
-								    +"ON MyScrumAPP_user.id_departamento=departamento.id_departamento \r\n"
-									+"INNER JOIN centro_custo \r\n"
-								    +"ON MyScrumAPP_user.id_centrocusto = centro_custo.id_centro_custo \r\n"
-								   +"WHERE username LIKE '%"+nomeText.getText()+"%'"
-								   +"ORDER BY MyScrumAPP_user.first_name ASC";
+				   sql = "SELECT pessoa.id_pessoa,pessoa.nome, pessoa.email, pessoa.login, pessoa.salario, pessoa.carga_horaria, \r\n"
+							+"CASE (pessoa.ativo) \r\n"
+							+"WHEN 1 THEN 'Sim' \r\n"
+							+"WHEN 0 THEN 'Não' \r\n"
+								+"ELSE 'CampoVazio' \r\n"
+								+"END AS ativo, \r\n"
+								+"CASE (pessoa.adm) \r\n"
+								+"WHEN 0 THEN 'Usuario' \r\n"
+								+"WHEN 1 THEN 'Administrador' \r\n"
+								+"WHEN 2 THEN 'Lider' \r\n"
+								+"WHEN 3 THEN 'Gestor' \r\n"
+								+"ELSE 'Campo Vazio' \r\n"
+								+"END AS adm, \r\n "
+							   +"departamento.departamento, \r\n"
+								+"centro_custo.centrocusto, \r\n"
+								+"pessoa.observacao \r\n"
+							+"FROM scrum.pessoa \r\n"
+								+"INNER JOIN departamento \r\n"
+							    +"ON pessoa.id_departamento=departamento.id_departamento \r\n"
+								+"INNER JOIN centro_custo \r\n"
+							    +"ON pessoa.id_centrocusto = centro_custo.id_centro_custo \r\n"
+							    +"WHERE login LIKE '%"+loginText.getText()+"%'"
+				   				+"ORDER BY pessoa.nome ASC";
 		  			
 		  		}
 		  
@@ -302,17 +302,16 @@ public void listar(String sql){
 				Vector<String> cabecalhoPersonalizado = new Vector<>();
 
 				cabecalhoPersonalizado.addElement("ID");//0
-				cabecalhoPersonalizado.addElement("Primeiro nome");//1
-				cabecalhoPersonalizado.addElement("Ultimo nome");//2
-				cabecalhoPersonalizado.addElement("E-mail");//3
-				cabecalhoPersonalizado.addElement("Login");//4
-				cabecalhoPersonalizado.addElement("Salário");//5
-				cabecalhoPersonalizado.addElement("Carga Horária");//6
-				cabecalhoPersonalizado.addElement("Ativo");//7
-				cabecalhoPersonalizado.addElement("Função");//8
-				cabecalhoPersonalizado.addElement("Departamento");//9
-				cabecalhoPersonalizado.addElement("Centro de Custo");//10
-				cabecalhoPersonalizado.addElement("OBS");//11
+				cabecalhoPersonalizado.addElement("Nome");//1
+				cabecalhoPersonalizado.addElement("E-mail");//2
+				cabecalhoPersonalizado.addElement("Login");//3
+				cabecalhoPersonalizado.addElement("Salário");//4
+				cabecalhoPersonalizado.addElement("Carga Horária");//5
+				cabecalhoPersonalizado.addElement("Ativo");//6
+				cabecalhoPersonalizado.addElement("Função");//7
+				cabecalhoPersonalizado.addElement("Departamento");//8
+				cabecalhoPersonalizado.addElement("Centro de Custo");//9
+				cabecalhoPersonalizado.addElement("OBS");//10
 				
 				tabela = TableGrade.getTable(sql, cabecalhoPersonalizado);
 		
@@ -333,18 +332,17 @@ public void listar(String sql){
 		                  if(a.getClickCount() == 2) {
 		                	
 		                	 user.setID(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 0).toString()));
-		                	 user.setFirst_name((tabela.getValueAt(tabela.getSelectedRow(),1).toString()));
-		                	 user.setLast_name((tabela.getValueAt(tabela.getSelectedRow(),2).toString()));
-		                	 user.setEmail(tabela.getValueAt(tabela.getSelectedRow(),3).toString());
-		                	 user.setLogin(tabela.getValueAt(tabela.getSelectedRow(),4).toString());
+		                	 user.setNome(tabela.getValueAt(tabela.getSelectedRow(),1).toString());
+		                	 user.setEmail(tabela.getValueAt(tabela.getSelectedRow(),2).toString());
+		                	 user.setLogin(tabela.getValueAt(tabela.getSelectedRow(),3).toString());
 		             	
-		                	 user.setSalario(Double.parseDouble(tabela.getValueAt(tabela.getSelectedRow(), 5).toString()));
-		 		             user.setCHoraria(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 6).toString()));
+		                	 user.setSalario(Double.parseDouble(tabela.getValueAt(tabela.getSelectedRow(), 4).toString()));
+		 		             user.setCHoraria(Integer.parseInt(tabela.getValueAt(tabela.getSelectedRow(), 5).toString()));
 		 		            
 		                	 
 		                	 //Condição para ver se é ADM ou Não
 		                	 int Ativo;
-		                	 if(tabela.getValueAt(tabela.getSelectedRow(),7).toString().equals("Sim")) {
+		                	 if(tabela.getValueAt(tabela.getSelectedRow(),6).toString().equals("Sim")) {
 		                		 Ativo = 1;
 		                	 }else {
 		                		 Ativo = 0;
@@ -357,30 +355,30 @@ public void listar(String sql){
 		                	 
 		                	
 		                	 
-		                	 if(tabela.getValueAt(tabela.getSelectedRow(),8).toString() == "Usuario" ) {
+		                	 if(tabela.getValueAt(tabela.getSelectedRow(),7).toString() == "Usuario" ) {
 		                		 Adm = 0;
 		                		 
 		                	 }
-		                	 if(tabela.getValueAt(tabela.getSelectedRow(),8).toString().equals("Administrador")){
+		                	 if(tabela.getValueAt(tabela.getSelectedRow(),7).toString().equals("Administrador")){
 		                		 Adm = 1;
 		                	 }
-		                	 if(tabela.getValueAt(tabela.getSelectedRow(),8).toString().equals("Lider")){
+		                	 if(tabela.getValueAt(tabela.getSelectedRow(),7).toString().equals("Lider")){
 		                		 Adm = 2;
 		                	 }
-		                	 if(tabela.getValueAt(tabela.getSelectedRow(),8).toString().equals("Gestor")){
+		                	 if(tabela.getValueAt(tabela.getSelectedRow(),7).toString().equals("Gestor")){
 		                		 Adm = 3;
 		                	 }
 		                	 
 		                	 user.setFuncao(Adm);
 		                	 //FIM------------------------------
-		                	 user.setDpto(tabela.getValueAt(tabela.getSelectedRow(), 9).toString());
-		 		             user.setCC(tabela.getValueAt(tabela.getSelectedRow(),10).toString());         	
+		                	 user.setDpto(tabela.getValueAt(tabela.getSelectedRow(), 8).toString());
+		 		             user.setCC(tabela.getValueAt(tabela.getSelectedRow(),9).toString());         	
 		                	 
 		                	 //Condição para verificar se existe obs ou não
-		                	 if(tabela.getValueAt(tabela.getSelectedRow(), 11) == null) {
+		                	 if(tabela.getValueAt(tabela.getSelectedRow(), 10) == null) {
 		                		 user.setObs("");
 		                	 }else {
-                             user.setObs(tabela.getValueAt(tabela.getSelectedRow(), 11).toString());
+                             user.setObs(tabela.getValueAt(tabela.getSelectedRow(), 10).toString());
 		                	 }
 		                	 //FIM------------------------------------------
 		                	

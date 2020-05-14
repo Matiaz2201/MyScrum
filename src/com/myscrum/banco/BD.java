@@ -16,10 +16,15 @@ public class BD {
 
 	
 	//CONEX�O PARA O SERVIDOR AWS
-	private final String DRIVER = "com.mysql.jdbc.Driver";
-    private final String URL = "jdbc:mysql://scrum-masotti.cymmnyt6gbz6.sa-east-1.rds.amazonaws.com/scrum";
-	private final String LOGIN = "masottiscrum";
-	private final String SENHA = "m4s0ttiscruM11";
+	//private final String DRIVER = "com.mysql.jdbc.Driver";
+    //private final String URL = "jdbc:mysql://scrum-masotti.cymmnyt6gbz6.sa-east-1.rds.amazonaws.com/scrum";
+	//private final String LOGIN = "masottiscrum";
+	//private final String SENHA = "m4s0ttiscruM11";
+	
+	private static final String DRIVER = "com.mysql.jdbc.Driver";
+    private static final String URL = "jdbc:mysql://mysql.myscrum.com.br/myscrum";
+	private static final String LOGIN = "myscrum";
+	private static final String SENHA = "nwdev2020";
 	
 //	private final String DRIVER = "com.mysql.jdbc.Driver";
 //	private final String URL = "jdbc:mysql://192.168.1.251:3306/scrum";

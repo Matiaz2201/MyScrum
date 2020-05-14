@@ -22,10 +22,15 @@ public abstract class Banco {
 	
 	
 	//CONEX�O PARA O SERVIDOR AWS
+	//private static final String DRIVER = "com.mysql.jdbc.Driver";
+    //private static final String URL = "jdbc:mysql://scrum-masotti.cymmnyt6gbz6.sa-east-1.rds.amazonaws.com/scrum?allowMultiQueries=true";
+	//private static final String LOGIN = "masottiscrum";
+	//private static final String SENHA = "m4s0ttiscruM11";
+	
 	private static final String DRIVER = "com.mysql.jdbc.Driver";
-    private static final String URL = "jdbc:mysql://scrum-masotti.cymmnyt6gbz6.sa-east-1.rds.amazonaws.com/scrum?allowMultiQueries=true";
-	private static final String LOGIN = "masottiscrum";
-	private static final String SENHA = "m4s0ttiscruM11";
+    private static final String URL = "jdbc:mysql://mysql.myscrum.com.br/myscrum?allowMultiQueries=true";
+	private static final String LOGIN = "myscrum";
+	private static final String SENHA = "nwdev2020";
 	
 
 //	private static final String DRIVER = "com.mysql.jdbc.Driver";

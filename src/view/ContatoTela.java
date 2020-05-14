@@ -217,7 +217,7 @@ File[] Anexo;
         });
         
         NomeRemetente = new JTextField();
-        NomeRemetente.setText(s.getFullname() ); ///setando o nome
+        NomeRemetente.setText(s.getNome()); ///setando o nome
         NomeRemetente.setFont(new Font("Tahoma", Font.PLAIN, 18));
         
         label = new JLabel();

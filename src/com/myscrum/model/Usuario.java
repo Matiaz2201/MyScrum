@@ -1,10 +1,14 @@
 package com.myscrum.model;
 
+import java.util.ArrayList;
+
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
 public class Usuario {
 
 	static int ID;
-	static String first_name;
-	static String last_name;
+	static String nome;
 	static String email;
 	static String senha;
 	static String dpto;
@@ -43,22 +47,13 @@ public class Usuario {
 		return ID;
 	}
 	
-	public String getFirst_name() {
-		return first_name;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
-
-	public void setFirst_name(String first_name) {
-		Usuario.first_name = first_name;
+	public String getNome() {
+		return nome;
 	}
-
-	public String getLast_name() {
-		return last_name;
-	}
-
-	public void setLast_name(String last_name) {
-		Usuario.last_name = last_name;
-	}
-
+	
 	public void setEmail(String email) {
 		this.email = email;
 	}

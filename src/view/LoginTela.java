@@ -18,7 +18,6 @@ import com.myscrum.controller.Controle;
 import com.myscrum.model.Sessao;
 import com.myscrum.model.TextPrompt;
 import com.myscrum.model.Salvar;
-import com.myscrum.model.HashPassword;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -72,12 +71,10 @@ public class LoginTela extends JFrame {
 	private JLabel dataLabel;
 	private JPanel rightJpanel;
 
-	HashPassword HP = new HashPassword();
-
 	/**
 	 * Launch the application.
 	 */
-
+	
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel("com.jtattoo.plaf.mcwin.McWinLookAndFeel");
@@ -105,7 +102,7 @@ public class LoginTela extends JFrame {
 			public void windowClosing(WindowEvent arg0) {
 				Banco.close();
 			}
-
+		
 		});
 		setTitle("MyScrum");
 		setIconImage(
@@ -147,7 +144,7 @@ public class LoginTela extends JFrame {
 		rightJpanel.setLayout(null);
 
 		loginText = new JTextField();
-		TextPrompt tp = new TextPrompt("Usuário", loginText);
+		TextPrompt tp = new TextPrompt("Usuário",loginText);
 		tp.setForeground(Color.WHITE);
 		tp.setFont(new Font("Century Gothic", Font.BOLD, 12));
 		tp.changeAlpha(0.5f);
@@ -174,7 +171,7 @@ public class LoginTela extends JFrame {
 		loginText.setColumns(10);
 
 		senhaText = new JPasswordField();
-		TextPrompt tpsenha = new TextPrompt("Password", senhaText);
+		TextPrompt tpsenha = new TextPrompt("Password",senhaText);
 		tpsenha.setForeground(Color.WHITE);
 		tpsenha.setFont(new Font("Century Gothic", Font.BOLD, 12));
 		tpsenha.changeAlpha(0.5f);
@@ -248,47 +245,83 @@ public class LoginTela extends JFrame {
 		Banco.conexao();// Inicia conexão com banco pela clase Abstrata
 
 	}
-
+	
 	public void logar() {
 
 		String puname = loginText.getText(); // Alocando variavel login
+		@SuppressWarnings("deprecation")
 		String ppaswd = senhaText.getText(); // Alocando variavel senha
+		MessageDigest md = null;
 
-		String sql = "SELECT id, username, password, first_name, last_name, is_staff, email, \n"
-				+ "(SELECT departamento.departamento FROM departamento WHERE departamento.id_departamento=MyScrumAPP_user.id_departamento) AS DPTO, \n "
-				+ "(SELECT centro_custo.centrocusto FROM centro_custo WHERE centro_custo.id_centro_custo=MyScrumAPP_user.id_centrocusto) AS CC \n "
-				+ "  FROM MyScrumAPP_user WHERE username= '"+puname +"'";
 		try {
+			md = MessageDigest.getInstance("SHA"); // Criptografia
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+
+		md.update(ppaswd.getBytes());
+		BigInteger hash = new BigInteger(1, md.digest());
+		String retornasenha = hash.toString(16); // senha criptografada
+		// System.out.println("retorna senha:" +retornasenha); = Retorna senha no
+		// console
+
+		try {// consulta se o usuario existi
+			String sql = "SELECT login,senha FROM pessoa WHERE login='" + puname + "'and senha='" + retornasenha + "'";
+
 			if (Banco.conexao()) {
 				Banco.st = Banco.con.prepareStatement(sql);
 				Banco.rs = Banco.st.executeQuery();
-				if (Banco.rs.next()) {// Se o usuario existir compare a senha
-					if (HP.checkPassword(ppaswd, Banco.rs.getString("password"))) {// Se a senha estiver correta, guarda
-																					// os valores do usuario na sessão e
-																					// abre tela principal
-						Sessao sessao = Sessao.getInstance();
-						sessao.setFirst_name(Banco.rs.getString("first_name"));
-						sessao.setLast_name(Banco.rs.getString("last_name"));
-						sessao.setFuncao(Banco.rs.getInt("is_staff"));
-						sessao.setUsuario(puname);
-						sessao.setSenha(Banco.rs.getString("password"));
-						sessao.setId(Banco.rs.getInt("id"));
-						sessao.setEmail(Banco.rs.getString("email"));
-						sessao.setDpto(Banco.rs.getString("DPTO"));
-						sessao.setCC(Banco.rs.getString("CC"));
-						
-						JOptionPane.showMessageDialog(null, "Bem vindo(a) " + sessao.getFullname(), "My Scrum", 1);
-						
-						Controle.abrirframe("telaPrincipal");
-						dispose();// Fecha frame atual
+				if (Banco.rs.next()) {// consultar se ta ativo
+					try {
+						sql = "SELECT nome,id_pessoa,adm,email,"
+								+ "(SELECT departamento.departamento FROM departamento WHERE departamento.id_departamento=pessoa.id_departamento) AS DPTO, \n "
+								+ "(SELECT centro_custo.centrocusto FROM centro_custo WHERE centro_custo.id_centro_custo=pessoa.id_centrocusto) AS CC \n "
+								+ "FROM pessoa WHERE login='" + puname + "'and senha='" + retornasenha
+								+ "' and ativo=1";
+						Banco.st = Banco.con.prepareStatement(sql);
+						Banco.rs = Banco.st.executeQuery();
+						if (Banco.rs.next()) {
+							JOptionPane.showMessageDialog(null, "Bem vindo(a) " + Banco.rs.getString(1), "My Scrum", 1);
+							Sessao sessao = Sessao.getInstance();
+							sessao.setNome(Banco.rs.getString(1));
+							sessao.setFuncao(Banco.rs.getInt(3));// Armazena qual a função do usuario
+							sessao.setUsuario(puname);// Armazena usuario em Sess?o
+							sessao.setSenha(retornasenha);// Armazena senha em Sess?o
+							sessao.setId(Banco.rs.getInt(2));
+							sessao.setEmail(Banco.rs.getString(4));
+							sessao.setDpto(Banco.rs.getString(5));
+							sessao.setCC(Banco.rs.getString(6));
+							if (salvarLoginCheckBox.isSelected()) {
+								Salvar status = new Salvar();
+								status.write();
+							}
+
+							Controle.abrirframe("telaPrincipal");
+							dispose();// Fecha frame atual
+
+						} else {
+
+							JOptionPane.showMessageDialog(null, "Usuario Bloqueado");
+							loginText.setText("");
+							senhaText.setText("");
+							loginText.requestFocus();
+
+						}
+					} catch (SQLException erro) {
+						JOptionPane.showMessageDialog(null, erro.toString());
 					}
 				} else {
-					JOptionPane.showMessageDialog(null, "Usuario incorreto");
+
+					JOptionPane.showMessageDialog(null, "Usuario ou Senha incorreto !!!");
+					senhaText.setText("");
+					senhaText.requestFocus();
+
 				}
 			}
 		} catch (SQLException erro) {
 			JOptionPane.showMessageDialog(null, erro.toString());
 		}
+
 	}
 
 	public void imagem() {

@@ -3,13 +3,12 @@ package com.myscrum.model;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
+import com.myscrum.banco.BD;
 import com.myscrum.banco.Banco;
-import com.myscrum.model.HashPassword;
 
 public class UsuarioDAO extends Usuario {
 
@@ -17,8 +16,8 @@ public class UsuarioDAO extends Usuario {
 	public boolean cadastro() {
 
 		boolean ok = false;
-		String sql = "INSERT INTO MyScrumAPP_user (first_name, last_name, email, password, username, is_staff, id_departamento, observacao, salario, carga_horaria, id_centrocusto)"
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO pessoa (nome,email,senha,login,adm,id_departamento,observacao,salario,carga_horaria,id_centrocusto)"
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?)";
 		setIDpto(buscaidDpto());// buscando ID do Dpto
 		setIdCC(buscaidCC()); // busca ID centro decusto
 		int verifica = verificar();
@@ -28,21 +27,30 @@ public class UsuarioDAO extends Usuario {
 				try {
 					Banco.st = Banco.con.prepareStatement(sql);
 
-					Banco.st.setString(1, getFirst_name());
-					Banco.st.setString(2, getLast_name());
-					Banco.st.setString(3, getEmail());
-					
-					HashPassword HP = new HashPassword();
-					String retornasenha = HP.encode(getSenha(), "My5Scr0m3468", 150000);
-					
-					Banco.st.setString(4, retornasenha);
-					Banco.st.setString(5, getLogin());
-					Banco.st.setInt(6, getFuncao());
-					Banco.st.setInt(7, getIDpto());
-					Banco.st.setString(8, getObs());
-					Banco.st.setDouble(9, getSalario());
-					Banco.st.setInt(10, getCHoraria());
-					Banco.st.setInt(11, getIdCC());
+					Banco.st.setString(1, getNome());
+					Banco.st.setString(2, getEmail());
+					// Criptografando senha
+					MessageDigest md = null;
+
+					try {
+						md = MessageDigest.getInstance("SHA");
+					} catch (NoSuchAlgorithmException e) {
+						e.printStackTrace();
+					}
+
+					String ppaswd = getSenha();
+					md.update(ppaswd.getBytes());
+					BigInteger hash = new BigInteger(1, md.digest());
+					String retornasenha = hash.toString(16);
+					// Fim criptografia
+					Banco.st.setString(3, retornasenha);
+					Banco.st.setString(4, getLogin());
+					Banco.st.setInt(5, getFuncao());
+					Banco.st.setInt(6, getIDpto());
+					Banco.st.setString(7, getObs());
+					Banco.st.setDouble(8, getSalario());
+					Banco.st.setInt(9, getCHoraria());
+					Banco.st.setInt(10, getIdCC());
 
 					int rs = Banco.st.executeUpdate();
 
@@ -70,13 +78,13 @@ public class UsuarioDAO extends Usuario {
 		String sql;
 
 		if (getSenha().equals("")) {// se o campo senha estiver vazio use o update sem o campo senha
-			sql = "UPDATE MyScrumAPP_user "
-					+ "SET email=?, username=?, is_active=?, is_staff=?, id_departamento=?, observacao=?, salario=?, carga_horaria=?, id_centrocusto =? "
-					+ "WHERE id=?";
+			sql = "UPDATE pessoa "
+					+ "SET email=?, login=?, ativo=?, adm=?, id_departamento=?, observacao=?, salario=?, carga_horaria=?, id_centrocusto =? "
+					+ "WHERE id_pessoa=?";
 		} else {
-			sql = "UPDATE MyScrumAPP_user "
-					+ "SET email=?, username=?, is_active=?, is_staff=?, id_departamento=?, observacao=?, salario=?, carga_horaria=?, id_centrocusto =?, password=? "
-					+ "WHERE id=?";
+			sql = "UPDATE pessoa "
+					+ "SET email=?, login=?, ativo=?, adm=?, id_departamento=?, observacao=?, salario=?, carga_horaria=?, id_centrocusto =?, senha=? "
+					+ "WHERE id_pessoa=?";
 		}
 		setIDpto(buscaidDpto());// buscando ID do Dpto
 		setIdCC(buscaidCC()); // busca id do CC
@@ -120,7 +128,7 @@ public class UsuarioDAO extends Usuario {
 					int rs = Banco.st.executeUpdate();
 
 					if (rs == 1) {
-						atualizarNome(getID(), getFirst_name(), getLast_name());
+						atualizarNome(getID(), getNome());
 						JOptionPane.showMessageDialog(null, "Usuario atualizado com sucesso");
 						ok = true;
 					} else {
@@ -194,7 +202,7 @@ public class UsuarioDAO extends Usuario {
 
 	// METODO VERIFICAR
 	public int verificar() {
-		String sql = "SELECT username, email FROM MyScrumAPP_user WHERE username=? or email=? OR (first_name=? AND last_name = ?)";
+		String sql = "SELECT login,email FROM pessoa WHERE login=? or email=? OR nome=?";
 		int verifica = 0;
 		if (Banco.conexao()) {// se conectar com o banco continua...
 			try {
@@ -203,8 +211,7 @@ public class UsuarioDAO extends Usuario {
 
 				Banco.st.setString(1, getLogin());
 				Banco.st.setString(2, getEmail());
-				Banco.st.setString(3, getFirst_name());
-				Banco.st.setString(4, getLast_name());
+				Banco.st.setString(3, getNome());
 
 				Banco.rs = Banco.st.executeQuery();
 
@@ -304,16 +311,13 @@ public class UsuarioDAO extends Usuario {
 	}
 
 	// ATUALIZA TODOS OS CAMPOS QUE CONTÉM O NOME DO USUARIO
-	public boolean atualizarNome(int idPessoa, String first_name, String last_name) {
+	public boolean atualizarNome(int idPessoa, String novoNome) {
 		
 		if (Banco.conexao()) {
 			
-			String novoNome = first_name + " " + last_name;
 			String nomeUser = buscarNome(idPessoa);
-			String sql = "UPDATE MyScrumAPP_user\r\n" + "SET first_name = '" + first_name + "'\r\n"
-					+ "WHERE id =  '" + idPessoa + "';\r\n" + "\r\n"
-					+ "UPDATE MyScrumAPP_user\r\n" + "SET last_name = '" + last_name + "'\r\n"
-					+ "WHERE id =  '" + idPessoa + "';\r\n" + "\r\n"
+			String sql = "UPDATE pessoa\r\n" + "SET nome = '" + novoNome + "'\r\n"
+					+ "WHERE nome =  '" + nomeUser + "';\r\n" + "\r\n"
 					+ "UPDATE tarefa\r\n" + "SET pendente_por = '" + novoNome + "'\r\n"
 					+ "WHERE pendente_por = '" + nomeUser + "';\r\n" + "\r\n"
 					+ "UPDATE tarefa\r\n" + "SET responsavel = '" + novoNome + "'\r\n"
@@ -361,14 +365,14 @@ public class UsuarioDAO extends Usuario {
 	// BUSCA O NOME DO USUARIO
 	public String buscarNome(int idPessoa) {
 		if (Banco.conexao()) {
-			String sql = "SELECT first_name, last_name FROM MyScrumAPP_user WHERE id_pessoa = '" + idPessoa + "'";
+			String sql = "SELECT nome FROM pessoa WHERE id_pessoa = '" + idPessoa + "'";
 
 			try {
 				Banco.st = Banco.con.prepareStatement(sql);
 				Banco.rs = Banco.st.executeQuery(sql);
 				Banco.rs.next();
 
-				return Banco.rs.getString(1)+ " " + Banco.rs.getString(2);
+				return Banco.rs.getString(1);
 			} catch (SQLException e) {
 				e.printStackTrace();
 				return null;
